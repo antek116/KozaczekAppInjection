@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">KozaczekApp</string>
+    <string name="action_settings">Settings</string>
+    <string name="service_name">KozaczekService</string>
+    <string name="option">Option</string>
+    <string name="action_help">UrlConnection</string>
+    <string name="action_check_updates">OkHttpConnection</string>
+    <string name="refresh">Refresh</string>
+    <string name="preferencesLabel">Preferences</string>
+    <string name="downloadOption">Choosed download method</string>
+    <string name="downloadDetails">Download Details</string>
+    <string name="downloadType">downloadType</string>
+    <string name="downloadValue">1</string>
+    <string name="selected_download_preference">"Selected : "</string>
+</resources>

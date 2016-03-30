@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="listArray">
+        <item>HttpConnection</item>
+        <item>UrlConnection</item>
+        <item>OkHttpConnection</item>
+    </string-array>
+    <string-array name="listValues">
+        <item>HttpConnection</item>
+        <item>UrlConnection</item>
+        <item>OkHttpConnection</item>
+    </string-array>
+</resources>

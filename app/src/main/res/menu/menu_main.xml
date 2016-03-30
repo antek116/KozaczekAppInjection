@@ -1,0 +1,16 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="example.kozaczekapp.MainActivity">
+    <item
+        android:id="@+id/item_refresh"
+        android:orderInCategory="100"
+        android:icon="@drawable/refreshbutton"
+        android:title="@string/refresh"
+        app:showAsAction="always"
+        app:actionViewClass=""/>
+
+    <item android:id="@+id/ulrConnectionOptions"
+        android:title="@string/option"
+        app:showAsAction="never" />
+</menu>
