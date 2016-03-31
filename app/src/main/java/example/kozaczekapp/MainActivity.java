@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -25,7 +26,6 @@ import example.kozaczekapp.ImageDownloader.ImageManager;
 import example.kozaczekapp.KozaczekItems.Article;
 import example.kozaczekapp.Preferences.PreferencesActivity;
 import example.kozaczekapp.Service.KozaczekService;
-import example.kozaczekapp.Service.MyOnClickListener;
 
 public class MainActivity extends AppCompatActivity {
     public static final String FRAGMENT_KEY = "ArticleListFragmentSaveState";
@@ -216,7 +216,19 @@ public class MainActivity extends AppCompatActivity {
         FrameLayout frameLayout = (FrameLayout) inflater.inflate(R.layout.iv_refresh, null);
         image = (ImageView) frameLayout.findViewById(R.id.refresh);
 
-        image.setOnClickListener(new MyOnClickListener(this));
+        image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(checkNetworkConnection()) {
+                    startOrStopRefreshingAnimation(true, 1);
+                    startService(getKozaczekServiceIntent());
+                } else {
+                    startOrStopRefreshingAnimation(true, 2);
+                    String message = getResources().getString(R.string.no_internet_connection);
+                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
         anim = ObjectAnimator.ofFloat(image, "rotation", 0f, 360f).setDuration(1000);
 
     }
