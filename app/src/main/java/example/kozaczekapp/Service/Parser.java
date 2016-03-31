@@ -38,6 +38,9 @@ public class Parser {
      * @return array List of Article objects.
      */
     public ArrayList<Article> parse() {
+        if(response == null){
+            return null;
+        }
         NodeList nodeList = null;
         Document doc;
         ArrayList<Article> arrayOfArticles = new ArrayList<>();
