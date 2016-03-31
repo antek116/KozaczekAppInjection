@@ -204,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
 //                }
 //            }
 //        });
-        image.setOnClickListener(new MyOnClickListener(this));
+        image.setOnClickListener(new MyOnClickListener(thigits));
         anim = ObjectAnimator.ofFloat(image, "rotation", 0f, 360f).setDuration(1000);
     }
 }
