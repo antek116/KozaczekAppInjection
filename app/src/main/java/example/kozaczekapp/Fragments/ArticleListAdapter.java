@@ -166,11 +166,8 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
             super(view);
             mView = view;
             mTitle = (TextView) view.findViewById(R.id.titleTextView);
-            mTitle.setTextSize(10);
             mDescription = (TextView) view.findViewById(R.id.descriptionTextView);
-            mDescription.setTextSize(8);
             mPubData = (TextView) view.findViewById(R.id.publicDateTextView);
-            mPubData.setTextSize(5);
             imageView = (ImageView) view.findViewById(R.id.articleImage);
         }
 
