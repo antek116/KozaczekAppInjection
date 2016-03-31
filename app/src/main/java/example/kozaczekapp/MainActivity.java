@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -17,17 +16,13 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
-
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
-
 import java.util.ArrayList;
+
 
 import example.kozaczekapp.Fragments.ArticleListFragment;
 import example.kozaczekapp.ImageDownloader.ImageManager;
 import example.kozaczekapp.KozaczekItems.Article;
-import example.kozaczekapp.Preferences.AppPreferences;
+import example.kozaczekapp.Preferences.PreferencesActivity;
 import example.kozaczekapp.Service.KozaczekService;
 import example.kozaczekapp.Service.MyOnClickListener;
 
@@ -49,11 +44,6 @@ public class MainActivity extends AppCompatActivity {
             startOrStopRefreshingAnimation(false, 0);
         }
     };
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
 
     private void updateImageToLabCache(ImageManager imageManager, ArrayList<Article> articles) {
         imageManager.addImagesFromArticlesToLruCache(articles);
@@ -87,9 +77,6 @@ public class MainActivity extends AppCompatActivity {
         kozaczekServiceIntent.putExtra(KozaczekService.URL, SERVICE_URL);
         initializationOfSaveInstanceState(savedInstanceState);
         initializationOfRefreshItemInMenu();
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     /**
@@ -111,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.ulrConnectionOptions :
-                Intent i = new Intent(this, AppPreferences.class);
+                Intent i = new Intent(this, PreferencesActivity.class);
                 startActivity(i);
 
                 break;
@@ -171,7 +158,6 @@ public class MainActivity extends AppCompatActivity {
                 image.setClickable(true);
             } else {
                 anim.setRepeatCount(1);
-                anim.start();
                 image.setClickable(true);
             }
         }
@@ -219,46 +205,6 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
         image.setOnClickListener(new MyOnClickListener(this));
-        anim = ObjectAnimator.ofFloat(image, "rotation", 0f, 360f);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Main Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app deep link URI is correct.
-                Uri.parse("android-app://example.kozaczekapp/http/host/path")
-        );
-        AppIndex.AppIndexApi.start(client, viewAction);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Main Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app deep link URI is correct.
-                Uri.parse("android-app://example.kozaczekapp/http/host/path")
-        );
-        AppIndex.AppIndexApi.end(client, viewAction);
-        client.disconnect();
+        anim = ObjectAnimator.ofFloat(image, "rotation", 0f, 360f).setDuration(1000);
     }
 }

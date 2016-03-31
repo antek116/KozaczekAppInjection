@@ -4,15 +4,13 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
-import android.preference.PreferenceActivity;
 
 import example.kozaczekapp.R;
 
-public class AppPreferences extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
-
+public class PreferenceFragment extends android.preference.PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
         ListPreference listPreference = (ListPreference) findPreference(getString(R.string.downloadType));
@@ -28,13 +26,13 @@ public class AppPreferences extends PreferenceActivity implements SharedPreferen
         }
     }
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         getPreferenceScreen().getSharedPreferences()
                 .registerOnSharedPreferenceChangeListener(this);
     }
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
         getPreferenceScreen().getSharedPreferences()
                 .unregisterOnSharedPreferenceChangeListener(this);

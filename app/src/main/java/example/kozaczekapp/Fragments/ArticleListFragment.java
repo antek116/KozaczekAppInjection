@@ -3,13 +3,11 @@ package example.kozaczekapp.Fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Observable;
@@ -27,7 +25,8 @@ public class ArticleListFragment extends Fragment implements Observer{
     ArticleListAdapter adapter;
     public static final String PARCELABLE_ARTICLE_ARRAY_KEY = "FragmentParcelable";
     public static final String PARCELABLE_ADAPTER_KEY = "Adapter_Parcelable";
-    private ImageManager imageManager= ImageManager.getInstance();
+    private static final String PARCELABLE_IMAGE_MANAGER_KEY = "ImageManagerKeyParcelable";
+    private ImageManager imageManager;
 
 
     /**
@@ -43,13 +42,10 @@ public class ArticleListFragment extends Fragment implements Observer{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        initialSaveInstance(savedInstanceState);
+
         View view = inflater.inflate(R.layout.article_list_layout, container, false);
-        imageManager.addObserver(this);
-        if(savedInstanceState != null){
-            adapter = savedInstanceState.getParcelable(PARCELABLE_ADAPTER_KEY);
-        }else {
-            adapter = new ArticleListAdapter(imageManager.getLruCache());
-        }
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.allTasks);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
@@ -79,6 +75,7 @@ public class ArticleListFragment extends Fragment implements Observer{
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(ArticleListFragment.PARCELABLE_ADAPTER_KEY, adapter);
+        outState.putParcelable(PARCELABLE_IMAGE_MANAGER_KEY,imageManager);
     }
 
     @Override
@@ -90,5 +87,14 @@ public class ArticleListFragment extends Fragment implements Observer{
             }
         });
     }
-
+    private void initialSaveInstance(Bundle savedInstanceState){
+        if(savedInstanceState != null){
+            adapter = savedInstanceState.getParcelable(PARCELABLE_ADAPTER_KEY);
+            imageManager = savedInstanceState.getParcelable(PARCELABLE_IMAGE_MANAGER_KEY);
+        }else {
+            imageManager= ImageManager.getInstance();
+            imageManager.addObserver(this);
+            adapter = new ArticleListAdapter(imageManager.getLruCache());
+        }
+    }
 }

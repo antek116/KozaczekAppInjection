@@ -33,6 +33,7 @@ public class ImageLoad extends Observable implements Runnable {
         loadImageFromUrl(imageUrl);
         setChanged();
         notifyObservers();
+        deleteObservers();
     }
     private void loadImageFromUrl(String imageUrl){
         try{
