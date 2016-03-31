@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Method starting choosen by kind refreshing animation.
+     * Method starting chosen by kind refreshing animation.
      *
      * @param refreshing true if wanna start animation, false if wanna stop animation, animation is stoping by dooing last circle.
      * @param kind       1 - Infinite animation, 2 - one loop animation.
