@@ -42,7 +42,8 @@ public class MyOnClickListener implements View.OnClickListener {
                     activity.startService(activity.getKozaczekServiceIntent());
                 } else {
                     activity.startOrStopRefreshingAnimation(true, 2);
-                    Toast.makeText(activity.getApplicationContext(), "No internet connection", Toast.LENGTH_SHORT).show();
+                    String message = activity.getResources().getString(R.string.no_internet_connection);
+                    Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
                 }
                 break;
             default:
