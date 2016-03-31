@@ -1,6 +1,8 @@
 package example.kozaczekapp.Fragments;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v4.util.LruCache;
@@ -82,7 +84,14 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
     public void onBindViewHolder(ArticleListAdapter.ViewHolder holder, final int position) {
 
         if(listOfArticles.size() != 0) {
-            holder.mView.setOnClickListener(new MyOnClickListener(listOfArticles.get(position).getLinkToArticle()));
+            holder.mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse(listOfArticles.get(position).getLinkToArticle()));
+                    v.getContext().startActivity(i);
+                }
+            });
             holder.mTitle.setText(listOfArticles.get(position).getTitle());
             holder.mDescription.setText(listOfArticles.get(position).getDescription());
             holder.mPubData.setText(listOfArticles.get(position).getPubDate());
