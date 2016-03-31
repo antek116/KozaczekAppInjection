@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
         if (refreshMenuItem != null) {
             image.setClickable(false);
             pullToRefresh.setEnabled(false);
-            pullToRefresh.setRefreshing(true);
+            pullToRefresh.setRefreshing(false);
             if (refreshing && kind == 1) {
                 anim.setRepeatCount(ObjectAnimator.INFINITE);
                 anim.setRepeatMode(ObjectAnimator.RESTART);
