@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -31,10 +32,13 @@ public class MainActivity extends AppCompatActivity {
     public static final String SERVICE_URL = "http://www.kozaczek.pl/rss/plotki.xml";
     ArticleListFragment listArticle;
     Intent kozaczekServiceIntent;
+    SwipeRefreshLayout pullToRefresh;
     ImageView image;
     private ObjectAnimator anim;
     private IntentFilter filterAdapterArticlesChange = new IntentFilter(KozaczekService.INTENT_FILTER);
     private MenuItem refreshMenuItem;
+
+
     private BroadcastReceiver articlesRefreshReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -124,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        setupPullToRefreshListener();
         this.registerReceiver(articlesRefreshReceiver, filterAdapterArticlesChange);
         registerReceiver(networkConnectionReceiver, filterForInternetConnectionChange);
     }
@@ -147,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
     public void startOrStopRefreshingAnimation(boolean refreshing, int kind) {
         if (refreshMenuItem != null) {
             image.setClickable(false);
+            pullToRefresh.setEnabled(false);
             if (refreshing && kind == 1) {
                 anim.setRepeatCount(ObjectAnimator.INFINITE);
                 anim.setRepeatMode(ObjectAnimator.RESTART);
@@ -159,6 +165,8 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 anim.setRepeatCount(1);
                 image.setClickable(true);
+                pullToRefresh.setRefreshing(false);
+                pullToRefresh.setEnabled(true);
             }
         }
     }
@@ -167,6 +175,27 @@ public class MainActivity extends AppCompatActivity {
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         return networkInfo != null && networkInfo.isConnected();
+    }
+
+    private void setupPullToRefreshListener() {
+        pullToRefresh = (SwipeRefreshLayout) findViewById(R.id.pullToRefresh);
+        pullToRefresh.setRefreshing(false);
+        pullToRefresh.setEnabled(true);
+        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (checkNetworkConnection()) {
+                    pullToRefresh.setRefreshing(true);
+                    pullToRefresh.setEnabled(false);
+                    if (image != null) {
+                        image.setClickable(false);
+                    }
+                    startOrStopRefreshingAnimation(true, 1);
+                    startService(getKozaczekServiceIntent());
+//
+                }
+            }
+        });
     }
 
     private void initializationOfSaveInstanceState(Bundle savedInstanceState) {
@@ -208,3 +237,4 @@ public class MainActivity extends AppCompatActivity {
         anim = ObjectAnimator.ofFloat(image, "rotation", 0f, 360f).setDuration(1000);
     }
 }
+
