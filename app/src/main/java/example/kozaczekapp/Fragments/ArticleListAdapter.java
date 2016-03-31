@@ -15,7 +15,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import example.kozaczekapp.KozaczekItems.Article;
 import example.kozaczekapp.R;
-import example.kozaczekapp.Service.MyOnClickListener;
 
 /**
  * Adapter Class implementation of ArticleList adapter.
