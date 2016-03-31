@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
                 anim.start();
                 image.setClickable(true);
             } else {
-                anim.setRepeatCount(1);
+                anim.setRepeatCount(0);
                 image.setClickable(true);
                 pullToRefresh.setRefreshing(false);
                 pullToRefresh.setEnabled(true);
