@@ -10,13 +10,14 @@ import java.util.Observable;
 
 public class ImageLoad extends Observable implements Runnable {
     String imageUrl;
-    LruCache<String,Bitmap> mLruCache;
+    LruCache<String, Bitmap> mLruCache;
     ImageManager imageManager;
 
     /**
      * Constructor of class.
-     * @param imageUrl url to image as a string.
-     * @param mLruCache instance of Lrucache.
+     *
+     * @param imageUrl     url to image as a string.
+     * @param mLruCache    instance of Lrucache.
      * @param imageManager instance of image manager class.
      */
     public ImageLoad(String imageUrl, LruCache<String, Bitmap> mLruCache, ImageManager imageManager) {
@@ -35,19 +36,20 @@ public class ImageLoad extends Observable implements Runnable {
         notifyObservers();
         deleteObservers();
     }
-    private void loadImageFromUrl(String imageUrl){
-        try{
+
+    private void loadImageFromUrl(String imageUrl) {
+        try {
             URL url = new URL(imageUrl);
             Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
             resize(bmp);
-        }catch(IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
     private Bitmap resize(Bitmap image) {
         Bitmap bitmapResized = Bitmap.createScaledBitmap(image, 80, 80, false);
-        if(mLruCache.get(imageUrl) == null) {
+        if (mLruCache.get(imageUrl) == null) {
             mLruCache.put(imageUrl, bitmapResized);
         }
         return bitmapResized;

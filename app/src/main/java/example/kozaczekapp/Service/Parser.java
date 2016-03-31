@@ -29,16 +29,17 @@ public class Parser {
     String response;
 
     @Inject
-    public Parser(String response){
+    public Parser(String response) {
         this.response = response;
     }
 
     /**
      * Method parse response to arrayList of ArticlesItems
+     *
      * @return array List of Article objects.
      */
     public ArrayList<Article> parse() {
-        if(response == null){
+        if (response == null) {
             return null;
         }
         NodeList nodeList = null;
@@ -50,16 +51,18 @@ public class Parser {
         } catch (IOException | ParserConfigurationException | SAXException e) {
             e.printStackTrace();
         }
-        if(nodeList !=null){
-            for(int i=0;i<nodeList.getLength();i++){
+        if (nodeList != null) {
+            for (int i = 0; i < nodeList.getLength(); i++) {
                 arrayOfArticles.add(parseNodeToArticle(nodeList.item(i)));
             }
         }
         return arrayOfArticles;
     }
-    private Document buildDocumentFromInputStream(String response)throws IOException,
+
+    private Document buildDocumentFromInputStream(String response) throws IOException,
             ParserConfigurationException,
             SAXException {
+
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = factory.newDocumentBuilder();
         InputSource inStream = new InputSource();
@@ -67,41 +70,40 @@ public class Parser {
         return db.parse(inStream);
     }
 
-    private Article parseNodeToArticle(Node node){
-        String title="",description="",pubDate = "",link="";
+    private Article parseNodeToArticle(Node node) {
+        String title = "", description = "", pubDate = "", link = "";
         Image image = null;
         int i = 0;
-        while(i != node.getChildNodes().getLength()) {
-            Node nodeChild =  node.getChildNodes().item(i);
-            String text =nodeChild.getNodeName();
-            if(text.equals(UNUSED_LINE)){
+        while (i != node.getChildNodes().getLength()) {
+            Node nodeChild = node.getChildNodes().item(i);
+            String text = nodeChild.getNodeName();
+            if (text.equals(UNUSED_LINE)) {
                 i++;
                 continue;
             }
-            if (text.equals(TITLE)){
+            if (text.equals(TITLE)) {
                 title = nodeChild.getChildNodes().item(0).getNodeValue();
             }
-            if(text.equals(DESCRIPTION)){
+            if (text.equals(DESCRIPTION)) {
                 description = nodeChild.getChildNodes().item(0).getNodeValue();
             }
-            if(PUBLISH_DATE.equals(text)){
+            if (PUBLISH_DATE.equals(text)) {
                 pubDate = nodeChild.getChildNodes().item(0).getNodeValue();
             }
-            if(ENCLOSURE.equals(text)){
+            if (ENCLOSURE.equals(text)) {
                 image = createImageFromNodeAttributes(node.getChildNodes().item(i));
             }
-            if(LINK_GUIDE.equals(text)){
+            if (LINK_GUIDE.equals(text)) {
                 link = nodeChild.getChildNodes().item(0).getNodeValue();
             }
             i++;
         }
-        return new Article(pubDate,image,link,title,description);
+        return new Article(pubDate, image, link, title, description);
     }
 
-    private Image createImageFromNodeAttributes(Node node){
+    private Image createImageFromNodeAttributes(Node node) {
         String linkToImage = node.getAttributes().item(1).getNodeValue();
-        String imageSize =  node.getAttributes().item(2).getNodeValue();
-        return new Image(linkToImage,imageSize);
+        String imageSize = node.getAttributes().item(2).getNodeValue();
+        return new Image(linkToImage, imageSize);
     }
-
 }
