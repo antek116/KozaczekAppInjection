@@ -3,4 +3,7 @@
     <dimen name="activity_horizontal_margin">10dp</dimen>
     <dimen name="activity_vertical_margin">10dp</dimen>
     <dimen name="fab_margin">10dp</dimen>
+    <dimen name="descriptionTextViewSize">10dp</dimen>
+    <dimen name="titleTextViewFontSize">15dp</dimen>
+    <dimen name="publicDateTextViewFontSize">8dp</dimen>
 </resources>
