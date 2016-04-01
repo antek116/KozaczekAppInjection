@@ -4,7 +4,7 @@
         android:title="@string/downloadDetails"
         android:summary="@string/downloadOption"
         android:key="downloadType"
-        android:defaultValue="1"
+        android:defaultValue="HttpConnection"
         android:entries="@array/listArray"
         android:entryValues="@array/listValues" />
 </PreferenceScreen>
