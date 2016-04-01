@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import example.kozaczekapp.Component.DaggerIConnectionComponent;
 import example.kozaczekapp.Component.IConnectionComponent;
 import example.kozaczekapp.ConnectionProvider.IConnection;
+import example.kozaczekapp.DatabaseConnection.DatabaseHandler;
 import example.kozaczekapp.Fragments.ArticleListFragment;
 import example.kozaczekapp.KozaczekItems.Article;
 import example.kozaczekapp.Module.ConnectionModule;
@@ -53,7 +54,8 @@ public class KozaczekService extends IntentService {
             ArrayList<Article> articles = parser1.parse();
             Intent broadcastIntent = new Intent();
             broadcastIntent.setAction(INTENT_FILTER);
-            broadcastIntent.putParcelableArrayListExtra(ArticleListFragment.PARCELABLE_ARTICLE_ARRAY_KEY, articles);
+            DatabaseHandler db = new DatabaseHandler(this);
+            db.addArticleList(articles);
             sendBroadcast(broadcastIntent);
         }
         Log.d(TAG, "onHandleIntent: Broadcast send...");

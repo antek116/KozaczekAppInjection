@@ -7,42 +7,6 @@ import android.os.Parcelable;
  * Article class implementation of one Article.
  */
 public class Article implements Parcelable {
-    Image image;
-    String title;
-    String description;
-    String pubDate;
-    String linkToArticle;
-
-    /**
-     * Constructor
-     *
-     * @param pubDate     Publication date as a string.
-     * @param image       Reference to Image Object.
-     * @param linkGuide   url link to article in kozaczek.pl website;
-     * @param title       Title of Article as a string.
-     * @param description Description of Article as a String.
-     */
-    public Article(String pubDate, Image image, String linkGuide, String title, String description) {
-        this.pubDate = pubDate;
-        this.image = image;
-        this.title = title;
-        this.linkToArticle = linkGuide;
-        this.description = description;
-    }
-
-    /**
-     * Constructor to create instance of Article from Parcelable.
-     *
-     * @param in parcelable
-     */
-    protected Article(Parcel in) {
-        image = in.readParcelable(Image.class.getClassLoader());
-        title = in.readString();
-        linkToArticle = in.readString();
-        description = in.readString();
-        pubDate = in.readString();
-    }
-
     /**
      * Class creator for a Parcelable.
      */
@@ -57,6 +21,73 @@ public class Article implements Parcelable {
             return new Article[size];
         }
     };
+    int id;
+    Image image;
+    String title;
+    String description;
+    String pubDate;
+    String linkToArticle;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setPubDate(String pubDate) {
+        this.pubDate = pubDate;
+    }
+
+    public void setLinkToArticle(String linkToArticle) {
+        this.linkToArticle = linkToArticle;
+    }
+
+    /**
+     * Constructor
+     *
+     * @param pubDate       Publication date as a string.
+     * @param image         Reference to Image Object.
+     * @param linkToArticle url link to article in kozaczek.pl website;
+     * @param title         Title of Article as a string.
+     * @param description   Description of Article as a String.
+     */
+    public Article(String pubDate, Image image, String linkToArticle, String title, String description) {
+        this.pubDate = pubDate;
+        this.image = image;
+        this.title = title;
+        this.linkToArticle = linkToArticle;
+        this.description = description;
+    }
+
+    public Article() {
+    }
+
+    /**
+     * Constructor to create instance of Article from Parcelable.
+     *
+     * @param in parcelable
+     */
+    protected Article(Parcel in) {
+        image = in.readParcelable(Image.class.getClassLoader());
+        title = in.readString();
+        linkToArticle = in.readString();
+        description = in.readString();
+        pubDate = in.readString();
+    }
 
     /**
      * @return instance of Image object.
@@ -93,20 +124,11 @@ public class Article implements Parcelable {
         return title;
     }
 
-    /**
-     * @return a bitmask indicating the set of special object types marshalled by the Parcelable.
-     */
     @Override
     public int describeContents() {
         return 0;
     }
 
-    /**
-     * Flatten this object in to a Parcel.
-     *
-     * @param dest  The Parcel in which the object should be written.
-     * @param flags Additional flags about how the object should be written. May be 0 or PARCELABLE_WRITE_RETURN_VALUE.
-     */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(image, flags);
