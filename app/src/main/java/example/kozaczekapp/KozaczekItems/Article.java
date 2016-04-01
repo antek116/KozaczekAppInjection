@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- *  Article class implementation of one Article.
+ * Article class implementation of one Article.
  */
 public class Article implements Parcelable {
     Image image;
@@ -15,10 +15,11 @@ public class Article implements Parcelable {
 
     /**
      * Constructor
-     * @param pubDate Publication date as a string.
-     * @param image Reference to Image Object.
-     * @param linkGuide url link to article in kozaczek.pl website;
-     * @param title Title of Article as a string.
+     *
+     * @param pubDate     Publication date as a string.
+     * @param image       Reference to Image Object.
+     * @param linkGuide   url link to article in kozaczek.pl website;
+     * @param title       Title of Article as a string.
      * @param description Description of Article as a String.
      */
     public Article(String pubDate, Image image, String linkGuide, String title, String description) {
@@ -31,6 +32,7 @@ public class Article implements Parcelable {
 
     /**
      * Constructor to create instance of Article from Parcelable.
+     *
      * @param in parcelable
      */
     protected Article(Parcel in) {
@@ -57,7 +59,6 @@ public class Article implements Parcelable {
     };
 
     /**
-     *
      * @return instance of Image object.
      */
     public Image getImage() {
@@ -65,21 +66,20 @@ public class Article implements Parcelable {
     }
 
     /**
-     *
      * @return Public date as a string.
      */
     public String getPubDate() {
         return pubDate;
     }
+
     /**
-     *
      * @return link to article on website.
      */
     public String getLinkToArticle() {
         return linkToArticle;
     }
+
     /**
-     *
      * @return Description of Article as a String.
      */
     public String getDescription() {
@@ -87,18 +87,26 @@ public class Article implements Parcelable {
     }
 
     /**
-     *
      * @return Title of article as a String
      */
     public String getTitle() {
         return title;
     }
 
+    /**
+     * @return a bitmask indicating the set of special object types marshalled by the Parcelable.
+     */
     @Override
     public int describeContents() {
         return 0;
     }
 
+    /**
+     * Flatten this object in to a Parcel.
+     *
+     * @param dest  The Parcel in which the object should be written.
+     * @param flags Additional flags about how the object should be written. May be 0 or PARCELABLE_WRITE_RETURN_VALUE.
+     */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(image, flags);

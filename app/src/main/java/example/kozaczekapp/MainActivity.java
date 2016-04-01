@@ -8,33 +8,39 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
-import java.util.ArrayList;
 
+import java.util.ArrayList;
 
 import example.kozaczekapp.Fragments.ArticleListFragment;
 import example.kozaczekapp.ImageDownloader.ImageManager;
 import example.kozaczekapp.KozaczekItems.Article;
 import example.kozaczekapp.Preferences.PreferencesActivity;
 import example.kozaczekapp.Service.KozaczekService;
-import example.kozaczekapp.Service.MyOnClickListener;
 
 public class MainActivity extends AppCompatActivity {
     public static final String FRAGMENT_KEY = "ArticleListFragmentSaveState";
     public static final String SERVICE_URL = "http://www.kozaczek.pl/rss/plotki.xml";
+    private static boolean showNoConnectionMsg = true;
     ArticleListFragment listArticle;
     Intent kozaczekServiceIntent;
+    SwipeRefreshLayout pullToRefresh;
+    OnConnectivityChangeReceiver connectivityChangeReceiver;
     ImageView image;
     private ObjectAnimator anim;
     private IntentFilter filterAdapterArticlesChange = new IntentFilter(KozaczekService.INTENT_FILTER);
     private MenuItem refreshMenuItem;
+    private boolean isInternetConnection;
+
     private BroadcastReceiver articlesRefreshReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -52,17 +58,6 @@ public class MainActivity extends AppCompatActivity {
     public Intent getKozaczekServiceIntent() {
         return kozaczekServiceIntent;
     }
-
-    private boolean isInternetConnection;
-    private IntentFilter filterForInternetConnectionChange = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
-    private BroadcastReceiver networkConnectionReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            // FIXME wzorzec obserwator do informowania o zmianie stanu
-            isInternetConnection = checkNetworkConnection();
-        }
-    };
 
     /**
      * Methods where we initialize servis.
@@ -96,13 +91,14 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
-            case R.id.ulrConnectionOptions :
+        switch (item.getItemId()) {
+            case R.id.ulrConnectionOptions:
                 Intent i = new Intent(this, PreferencesActivity.class);
                 startActivity(i);
 
                 break;
-            default: break;
+            default:
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -124,8 +120,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        setupPullToRefreshListener();
         this.registerReceiver(articlesRefreshReceiver, filterAdapterArticlesChange);
-        registerReceiver(networkConnectionReceiver, filterForInternetConnectionChange);
+        IntentFilter connectivityChangefilter =
+                new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+
+        connectivityChangeReceiver = new OnConnectivityChangeReceiver();
+        registerReceiver(connectivityChangeReceiver, connectivityChangefilter);
     }
 
     /**
@@ -134,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         unregisterReceiver(articlesRefreshReceiver);
-        unregisterReceiver(networkConnectionReceiver);
+        unregisterReceiver(connectivityChangeReceiver);
         super.onPause();
     }
 
@@ -147,6 +148,8 @@ public class MainActivity extends AppCompatActivity {
     public void startOrStopRefreshingAnimation(boolean refreshing, int kind) {
         if (refreshMenuItem != null) {
             image.setClickable(false);
+            pullToRefresh.setEnabled(false);
+            pullToRefresh.setRefreshing(false);
             if (refreshing && kind == 1) {
                 anim.setRepeatCount(ObjectAnimator.INFINITE);
                 anim.setRepeatMode(ObjectAnimator.RESTART);
@@ -157,8 +160,10 @@ public class MainActivity extends AppCompatActivity {
                 anim.start();
                 image.setClickable(true);
             } else {
-                anim.setRepeatCount(1);
+                anim.setRepeatCount(0);
                 image.setClickable(true);
+                pullToRefresh.setRefreshing(false);
+                pullToRefresh.setEnabled(true);
             }
         }
     }
@@ -169,16 +174,36 @@ public class MainActivity extends AppCompatActivity {
         return networkInfo != null && networkInfo.isConnected();
     }
 
+    /**
+     * Method sets the listener for PullToRefresh event.
+     * On PullToRefresh when the device is connected to internet the rss data are reloaded.
+     */
+    private void setupPullToRefreshListener() {
+        pullToRefresh = (SwipeRefreshLayout) findViewById(R.id.pullToRefresh);
+        pullToRefresh.setRefreshing(false);
+        pullToRefresh.setEnabled(true);
+        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (checkNetworkConnection()) {
+                    pullToRefresh.setRefreshing(true);
+                    pullToRefresh.setEnabled(false);
+                    if (image != null) {
+                        image.setClickable(false);
+                    }
+                    getData();
+                }
+            }
+        });
+    }
+
     private void initializationOfSaveInstanceState(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
             listArticle = new ArticleListFragment();
             getSupportFragmentManager().beginTransaction().add(R.id.container, listArticle).commit();
             isInternetConnection = checkNetworkConnection();
             if (isInternetConnection) {
-                startOrStopRefreshingAnimation(true, 1);
-                startService(kozaczekServiceIntent);
-            } else {
-                Toast.makeText(this, "NO INTERNET CONNECTION", Toast.LENGTH_SHORT).show();
+                getData();
             }
         } else {
             listArticle = (ArticleListFragment) getSupportFragmentManager().getFragment(savedInstanceState, FRAGMENT_KEY);
@@ -190,21 +215,63 @@ public class MainActivity extends AppCompatActivity {
         LayoutInflater inflater = (LayoutInflater) getApplication().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         FrameLayout frameLayout = (FrameLayout) inflater.inflate(R.layout.iv_refresh, null);
         image = (ImageView) frameLayout.findViewById(R.id.refresh);
+        image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(checkNetworkConnection()) {
+                    startOrStopRefreshingAnimation(true, 1);
+                    startService(getKozaczekServiceIntent());
+                } else {
+                    startOrStopRefreshingAnimation(true, 2);
+                    String message = getResources().getString(R.string.no_internet_connection);
+                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
-        //FIXME iv.setOnClickListener();
-//        frameLayout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if(checkNetworkConnection()) {
-//                    startOrStopRefreshingAnimation(true, 1);
-//                    startService(getKozaczekServiceIntent());
-//                } else {
-//                    startOrStopRefreshingAnimation(true, 2);
-//                    Toast.makeText(getApplicationContext(), "No internet connection", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
-        image.setOnClickListener(new MyOnClickListener(this));
         anim = ObjectAnimator.ofFloat(image, "rotation", 0f, 360f).setDuration(1000);
+
+    }
+
+    /**
+     * Method getData starts the animation of refresh button and starts service which downloads rss feeds
+     */
+    private void getData() {
+        startOrStopRefreshingAnimation(true, 1);
+        startService(getKozaczekServiceIntent());
+    }
+
+    /**
+     * Method displays message when the device is not connected to internet
+     */
+    private void showInternetNoConnectionMsg() {
+        String message = getResources().getString(R.string.no_internet_connection);
+        Toast toast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
+        if (showNoConnectionMsg) {
+            toast.show();
+            showNoConnectionMsg = false;
+        }
+    }
+
+    /**
+     * Receiver OnConnectivityChangeReceiver listens of the state of connection has changed.
+     * If the device disconnects the suitable message is shown and PullToRefresh is disabled.
+     * On connection the rss feeds are loaded.
+     */
+    private class OnConnectivityChangeReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            boolean isConnected = checkNetworkConnection();
+            if (isConnected) {
+                getData();
+                showNoConnectionMsg = true;
+            } else {
+                pullToRefresh.setEnabled(false);
+                pullToRefresh.setRefreshing(false);
+                showInternetNoConnectionMsg();
+            }
+        }
     }
 }
+

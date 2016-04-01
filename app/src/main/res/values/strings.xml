@@ -12,4 +12,5 @@
     <string name="downloadType">downloadType</string>
     <string name="downloadValue">1</string>
     <string name="selected_download_preference">"Selected : "</string>
+    <string name="no_internet_connection">NO INTERNET CONNECTION</string>
 </resources>
