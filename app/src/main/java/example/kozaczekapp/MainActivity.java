@@ -219,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
     private void initializationOfRefreshItemInMenu() {
 
         LayoutInflater inflater = (LayoutInflater) getApplication().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        FrameLayout frameLayout = (FrameLayout) inflater.inflate(R.layout.iv_refresh, null);
+        FrameLayout frameLayout = (FrameLayout) inflater.inflate(R.layout.iv_refresh,null);
         image = (ImageView) frameLayout.findViewById(R.id.refresh);
         image.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -1,6 +1,7 @@
 package example.kozaczekapp.Fragments;
 
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,7 +27,6 @@ public class ArticleListFragment extends Fragment implements Observer {
     public static final String PARCELABLE_ADAPTER_KEY = "Adapter_Parcelable";
     private static final String PARCELABLE_IMAGE_MANAGER_KEY = "ImageManagerKeyParcelable";
     private ImageManager imageManager;
-
 
     /**
      * Called to have the fragment instantiate its user interface view. This is optional, and non-graphical
@@ -94,12 +94,14 @@ public class ArticleListFragment extends Fragment implements Observer {
 
     @Override
     public void update(Observable observable, Object data) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                adapter.imageUpdate();
-            }
-        });
+        if (getActivity() != null) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    adapter.imageUpdate();
+                }
+            });
+        }
     }
 
     private void initialSaveInstance(Bundle savedInstanceState) {
