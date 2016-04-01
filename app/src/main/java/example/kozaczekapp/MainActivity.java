@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Method starting choosen by kind refreshing animation.
+     * Method starting chosen by kind refreshing animation.
      *
      * @param refreshing true if wanna start animation, false if wanna stop animation, animation is stoping by dooing last circle.
      * @param kind       1 - Infinite animation, 2 - one loop animation.
@@ -310,10 +310,11 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             boolean isConnected = checkNetworkConnection();
-            if (isConnected && !isInvertedScreen()){
-                getData();
-                Toast.makeText(getApplicationContext(), "Wywolano onConnectivityChangeReciver", Toast.LENGTH_SHORT).show();
-                showNoConnectionMsg = true;
+            if (isConnected){
+                if(!isInvertedScreen()){
+                    getData();
+                    showNoConnectionMsg = true;
+                }
             } else {
                 pullToRefresh.setEnabled(false);
                 pullToRefresh.setRefreshing(false);
