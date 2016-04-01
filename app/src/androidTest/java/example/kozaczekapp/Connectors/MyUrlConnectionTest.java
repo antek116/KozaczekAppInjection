@@ -23,7 +23,7 @@ public class MyUrlConnectionTest {
     }
 
     @Test
-    public void shouldReturnXmlAsString_StringUrlIsNotWrong(){
+    public void shouldReturnXmlAsString_StringUrlIsWellFormated(){
         //given
         String url = "http://www.kozaczek.pl/rss/plotki.xml";
         MyUrlConnection connection = new MyUrlConnection();
@@ -46,11 +46,11 @@ public class MyUrlConnectionTest {
     @Test
     public void shouldReturnXmlAsNull_StringUrlIsNotCorrect(){
         //given
-        String url = "http://www.kozaczek.pl/";
+        String url = "http://www.kozaczek";
         MyUrlConnection connection = new MyUrlConnection();
         //when
         String response =  connection.getResponse(url);
         //then
-        assertNotNull(response);
+        assertNull(response);
     }
 }

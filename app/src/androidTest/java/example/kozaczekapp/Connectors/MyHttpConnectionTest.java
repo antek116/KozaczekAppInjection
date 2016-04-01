@@ -48,11 +48,11 @@ public class MyHttpConnectionTest {
     @Test
     public void shouldReturnXmlAsNull_StringUrlIsNotCorrect() {
         //given
-        String url = "http://www.kozaczek.pl/";
+        String url = "http://www.kozaczek";
         MyHttpConnection connection = new MyHttpConnection();
         //when
         String response = connection.getResponse(url);
         //then
-        assertNotNull(response);
+        assertNull(response);
     }
 }

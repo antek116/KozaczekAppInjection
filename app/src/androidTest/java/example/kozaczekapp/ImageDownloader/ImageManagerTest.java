@@ -44,7 +44,7 @@ public class ImageManagerTest {
     public void shouldAddImageFromArticleToLruCache(){
         //given
         ImageManager manager = ImageManager.getInstance();
-        LruCache<String,Bitmap> mLruCache = manager.getLruCache();
+
         ArrayList<Article> articles = new ArrayList<>();
         articles.add(new Article("ABC", new Image("http://s1.kozaczek.pl/2016/03/31/tn1--30-T1.jpg","123"), "ABC", "ABC", "ABC"));
         //when
@@ -54,7 +54,7 @@ public class ImageManagerTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        int count = mLruCache.putCount();
+        int count = manager.getLruCache().putCount();
         //then
         assertEquals(1, count);
     }
@@ -63,7 +63,6 @@ public class ImageManagerTest {
     public void shouldNotAddTheSameImageTwoTimesToLruCache(){
         //given
         ImageManager manager = ImageManager.getInstance();
-        LruCache<String,Bitmap> mLruCache = manager.getLruCache();
         ArrayList<Article> articles = new ArrayList<>();
         articles.add(new Article("ArticleOne", new Image("http://s1.kozaczek.pl/2016/03/31/tn1--30-T1.jpg","123"), "ABC", "ABC", "ABC"));
         articles.add(new Article("ArticleTwoWithTheSameImage", new Image("http://s1.kozaczek.pl/2016/03/31/tn1--30-T1.jpg","123"), "ABC", "ABC", "ABC"));
@@ -74,7 +73,7 @@ public class ImageManagerTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        int count = mLruCache.putCount();
+        int count = manager.getLruCache().putCount();
         //then
         assertEquals(1,count);
     }

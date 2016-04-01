@@ -47,11 +47,11 @@ public class OkHttpCommunicatorTest {
     @Test
     public void shouldReturnXmlAsNull_StringUrlIsNotCorrect(){
         //given
-        String url = "http://www.kozaczek.pl/";
+        String url = "http://www.kozaczek";
         OkHttpCommunicator connection = new OkHttpCommunicator();
         //when
         String response =  connection.getResponse(url);
         //then
-        assertNotNull(response);
+        assertNull(response);
     }
 }

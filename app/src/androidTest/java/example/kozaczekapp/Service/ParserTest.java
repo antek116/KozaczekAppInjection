@@ -29,14 +29,14 @@ public class ParserTest  {
     }
 
     @Test
-    public void shouldReturnNull_ResponseIsWrongFormatted() throws Exception{
+    public void shouldReturnEmptyListOfArticles_ResponseIsWrongFormatted() throws Exception{
         //given
         String response = "abcdefghijkal";
         Parser parser = new Parser(response);
         //when
         articles = parser.parse();
         //then
-        assertNull(articles);
+        assertEquals(0,articles.size());
     }
     @Test
     public void shouldReturnArrayOfArticles_ResponseIsWellFormatted() throws Exception {
