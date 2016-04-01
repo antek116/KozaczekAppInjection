@@ -1,10 +1,15 @@
 package example.kozaczekapp.DatabaseConnection;
 
+import android.provider.BaseColumns;
+
 /**
  * Contains
  */
-public abstract class FeedEntry {
-    static final String KEY_ID = "id";
+//public final class FeedEntry {
+//
+//    private FeedEntry(){}
+
+public interface FeedEntry extends BaseColumns{
     static final String TABLE_NAME = "articles";
     static final String COLUMN_TITLE = "title";
     static final String COLUMN_DESCRIPTION = "description";

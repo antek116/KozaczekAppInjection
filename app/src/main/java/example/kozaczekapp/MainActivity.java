@@ -5,8 +5,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.ContentObserver;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -22,6 +24,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import example.kozaczekapp.DatabaseConnection.DatabaseHandler;
 import example.kozaczekapp.Fragments.ArticleListFragment;
@@ -53,46 +57,26 @@ public class MainActivity extends AppCompatActivity {
             new GetArticlesFromDataBase().execute();
         }
     };
-    class GetArticlesFromDataBase extends AsyncTask<String, String, String> {
+    class GetArticlesFromDataBase extends AsyncTask<String, String, List<Article>> {
 
         /**
-         * Override this method to perform a computation on a background thread. The
-         * specified parameters are the parameters passed to {@link #execute}
-         * by the caller of this task.
-         * <p/>
-         * This method can call {@link #publishProgress} to publish updates
-         * on the UI thread.
-         *
-         * @param params The parameters of the task.
-         * @return A result, defined by the subclass of this task.
-         * @see #onPreExecute()
-         * @see #onPostExecute
-         * @see #publishProgress
+         * {@inheritDoc}
          */
         @Override
-        protected String doInBackground(String... params) {
+        protected List<Article> doInBackground(String... params) {
             DatabaseHandler db = new DatabaseHandler(MainActivity.this);
             articlesFromDB = (ArrayList<Article>) db.getAllArticles();
-            return null;
+            return articlesFromDB;
         }
 
-        /**
-         * <p>Runs on the UI thread after {@link #doInBackground}. The
-         * specified result is the value returned by {@link #doInBackground}.</p>
-         * <p/>
-         * <p>This method won't be invoked if the task was cancelled.</p>
-         *
-         * @param s The result of the operation computed by {@link #doInBackground}.
-         * @see #onPreExecute
-         * @see #doInBackground
-         * @see #onCancelled(Object)
-         */
         @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            listArticle.updateTasksInList(articlesFromDB);
-            updateImageToLabCache(listArticle.getImageManager(), articlesFromDB);
-            startOrStopRefreshingAnimation(false, 0);
+        protected void onPostExecute(List<Article> articles) {
+            if (articles != null) {
+                listArticle.updateTasksInList(Collections.unmodifiableList(articles));
+                updateImageToLabCache(listArticle.getImageManager(), articlesFromDB);
+                startOrStopRefreshingAnimation(false, 0);
+            }
+
         }
     }
     private void updateImageToLabCache(ImageManager imageManager, ArrayList<Article> articles) {
@@ -116,6 +100,29 @@ public class MainActivity extends AppCompatActivity {
         kozaczekServiceIntent.putExtra(KozaczekService.URL, SERVICE_URL);
         initializationOfSaveInstanceState(savedInstanceState);
         initializationOfRefreshItemInMenu();
+
+        DatabaseHandler handler = new DatabaseHandler(this);
+//        List<Article> allArticles = handler.getAllArticles();
+//
+//        ContentObserver observer = new ContentObserver() {
+//            @Override
+//            public boolean deliverSelfNotifications() {
+//                return super.deliverSelfNotifications();
+//            }
+//
+//            @Override
+//            public void onChange(boolean selfChange) {
+//                super.onChange(selfChange);
+//            }
+//
+//            @Override
+//            public void onChange(boolean selfChange, Uri uri) {
+//                super.onChange(selfChange, uri);
+//            }
+//        };
+//
+//        TODO: observer db content chnges
+//        handler.setDBObserver(observer)
     }
 
     /**
@@ -185,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Method starting choosen by kind refreshing animation.
+     * Method starting chosen by kind refreshing animation.
      *
      * @param refreshing true if wanna start animation, false if wanna stop animation, animation is stoping by dooing last circle.
      * @param kind       1 - Infinite animation, 2 - one loop animation.
@@ -310,10 +317,11 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             boolean isConnected = checkNetworkConnection();
-            if (isConnected && !isInvertedScreen()){
-                getData();
-                Toast.makeText(getApplicationContext(), "Wywolano onConnectivityChangeReciver", Toast.LENGTH_SHORT).show();
-                showNoConnectionMsg = true;
+            if (isConnected){
+                if(!isInvertedScreen()){
+                    getData();
+                    showNoConnectionMsg = true;
+                }
             } else {
                 pullToRefresh.setEnabled(false);
                 pullToRefresh.setRefreshing(false);

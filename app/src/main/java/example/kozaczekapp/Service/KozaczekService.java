@@ -52,11 +52,11 @@ public class KozaczekService extends IntentService {
         if (connection.getResponse(url) != null) {
             Parser parser1 = new Parser(connection.getResponse(url));
             ArrayList<Article> articles = parser1.parse();
-            Intent broadcastIntent = new Intent();
-            broadcastIntent.setAction(INTENT_FILTER);
+//            Intent broadcastIntent = new Intent();
+//            broadcastIntent.setAction(INTENT_FILTER);
             DatabaseHandler db = new DatabaseHandler(this);
             db.addArticleList(articles);
-            sendBroadcast(broadcastIntent);
+//            sendBroadcast(broadcastIntent);
         }
         Log.d(TAG, "onHandleIntent: Broadcast send...");
     }
