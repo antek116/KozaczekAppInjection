@@ -108,7 +108,6 @@ public class ImageManager extends Observable implements Observer, Parcelable {
     public void update(Observable observable, Object data) {
         setChanged();
         notifyObservers();
-        deleteObservers();
     }
 
     private void downloadBitmap(String imageUrl) {
