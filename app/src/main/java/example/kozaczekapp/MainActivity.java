@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import example.kozaczekapp.DatabaseConnection.DatabaseHandler;
 import example.kozaczekapp.Fragments.ArticleListFragment;
 import example.kozaczekapp.ImageDownloader.ImageManager;
 import example.kozaczekapp.KozaczekItems.Article;
@@ -43,17 +45,56 @@ public class MainActivity extends AppCompatActivity {
     private IntentFilter filterAdapterArticlesChange = new IntentFilter(KozaczekService.INTENT_FILTER);
     private MenuItem refreshMenuItem;
     private boolean isInternetConnection;
+    private ArrayList<Article> articlesFromDB;
 
     private BroadcastReceiver articlesRefreshReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            ArrayList<Article> articles = intent.getParcelableArrayListExtra(ArticleListFragment.PARCELABLE_ARTICLE_ARRAY_KEY);
-            listArticle.updateTasksInList(articles);
-            updateImageToLabCache(listArticle.getImageManager(), articles);
-            startOrStopRefreshingAnimation(false, 0);
+            new GetArticlesFromDataBase().execute();
         }
     };
+    class GetArticlesFromDataBase extends AsyncTask<String, String, String> {
 
+        /**
+         * Override this method to perform a computation on a background thread. The
+         * specified parameters are the parameters passed to {@link #execute}
+         * by the caller of this task.
+         * <p/>
+         * This method can call {@link #publishProgress} to publish updates
+         * on the UI thread.
+         *
+         * @param params The parameters of the task.
+         * @return A result, defined by the subclass of this task.
+         * @see #onPreExecute()
+         * @see #onPostExecute
+         * @see #publishProgress
+         */
+        @Override
+        protected String doInBackground(String... params) {
+            DatabaseHandler db = new DatabaseHandler(MainActivity.this);
+            articlesFromDB = (ArrayList<Article>) db.getAllArticles();
+            return null;
+        }
+
+        /**
+         * <p>Runs on the UI thread after {@link #doInBackground}. The
+         * specified result is the value returned by {@link #doInBackground}.</p>
+         * <p/>
+         * <p>This method won't be invoked if the task was cancelled.</p>
+         *
+         * @param s The result of the operation computed by {@link #doInBackground}.
+         * @see #onPreExecute
+         * @see #doInBackground
+         * @see #onCancelled(Object)
+         */
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            listArticle.updateTasksInList(articlesFromDB);
+            updateImageToLabCache(listArticle.getImageManager(), articlesFromDB);
+            startOrStopRefreshingAnimation(false, 0);
+        }
+    }
     private void updateImageToLabCache(ImageManager imageManager, ArrayList<Article> articles) {
         imageManager.addImagesFromArticlesToLruCache(articles);
     }
