@@ -7,8 +7,7 @@
         android:orderInCategory="100"
         android:icon="@drawable/refreshbutton"
         android:title="@string/refresh"
-        app:showAsAction="always"
-        app:actionViewClass=""/>
+        app:showAsAction="always" />
 
     <item android:id="@+id/ulrConnectionOptions"
         android:title="@string/option"

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
+
 import java.util.ArrayList;
 
 import example.kozaczekapp.Component.DaggerIConnectionComponent;
@@ -21,7 +22,7 @@ import example.kozaczekapp.R;
 public class KozaczekService extends IntentService {
 
     public static final String URL = "url";
-    public static final String INTENT_FILTER ="example.kozaczekapp.broadcast.intent.filter";
+    public static final String INTENT_FILTER = "example.kozaczekapp.broadcast.intent.filter";
 
     private static final String HTTP_CONNECTION = "HttpConnection";
     private static final String URL_CONNECTION = "UrlConnection";
@@ -33,9 +34,9 @@ public class KozaczekService extends IntentService {
             .connectionModule(new ConnectionModule())
             .build();
     private static IConnection connection = component.provideConnection();
+
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
-     *
      */
     public KozaczekService() {
         super(KozaczekService.class.getName());
@@ -47,7 +48,7 @@ public class KozaczekService extends IntentService {
         Log.d(TAG, "onHandleIntent: Service Started");
         String url = intent.getStringExtra(URL);
         loadPreferences();
-        if(connection.getResponse(url)!=null){
+        if (connection.getResponse(url) != null) {
             Parser parser1 = new Parser(connection.getResponse(url));
             ArrayList<Article> articles = parser1.parse();
             Intent broadcastIntent = new Intent();
@@ -57,17 +58,22 @@ public class KozaczekService extends IntentService {
         }
         Log.d(TAG, "onHandleIntent: Broadcast send...");
     }
-    private void loadPreferences(){
+
+    private void loadPreferences() {
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         String downloadType = SP.getString(getString(R.string.downloadType), getString(R.string.downloadValue));
-        switch (downloadType){
-            case HTTP_CONNECTION : connection = component.provideConnection();
+        switch (downloadType) {
+            case HTTP_CONNECTION:
+                connection = component.provideConnection();
                 break;
-            case URL_CONNECTION : connection = component.provideMyUrlConnection();
+            case URL_CONNECTION:
+                connection = component.provideMyUrlConnection();
                 break;
-            case OK_HTTP_CONNECTION : connection = component.provideOKHttpConnection();
+            case OK_HTTP_CONNECTION:
+                connection = component.provideOKHttpConnection();
                 break;
-            default : connection = component.provideConnection();
+            default:
+                connection = component.provideConnection();
         }
     }
 }

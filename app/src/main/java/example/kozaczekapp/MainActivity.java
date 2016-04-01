@@ -10,6 +10,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,11 +31,13 @@ import example.kozaczekapp.Service.KozaczekService;
 public class MainActivity extends AppCompatActivity {
     public static final String FRAGMENT_KEY = "ArticleListFragmentSaveState";
     public static final String SERVICE_URL = "http://www.kozaczek.pl/rss/plotki.xml";
+    private static final String SCREEN_WIDTH = "SCREEN_WIDTH";
     private static boolean showNoConnectionMsg = true;
     ArticleListFragment listArticle;
     Intent kozaczekServiceIntent;
     SwipeRefreshLayout pullToRefresh;
     OnConnectivityChangeReceiver connectivityChangeReceiver;
+    int screenWidth;
     ImageView image;
     private ObjectAnimator anim;
     private IntentFilter filterAdapterArticlesChange = new IntentFilter(KozaczekService.INTENT_FILTER);
@@ -112,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         getSupportFragmentManager().putFragment(outState, FRAGMENT_KEY, listArticle);
+        outState.putInt(SCREEN_WIDTH,screenWidth);
     }
 
     /**
@@ -202,18 +206,20 @@ public class MainActivity extends AppCompatActivity {
             listArticle = new ArticleListFragment();
             getSupportFragmentManager().beginTransaction().add(R.id.container, listArticle).commit();
             isInternetConnection = checkNetworkConnection();
+            screenWidth = getScreenWidth();
             if (isInternetConnection) {
                 getData();
             }
         } else {
             listArticle = (ArticleListFragment) getSupportFragmentManager().getFragment(savedInstanceState, FRAGMENT_KEY);
+            screenWidth = savedInstanceState.getInt(SCREEN_WIDTH);
         }
     }
 
     private void initializationOfRefreshItemInMenu() {
 
         LayoutInflater inflater = (LayoutInflater) getApplication().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        FrameLayout frameLayout = (FrameLayout) inflater.inflate(R.layout.iv_refresh, null);
+        FrameLayout frameLayout = (FrameLayout) inflater.inflate(R.layout.iv_refresh,null);
         image = (ImageView) frameLayout.findViewById(R.id.refresh);
         image.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -263,8 +269,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             boolean isConnected = checkNetworkConnection();
-            if (isConnected) {
+            if (isConnected && !isInvertedScreen()){
                 getData();
+                Toast.makeText(getApplicationContext(), "Wywolano onConnectivityChangeReciver", Toast.LENGTH_SHORT).show();
                 showNoConnectionMsg = true;
             } else {
                 pullToRefresh.setEnabled(false);
@@ -272,6 +279,21 @@ public class MainActivity extends AppCompatActivity {
                 showInternetNoConnectionMsg();
             }
         }
+    }
+
+    private boolean isInvertedScreen(){
+        int newWidth = getScreenWidth();
+        if(screenWidth != newWidth){
+            screenWidth = newWidth;
+            return true;
+        } else {
+            return false;
+        }
+    }
+    private int getScreenWidth(){
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        return displaymetrics.widthPixels;
     }
 }
 

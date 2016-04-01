@@ -17,19 +17,22 @@ import example.kozaczekapp.Module.ConnectionModule;
 @Component(modules = ConnectionModule.class)
 public interface IConnectionComponent {
     /**
-     *  Method use to connect to service via HttpConnection.
+     * Method use to connect to service via HttpConnection.
+     *
      * @return instance of HttpConnection
      */
     MyHttpConnection provideConnection();
 
     /**
      * Method use to connect to service via HttpConnection.
+     *
      * @return instance of OkHttpConnection.
      */
     OkHttpCommunicator provideOKHttpConnection();
 
     /**
      * Method use to connect to service via UrlConnection.
+     *
      * @return response from service as a String
      */
     MyUrlConnection provideMyUrlConnection();
