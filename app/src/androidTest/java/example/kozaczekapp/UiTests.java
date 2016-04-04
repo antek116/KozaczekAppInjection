@@ -36,7 +36,11 @@ public class UiTests {
         }
         onView(withId(R.id.allTasks)).perform(
                 RecyclerViewActions.actionOnItemAtPosition(0, click()));
-
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         assertTrue(mActivityRule.getActivity() == null);
     }
 
