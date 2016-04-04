@@ -24,7 +24,7 @@ public interface IDatabaseHelper {
      * @param db
      * @param article
      */
-    void addArticle(SQLiteDatabase db, Article article);
+    void addArticle( Article article);
 
     /**
      * gets single article from database

@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="example.kozaczekapp">
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -20,13 +22,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Preferences.PreferencesActivity" android:label="@string/preferencesLabel"
-            android:screenOrientation="nosensor">
-        </activity>
+        <activity
+            android:name=".Preferences.PreferencesActivity"
+            android:label="@string/preferencesLabel"
+            android:screenOrientation="nosensor"></activity>
+
         <service
             android:name=".Service.KozaczekService"
-            android:label="@string/service_name">
-        </service>
+            android:label="@string/service_name"></service>
+        <provider
+            android:name=".DatabaseConnection.RssContentProvider"
+            android:authorities="example.kozaczekapp.DatabaseConnection.RssContentProvider" />
     </application>
 
 

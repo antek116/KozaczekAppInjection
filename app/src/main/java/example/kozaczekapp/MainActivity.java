@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
         protected List<Article> doInBackground(String... params) {
             DatabaseHandler db = new DatabaseHandler(MainActivity.this);
             articlesFromDB = (ArrayList<Article>) db.getAllArticles();
+
             return articlesFromDB;
         }
 
