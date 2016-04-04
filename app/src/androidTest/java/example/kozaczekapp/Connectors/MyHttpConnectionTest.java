@@ -4,16 +4,16 @@ import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
 public class MyHttpConnectionTest {
 
 
     @Test
-    public void shouldReturnNullAsXml_stringUrlIsWrong() {
+    public void shouldReturnResponseAsNull_stringUrlIsWrong() {
         //given
         String url = "abcd";
         MyHttpConnection connection = new MyHttpConnection();
@@ -24,7 +24,7 @@ public class MyHttpConnectionTest {
     }
 
     @Test
-    public void shouldReturnXmlAsString_StringUrlIsNotWrong() {
+    public void shouldReturnResponseAsString_StringUrlIsWellFormatted() {
         //given
         String url = "http://www.kozaczek.pl/rss/plotki.xml";
         MyHttpConnection connection = new MyHttpConnection();
@@ -32,6 +32,7 @@ public class MyHttpConnectionTest {
         String response = connection.getResponse(url);
         //then
         assertNotNull(response);
+        assertTrue(response instanceof String);
     }
 
     @Test
