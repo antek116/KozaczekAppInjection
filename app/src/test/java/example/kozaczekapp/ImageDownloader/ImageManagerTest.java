@@ -23,7 +23,7 @@ public class ImageManagerTest {
 
     @Before
     public void setUp(){
-        imageManager = new ImageManager();
+        imageManager = ImageManager.getInstance();
         articles = new ArrayList<>();
     }
     @Test
@@ -34,18 +34,4 @@ public class ImageManagerTest {
         //then
         assertNotNull(lruCache);
     }
-   @Test
-    public void shouldAddImageToLruCache(){
-       //given
-
-       Article article = new Article("123",new Image("http://s1.kozaczek.pl/2016/03/28/tn-100-T1.jpg","123"),"abc","abc","abc");
-       articles.add(article);
-       //when
-       imageManager.addImagesFromArticlesToLruCache(articles);
-       LruCache<String,Bitmap> lruCache = imageManager.getLruCache();
-       //Watek?
-       Bitmap bitmap =  lruCache.get("http://s1.kozaczek.pl/2016/03/28/tn-100-T1.jpg");
-       //then      assertNotNull(bitmap);
-       //
-   }
 }
