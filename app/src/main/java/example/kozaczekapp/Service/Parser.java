@@ -1,5 +1,9 @@
 package example.kozaczekapp.Service;
 
+import android.util.Log;
+
+import org.apache.commons.io.Charsets;
+import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -7,6 +11,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 
@@ -47,6 +52,8 @@ public class Parser {
         ArrayList<Article> arrayOfArticles = new ArrayList<>();
         try {
             doc = buildDocumentFromInputStream(response);
+            Log.d("Parser", "parse: InpucEncoding: " + doc.getInputEncoding());
+            Log.d("Parser", "parse: XmlEncoding: " + doc.getXmlEncoding());
             nodeList = doc.getElementsByTagName(ITEM_TAG_NAME);
         } catch (IOException | ParserConfigurationException | SAXException e) {
             e.printStackTrace();
@@ -65,8 +72,9 @@ public class Parser {
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = factory.newDocumentBuilder();
-        InputSource inStream = new InputSource();
-        inStream.setCharacterStream(new StringReader(response));
+        //InputSource inStream = new InputSource();
+        //inStream.setCharacterStream(new StringReader(response));
+        InputStream inStream = IOUtils.toInputStream(response, "UTF-8");
         return db.parse(inStream);
     }
 

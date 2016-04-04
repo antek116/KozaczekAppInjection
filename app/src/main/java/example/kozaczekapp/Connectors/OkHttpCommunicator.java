@@ -1,5 +1,7 @@
 package example.kozaczekapp.Connectors;
 
+import org.apache.commons.io.Charsets;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -44,6 +46,7 @@ public class OkHttpCommunicator implements IConnection {
                 e.printStackTrace();
             }
         }
+
         return responseString;
     }
 
