@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import example.kozaczekapp.DatabaseConnection.DatabaseHandler;
 import example.kozaczekapp.Fragments.ArticleListFragment;
@@ -53,49 +54,29 @@ public class MainActivity extends AppCompatActivity {
             new GetArticlesFromDataBase().execute();
         }
     };
-    class GetArticlesFromDataBase extends AsyncTask<String, String, String> {
+    class GetArticlesFromDataBase extends AsyncTask<String, String, List<Article>> {
 
         /**
-         * Override this method to perform a computation on a background thread. The
-         * specified parameters are the parameters passed to {@link #execute}
-         * by the caller of this task.
-         * <p/>
-         * This method can call {@link #publishProgress} to publish updates
-         * on the UI thread.
-         *
-         * @param params The parameters of the task.
-         * @return A result, defined by the subclass of this task.
-         * @see #onPreExecute()
-         * @see #onPostExecute
-         * @see #publishProgress
+         * {@inheritDoc}
          */
         @Override
-        protected String doInBackground(String... params) {
+        protected List<Article> doInBackground(String... params) {
             DatabaseHandler db = new DatabaseHandler(MainActivity.this);
             articlesFromDB = (ArrayList<Article>) db.getAllArticles();
-            return null;
+            return articlesFromDB;
         }
 
         /**
-         * <p>Runs on the UI thread after {@link #doInBackground}. The
-         * specified result is the value returned by {@link #doInBackground}.</p>
-         * <p/>
-         * <p>This method won't be invoked if the task was cancelled.</p>
-         *
-         * @param s The result of the operation computed by {@link #doInBackground}.
-         * @see #onPreExecute
-         * @see #doInBackground
-         * @see #onCancelled(Object)
+         * {@inheritDoc}
          */
         @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
+        protected void onPostExecute(List<Article> articlesFromDB) {
             listArticle.updateTasksInList(articlesFromDB);
             updateImageToLabCache(listArticle.getImageManager(), articlesFromDB);
             startOrStopRefreshingAnimation(false, 0);
         }
     }
-    private void updateImageToLabCache(ImageManager imageManager, ArrayList<Article> articles) {
+    private void updateImageToLabCache(ImageManager imageManager, List<Article> articles) {
         imageManager.addImagesFromArticlesToLruCache(articles);
     }
 
@@ -104,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Methods where we initialize servis.
+     * Methods where we initialize service.
      *
      * @param savedInstanceState saved instance bundle.
      */
