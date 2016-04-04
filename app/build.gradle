@@ -18,6 +18,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    // This is important, it will run lint checks but won't abort build
+    lintOptions {
+        abortOnError false
+    }
     useLibrary 'org.apache.http.legacy'
 }
 
@@ -39,7 +43,7 @@ dependencies {
     compile 'javax.annotation:jsr250-api:1.0'
     //ok http
     compile 'com.squareup.okhttp3:okhttp:3.2.0'
-    compile 'commons-io:commons-io:+'
+    compile 'commons-io:commons-io:2.4'
 
 //    //Robolectric
 //    testCompile "org.robolectric:robolectric:3.0"
@@ -64,5 +68,6 @@ dependencies {
         exclude module: 'recyclerview-v7'
     }
 
+    compile 'com.google.android.gms:play-services-appindexing:8.1.0'
 }
 
