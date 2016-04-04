@@ -4,21 +4,23 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import example.kozaczekapp.KozaczekItems.Article;
-import example.kozaczekapp.KozaczekItems.Image;
 
 /**
  * A helper class that manages database.
  */
 public class DatabaseHandler extends SQLiteOpenHelper implements IDatabaseHelper {
 
-    public static final String IMAGE_SIZE = "200";
+
+    public static final int MAX_NUMBER_OF_ARTICLES = 10;
     // All Static variables
     // Database Version
     private static final int DATABASE_VERSION = 1;
@@ -37,7 +39,7 @@ public class DatabaseHandler extends SQLiteOpenHelper implements IDatabaseHelper
                     " )";
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + RssContract.Columns.TABLE_NAME;
-
+    private static final int FIRST_ID = 1;
     private ContentResolver resolver;
 
     public DatabaseHandler(Context context) {
@@ -65,25 +67,10 @@ public class DatabaseHandler extends SQLiteOpenHelper implements IDatabaseHelper
      */
     @Override
     public void addArticleList(List<Article> articleList) {
-//        SQLiteDatabase database = getWritableDatabase();
-
-        try {
-          /*  //transaction
-            database.beginTransaction();
-            //delete records in DB
-            deleteAll(database);*/
-
-            for (Article article : articleList) {
-                addArticle(article);
-            }
-
-//            database.setTransactionSuccessful();
-        } catch (Exception e) {
-//            database.endTransaction();
-        } finally {
-//            database.endTransaction();
-//            database.close();
+        for (Article article : articleList) {
+            addArticle(article);
         }
+        resolver.notifyChange(RssContract.CONTENT_URI, null);
     }
 
     /**
@@ -100,48 +87,25 @@ public class DatabaseHandler extends SQLiteOpenHelper implements IDatabaseHelper
         values.put(RssContract.Columns.COLUMN_ARTICLE_LINK, article.getLinkToArticle());
         values.put(RssContract.Columns.COLUMN_IMAGE_LINK, article.getImage().getImageUrl());
 
-        // Inserting Row
-        //db.insert(RssContract.Columns.TABLE_NAME, null, values);
+        Cursor c = resolver.query(RssContract.CONTENT_URI, null, RssContract.Columns
+                .COLUMN_PUB_DATE + " = " + DatabaseUtils.sqlEscapeString(article.getPubDate())
+                , null, null);
 
+        if ((c != null ? c.getCount() : 0) != 0) {
+            Log.d("ADD ARTICLE: ", "Article exists!");
+        } else {
+            if (getArticlesCount() >= MAX_NUMBER_OF_ARTICLES) {
+                Log.d("ADD ARTICLE: ", "Rows >= " + MAX_NUMBER_OF_ARTICLES +
+                        " . Removing first element!");
+                deleteArticle(FIRST_ID);
+            }
+            resolver.insert(RssContract.CONTENT_URI, values);
 
-        resolver.insert(RssContract.CONTENT_URI, values);
-    }
-
-    /**
-     * gets single article from database
-     *
-     * @param id of article to be gotten
-     * @return single article
-     */
-    @Override
-    public Article getArticle(int id) {
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        Cursor cursor = db.query(RssContract.Columns.TABLE_NAME, new String[]{
-                        RssContract.Columns._ID,
-                        RssContract.Columns.COLUMN_TITLE,
-                        RssContract.Columns.COLUMN_DESCRIPTION,
-                        RssContract.Columns.COLUMN_PUB_DATE,
-                        RssContract.Columns.COLUMN_ARTICLE_LINK,
-                        RssContract.Columns.COLUMN_IMAGE_LINK},
-                RssContract.Columns._ID + "= ?",
-                new String[]{String.valueOf(id)}, null, null, null, null);
-
-        Article article = null;
-        if (cursor != null) {
-            cursor.moveToFirst();
-
-            article = new Article(
-                    cursor.getString(cursor.getColumnIndex(RssContract.Columns.COLUMN_PUB_DATE)),
-                    new Image(cursor.getString(cursor.getColumnIndex(RssContract.Columns.COLUMN_IMAGE_LINK)),
-                            IMAGE_SIZE),
-                    cursor.getString(cursor.getColumnIndex(RssContract.Columns.COLUMN_ARTICLE_LINK)),
-                    cursor.getString(cursor.getColumnIndex(RssContract.Columns.COLUMN_TITLE)),
-                    cursor.getString(cursor.getColumnIndex(RssContract.Columns.COLUMN_DESCRIPTION)));
-            article.setId(cursor.getColumnIndex(RssContract.Columns._ID));
-            cursor.close();
+            Log.d("ADD ARTICLE: ", "Article added!");
         }
-        return article;
+        if (c != null) {
+            c.close();
+        }
     }
 
     /**
@@ -152,35 +116,17 @@ public class DatabaseHandler extends SQLiteOpenHelper implements IDatabaseHelper
     @Override
     public List<Article> getAllArticles() {
         List<Article> articleList = new ArrayList<>();
-        // Select All Query
-        String selectQuery = "SELECT  * FROM " + RssContract.Columns.TABLE_NAME;
-
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
-
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
+        Cursor cursor = resolver.query(RssContract.CONTENT_URI, null, null, null, null);
+        if (cursor != null && cursor.moveToFirst()) {
             do {
                 Article article = new Article();
-                article.setId(cursor.getColumnIndex(RssContract.Columns._ID));
-                article.setTitle(cursor.getString(cursor
-                        .getColumnIndex(RssContract.Columns.COLUMN_TITLE)));
-                article.setDescription(cursor.getString(cursor
-                        .getColumnIndex(RssContract.Columns.COLUMN_DESCRIPTION)));
-                article.setPubDate(cursor.getString(cursor
-                        .getColumnIndex(RssContract.Columns.COLUMN_PUB_DATE)));
-                article.setLinkToArticle(cursor.getString(cursor
-                        .getColumnIndex(RssContract.Columns.COLUMN_ARTICLE_LINK)));
-                article.setImage(new Image(cursor.getString(cursor
-                        .getColumnIndex(RssContract.Columns.COLUMN_IMAGE_LINK)), IMAGE_SIZE));
+                article.fromCursor(cursor);
 
                 // Adding article to list
                 articleList.add(article);
             } while (cursor.moveToNext());
+            cursor.close();
         }
-
-        cursor.close();
-        // return article list
         return articleList;
     }
 
@@ -190,39 +136,27 @@ public class DatabaseHandler extends SQLiteOpenHelper implements IDatabaseHelper
      * @return articles' count
      */
     @Override
-    public int getArticlesCount(SQLiteDatabase db) {
-        //String countQuery = "SELECT  * FROM " + RssContract.Columns.TABLE_NAME;
-        //Cursor c = resolver.query();
-        return 0;
-    }
-
-    /**
-     * updates article with specify article
-     *
-     * @param article to be updated
-     */
-    @Override
-    public void updateArticle(Article article) {
+    public int getArticlesCount() {
+        int count = 0;
+        Cursor cursor = resolver.query(RssContract.CONTENT_URI, null, null, null, null);
+        if (cursor != null) {
+            count = cursor.getCount();
+            cursor.close();
+        }
+        return count;
     }
 
     /**
      * deletes single article
      *
-     * @param article to be deleted
+     * @param id specify index of article to be deleted
      */
     @Override
-    public void deleteArticle(Article article) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("delete  from " + RssContract.Columns.TABLE_NAME);
-        db.close();
+    public void deleteArticle(int id) {
+        resolver.delete(RssContract.CONTENT_URI, RssContract.Columns
+                ._ID + " = " + id, null);
     }
 
-    /**
-     * deletes all records from database
-     */
-    @Override
-    public void deleteAll(SQLiteDatabase db) {
-        db.execSQL("delete  from " + RssContract.Columns.TABLE_NAME);
-    }
+
 
 }

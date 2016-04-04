@@ -12,7 +12,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 /**
- *
+ * Class provides data do database
  */
 public class RssContentProvider extends ContentProvider {
     /**
@@ -20,7 +20,7 @@ public class RssContentProvider extends ContentProvider {
      */
     public static final int ARTICLES = 1;
     /**
-     * when the URI references the ID of a specific row in the atricles table
+     * when the URI references the ID of a specific row in the articles table
      */
     public static final int ARTICLES_ID = 2;
     private static final UriMatcher sURIMatcher =
@@ -63,7 +63,9 @@ public class RssContentProvider extends ContentProvider {
 
         Cursor cursor = queryBuilder.query(db.getReadableDatabase(),
                 projection, selection, selectionArgs, null, null, sortOrder);
-        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+        if (getContext() != null) {
+            cursor.setNotificationUri(getContext().getContentResolver(), uri);
+        }
         return cursor;
     }
 
@@ -90,7 +92,7 @@ public class RssContentProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
-        getContext().getContentResolver().notifyChange(uri, null);
+
         return Uri.parse(RssContract.Columns.TABLE_NAME + "/" + id);
     }
 
@@ -98,7 +100,7 @@ public class RssContentProvider extends ContentProvider {
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         int uriType = sURIMatcher.match(uri);
         SQLiteDatabase sqlDB = db.getWritableDatabase();
-        int rowsDeleted ;
+        int rowsDeleted;
 
         switch (uriType) {
             case ARTICLES:
@@ -123,12 +125,12 @@ public class RssContentProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
-        getContext().getContentResolver().notifyChange(uri, null);
         return rowsDeleted;
     }
 
     @Override
-    public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+    public int update(@NonNull Uri uri, ContentValues values, String selection,
+                      String[] selectionArgs) {
         int uriType = sURIMatcher.match(uri);
         SQLiteDatabase sqlDB = db.getWritableDatabase();
         int rowsUpdated;
@@ -143,23 +145,25 @@ public class RssContentProvider extends ContentProvider {
             case ARTICLES_ID:
                 String id = uri.getLastPathSegment();
                 if (TextUtils.isEmpty(selection)) {
-                    rowsUpdated =   sqlDB.update(RssContract.Columns.TABLE_NAME,
-                                    values,
-                                    RssContract.Columns._ID + "=" + id,
-                                    null);
+                    rowsUpdated = sqlDB.update(RssContract.Columns.TABLE_NAME,
+                            values,
+                            RssContract.Columns._ID + "=" + id,
+                            null);
                 } else {
-                    rowsUpdated =   sqlDB.update(RssContract.Columns.TABLE_NAME,
-                                    values,
-                                    RssContract.Columns._ID + "=" + id
-                                            + " and "
-                                            + selection,
-                                    selectionArgs);
+                    rowsUpdated = sqlDB.update(RssContract.Columns.TABLE_NAME,
+                            values,
+                            RssContract.Columns._ID + "=" + id
+                                    + " and "
+                                    + selection,
+                            selectionArgs);
                 }
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
-        getContext().getContentResolver().notifyChange(uri, null);
+        if (getContext() != null) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
         return rowsUpdated;
     }
 }

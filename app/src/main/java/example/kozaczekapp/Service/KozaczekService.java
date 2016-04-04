@@ -12,9 +12,7 @@ import example.kozaczekapp.Component.DaggerIConnectionComponent;
 import example.kozaczekapp.Component.IConnectionComponent;
 import example.kozaczekapp.ConnectionProvider.IConnection;
 import example.kozaczekapp.DatabaseConnection.DatabaseHandler;
-import example.kozaczekapp.Fragments.ArticleListFragment;
 import example.kozaczekapp.KozaczekItems.Article;
-import example.kozaczekapp.KozaczekItems.Image;
 import example.kozaczekapp.Module.ConnectionModule;
 import example.kozaczekapp.R;
 
@@ -57,10 +55,7 @@ public class KozaczekService extends IntentService {
             broadcastIntent.setAction(INTENT_FILTER);
             DatabaseHandler db = new DatabaseHandler(this);
             db.addArticleList(articles);
-            //db.addArticle(articles.get(0));
-            sendBroadcast(broadcastIntent);
         }
-        Log.d(TAG, "onHandleIntent: Broadcast send...");
     }
 
     private void loadPreferences() {

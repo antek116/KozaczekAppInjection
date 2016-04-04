@@ -1,7 +1,5 @@
 package example.kozaczekapp.DatabaseConnection;
 
-import android.database.sqlite.SQLiteDatabase;
-
 import java.util.List;
 
 import example.kozaczekapp.KozaczekItems.Article;
@@ -21,18 +19,9 @@ public interface IDatabaseHelper {
     /**
      * adds new article
      *
-     * @param db
-     * @param article
+     * @param article to be added
      */
-    void addArticle( Article article);
-
-    /**
-     * gets single article from database
-     *
-     * @param id of article to be gotten
-     * @return single article
-     */
-    Article getArticle(int id);
+    void addArticle(Article article);
 
 
     /**
@@ -50,26 +39,16 @@ public interface IDatabaseHelper {
      * @return articles' count
      */
 
-    int getArticlesCount(SQLiteDatabase db);
-
-    /**
-     * updates article with specify article
-     *
-     * @param article to be updated
-     */
-    void updateArticle(Article article);
+    int getArticlesCount();
 
 
     /**
      * deletes single article
      *
-     * @param article to be deleted
+     * @param id specify index of article to be deleted
      */
 
-    void deleteArticle(Article article);
+    void deleteArticle(int id);
 
-    /**
-     * deletes all records from database
-     */
-    void deleteAll(SQLiteDatabase db);
+
 }

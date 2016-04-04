@@ -1,7 +1,10 @@
 package example.kozaczekapp.KozaczekItems;
 
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import example.kozaczekapp.DatabaseConnection.RssContract;
 
 /**
  * Article class implementation of one Article.
@@ -136,5 +139,24 @@ public class Article implements Parcelable {
         dest.writeString(linkToArticle);
         dest.writeString(description);
         dest.writeString(pubDate);
+    }
+
+    /**
+     * Sets article's properties from specified cursor
+     * @param cursor stores query result records in rows
+     */
+    public void fromCursor(Cursor cursor){
+        setId(cursor.getColumnIndex(RssContract.Columns._ID));
+        setTitle(cursor.getString(cursor
+                .getColumnIndex(RssContract.Columns.COLUMN_TITLE)));
+        setDescription(cursor.getString(cursor
+                .getColumnIndex(RssContract.Columns.COLUMN_DESCRIPTION)));
+        setPubDate(cursor.getString(cursor
+                .getColumnIndex(RssContract.Columns.COLUMN_PUB_DATE)));
+        setLinkToArticle(cursor.getString(cursor
+                .getColumnIndex(RssContract.Columns.COLUMN_ARTICLE_LINK)));
+        setImage(new Image(cursor.getString(cursor
+                .getColumnIndex(RssContract.Columns.COLUMN_IMAGE_LINK)),
+                RssContract.Columns.IMAGE_SIZE));
     }
 }
