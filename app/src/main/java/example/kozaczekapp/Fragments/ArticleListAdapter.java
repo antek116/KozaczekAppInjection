@@ -67,13 +67,6 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
     }
 
     /**
-     * @return count of images in Lrucache.
-     */
-    public int getImagesOnLruCacheCount() {
-        return mLruCache.putCount();
-    }
-
-    /**
      * This method calls onCreateViewHolder(ViewGroup, int) to create a new RecyclerView.ViewHolder
      * and initializes some private fields to be used by RecyclerView.
      *

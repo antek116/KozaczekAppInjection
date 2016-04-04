@@ -73,8 +73,10 @@ public class Article implements Parcelable {
         this.description = description;
     }
 
-    public Article() {
-    }
+    /**
+     * Default empty constructor.
+     */
+    public Article() {}
 
     /**
      * Constructor to create instance of Article from Parcelable.

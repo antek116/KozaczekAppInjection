@@ -11,6 +11,10 @@ import java.io.IOException;
 
 import example.kozaczekapp.ConnectionProvider.IConnection;
 
+
+/**
+ * Class of HttpConnection implementation.
+ */
 public class MyHttpConnection implements IConnection {
 
     private static final String ENCODING_STANDARD = "ISO-8859-2";

@@ -1,7 +1,6 @@
 package example.kozaczekapp;
 
 import android.animation.ObjectAnimator;
-import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;

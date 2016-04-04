@@ -12,7 +12,6 @@ import example.kozaczekapp.Component.DaggerIConnectionComponent;
 import example.kozaczekapp.Component.IConnectionComponent;
 import example.kozaczekapp.ConnectionProvider.IConnection;
 import example.kozaczekapp.DatabaseConnection.DatabaseHandler;
-import example.kozaczekapp.Fragments.ArticleListFragment;
 import example.kozaczekapp.KozaczekItems.Article;
 import example.kozaczekapp.Module.ConnectionModule;
 import example.kozaczekapp.R;

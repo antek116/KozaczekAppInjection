@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Observable;
 
+/**
+ * Class used to load image from Url.
+ */
 public class ImageLoad extends Observable implements Runnable {
     String imageUrl;
     LruCache<String, Bitmap> mLruCache;
