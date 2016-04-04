@@ -1,5 +1,6 @@
 package example.kozaczekapp.ConnectionProvider;
 
+
 public interface IConnection {
     /**
      * Method used to get Response from specific URL.

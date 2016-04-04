@@ -12,7 +12,7 @@ import example.kozaczekapp.Module.ConnectionModule;
 
 
 /**
- *
+ * interface of IconnectionComponent class used to Dagger Injection.
  */
 @Singleton
 @Component(modules = ConnectionModule.class)

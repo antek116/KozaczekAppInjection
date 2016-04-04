@@ -1,7 +1,6 @@
 package example.kozaczekapp;
 
 import android.animation.ObjectAnimator;
-import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -55,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
             new GetArticlesFromDataBase().execute();
         }
     };
+
     class GetArticlesFromDataBase extends AsyncTask<String, String, List<Article>> {
 
         /**
@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
             startOrStopRefreshingAnimation(false, 0);
         }
     }
+
     private void updateImageToLabCache(ImageManager imageManager, List<Article> articles) {
         imageManager.addImagesFromArticlesToLruCache(articles);
     }
@@ -138,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         getSupportFragmentManager().putFragment(outState, FRAGMENT_KEY, listArticle);
-        outState.putInt(SCREEN_WIDTH,screenWidth);
+        outState.putInt(SCREEN_WIDTH, screenWidth);
     }
 
     /**
@@ -195,6 +196,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * @return true if is internet connection yet, false if not.
+     */
     public boolean checkNetworkConnection() {
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -244,12 +248,12 @@ public class MainActivity extends AppCompatActivity {
     private void initializationOfRefreshItemInMenu() {
 
         LayoutInflater inflater = (LayoutInflater) getApplication().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        FrameLayout frameLayout = (FrameLayout) inflater.inflate(R.layout.iv_refresh,null,false);
+        FrameLayout frameLayout = (FrameLayout) inflater.inflate(R.layout.iv_refresh, null, false);
         image = (ImageView) frameLayout.findViewById(R.id.refresh);
         image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(checkNetworkConnection()) {
+                if (checkNetworkConnection()) {
                     startOrStopRefreshingAnimation(true, 1);
                     startService(getKozaczekServiceIntent());
                 } else {
@@ -294,8 +298,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             boolean isConnected = checkNetworkConnection();
-            if (isConnected){
-                if(!isInvertedScreen()){
+            if (isConnected) {
+                if (!isInvertedScreen()) {
                     getData();
                     showNoConnectionMsg = true;
                 }
@@ -307,16 +311,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private boolean isInvertedScreen(){
+    private boolean isInvertedScreen() {
         int newWidth = getScreenWidth();
-        if(screenWidth != newWidth){
+        if (screenWidth != newWidth) {
             screenWidth = newWidth;
             return true;
         } else {
             return false;
         }
     }
-    private int getScreenWidth(){
+
+    private int getScreenWidth() {
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         return displaymetrics.widthPixels;
