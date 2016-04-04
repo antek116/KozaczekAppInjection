@@ -36,7 +36,8 @@
         android:id="@+id/titleTextView"
         android:layout_alignTop="@+id/articleImage"
         android:layout_toRightOf="@+id/articleImage"
-        android:layout_toEndOf="@+id/articleImage" />
+        android:layout_toEndOf="@+id/articleImage"
+        android:textSize="14dp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -46,7 +47,8 @@
         android:id="@+id/descriptionTextView"
         android:layout_below="@+id/titleTextView"
         android:layout_alignLeft="@+id/titleTextView"
-        android:layout_alignStart="@+id/titleTextView" />
+        android:layout_alignStart="@+id/titleTextView"
+        android:textSize="10dp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -55,9 +57,10 @@
         android:text="Date"
         android:id="@+id/publicDateTextView"
         android:layout_gravity="center_vertical"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/descriptionTextView"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:textSize="8dp"/>
 
 </RelativeLayout>
 
