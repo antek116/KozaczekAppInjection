@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import example.kozaczekapp.DatabaseConnection.DatabaseHandler;
 import example.kozaczekapp.Fragments.ArticleListFragment;
 import example.kozaczekapp.ImageDownloader.ImageManager;
+import example.kozaczekapp.Interfaces.OnVisibilityChange;
 import example.kozaczekapp.KozaczekItems.Article;
 import example.kozaczekapp.Preferences.PreferencesActivity;
 import example.kozaczekapp.Service.KozaczekService;
@@ -46,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
     private MenuItem refreshMenuItem;
     private boolean isInternetConnection;
     private ArrayList<Article> articlesFromDB;
+    private static boolean isActivityVisible;
+
+
 
     private BroadcastReceiver articlesRefreshReceiver = new BroadcastReceiver() {
         @Override
@@ -53,6 +57,15 @@ public class MainActivity extends AppCompatActivity {
             new GetArticlesFromDataBase().execute();
         }
     };
+
+    public static boolean getActivityVisibilityState() {
+        return isActivityVisible;
+    }
+
+    public ArrayList<Article> getArticlesFromDB() {
+        return articlesFromDB;
+    }
+
     class GetArticlesFromDataBase extends AsyncTask<String, String, String> {
 
         /**
@@ -116,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
         kozaczekServiceIntent.putExtra(KozaczekService.URL, SERVICE_URL);
         initializationOfSaveInstanceState(savedInstanceState);
         initializationOfRefreshItemInMenu();
+        isActivityVisible = true;
     }
 
     /**
@@ -172,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
 
         connectivityChangeReceiver = new OnConnectivityChangeReceiver();
         registerReceiver(connectivityChangeReceiver, connectivityChangefilter);
+        isActivityVisible = true;
     }
 
     /**
@@ -179,6 +194,7 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     public void onPause() {
+        isActivityVisible = false;
         unregisterReceiver(articlesRefreshReceiver);
         unregisterReceiver(connectivityChangeReceiver);
         super.onPause();
