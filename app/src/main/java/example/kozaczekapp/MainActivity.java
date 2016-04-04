@@ -322,7 +322,6 @@ public class MainActivity extends AppCompatActivity {
             boolean isConnected = checkNetworkConnection();
             if (isConnected && !isInvertedScreen()) {
                 getData();
-                Toast.makeText(getApplicationContext(), "Wywolano onConnectivityChangeReciver", Toast.LENGTH_SHORT).show();
                 showNoConnectionMsg = true;
             } else {
                 pullToRefresh.setEnabled(false);
