@@ -61,9 +61,7 @@ public class KozaczekService extends IntentService {
             broadcastIntent.setAction(INTENT_FILTER);
             DatabaseHandler db = new DatabaseHandler(this);
             db.addArticleList(articles);
-            sendBroadcast(broadcastIntent);
         }
-        Log.d(TAG, "onHandleIntent: Broadcast send...");
     }
 
     private void loadPreferences() {
