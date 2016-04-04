@@ -7,13 +7,14 @@ import org.junit.runner.RunWith;
 
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
 public class OkHttpCommunicatorTest {
 
 
     @Test
-    public void shouldReturnNullAsXml_stringUrlIsWrong(){
+    public void shouldReturnNullAsResponse_stringUrlIsWrong(){
         //given
         String url = "abcd";
         OkHttpCommunicator connection = new OkHttpCommunicator();
@@ -24,7 +25,7 @@ public class OkHttpCommunicatorTest {
     }
 
     @Test
-    public void shouldReturnXmlAsString_StringUrlIsNotWrong(){
+    public void shouldReturnResponseAsString_StringUrlIsWellFormatted(){
         //given
         String url = "http://www.kozaczek.pl/rss/plotki.xml";
         OkHttpCommunicator connection = new OkHttpCommunicator();
@@ -32,10 +33,11 @@ public class OkHttpCommunicatorTest {
         String response =  connection.getResponse(url);
         //then
         assertNotNull(response);
+        assertTrue(response instanceof String);
     }
 
     @Test
-    public void shouldReturnXmlAsNull_IfStringUrlIsNull(){
+    public void shouldReturnResponseAsNull_StringUrlIsNull(){
         //given
         String url = null;
         OkHttpCommunicator connection = new OkHttpCommunicator();
@@ -45,7 +47,7 @@ public class OkHttpCommunicatorTest {
         assertNull(response);
     }
     @Test
-    public void shouldReturnXmlAsNull_StringUrlIsNotCorrect(){
+    public void shouldReturnResponseAsNull_StringUrlIsNotCorrect(){
         //given
         String url = "http://www.kozaczek";
         OkHttpCommunicator connection = new OkHttpCommunicator();

@@ -12,7 +12,7 @@ import static junit.framework.Assert.assertNull;
 public class MyUrlConnectionTest {
 
     @Test
-    public void shouldReturnNullAsXml_stringUrlIsWrong(){
+    public void shouldReturnResponseAsNull_stringUrlIsNotWellFormatted(){
         //given
         String url = "abcd";
         MyUrlConnection connection = new MyUrlConnection();
@@ -23,7 +23,7 @@ public class MyUrlConnectionTest {
     }
 
     @Test
-    public void shouldReturnXmlAsString_StringUrlIsWellFormated(){
+    public void shouldReturnResponseAsString_StringUrlIsWellFormatted(){
         //given
         String url = "http://www.kozaczek.pl/rss/plotki.xml";
         MyUrlConnection connection = new MyUrlConnection();
@@ -34,7 +34,7 @@ public class MyUrlConnectionTest {
     }
 
     @Test
-    public void shouldReturnXmlAsNull_IfStringUrlIsNull(){
+    public void shouldReturnResponseAsNull_stringUrlIsWrong(){
         //given
         String url = null;
         MyUrlConnection connection = new MyUrlConnection();
@@ -44,7 +44,7 @@ public class MyUrlConnectionTest {
         assertNull(response);
     }
     @Test
-    public void shouldReturnXmlAsNull_StringUrlIsNotCorrect(){
+    public void shouldReturnResponseAsNull_StringUrlIsNotCorrect(){
         //given
         String url = "http://www.kozaczek";
         MyUrlConnection connection = new MyUrlConnection();
