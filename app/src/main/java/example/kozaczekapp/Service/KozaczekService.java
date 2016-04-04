@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import example.kozaczekapp.Component.DaggerIConnectionComponent;
 import example.kozaczekapp.Component.IConnectionComponent;
 import example.kozaczekapp.ConnectionProvider.IConnection;
+import example.kozaczekapp.Connectors.Encoding;
 import example.kozaczekapp.DatabaseConnection.DatabaseHandler;
 import example.kozaczekapp.Fragments.ArticleListFragment;
 import example.kozaczekapp.KozaczekItems.Article;
@@ -72,18 +73,19 @@ public class KozaczekService extends IntentService {
         switch (downloadType) {
             case HTTP_CONNECTION:
                 connection = component.provideConnection();
-                connection.setEncoding("ISO-8859-2");
+                connection.setEncoding(Encoding.ISO_8859_2);
                 break;
             case URL_CONNECTION:
                 connection = component.provideMyUrlConnection();
-                connection.setEncoding("ISO-8859-2");
+                connection.setEncoding(Encoding.ISO_8859_2);
                 break;
             case OK_HTTP_CONNECTION:
                 connection = component.provideOKHttpConnection();
-                connection.setEncoding("UTF-8");
+                connection.setEncoding(Encoding.ISO_8859_1);
                 break;
             case VOLLEY_CONNECTION :
                 connection = component.provideVolleyConnection();
+                connection.setEncoding(Encoding.ISO_8859_1);
                 break;
             default:
                 connection = component.provideConnection();

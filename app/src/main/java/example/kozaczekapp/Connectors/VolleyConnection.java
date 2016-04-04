@@ -16,6 +16,7 @@ public class VolleyConnection implements IConnection {
 
     private Context context;
     private String result = null;
+    private String encoding;
 
     public VolleyConnection(Context context) {
         this.context = context;
@@ -39,6 +40,24 @@ public class VolleyConnection implements IConnection {
         while (result == null) {
         }
         return result;
+    }
+
+    /**
+     * Sets encoding for current connection
+     *
+     * @param encoding to be set
+     */
+    @Override
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
+    }
+
+    /**
+     * @return Encoding for current connection
+     */
+    @Override
+    public String getEncoding() {
+        return encoding;
     }
 }
 
