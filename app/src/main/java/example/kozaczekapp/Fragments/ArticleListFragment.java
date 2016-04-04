@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -60,7 +61,7 @@ public class ArticleListFragment extends Fragment implements Observer {
      *
      * @param articles ArrayList of articles.
      */
-    public void updateTasksInList(ArrayList<Article> articles) {
+    public void updateTasksInList(List<Article> articles) {
         adapter.replaceListOfArticles(articles);
         adapter.notifyDataSetChanged();
     }
