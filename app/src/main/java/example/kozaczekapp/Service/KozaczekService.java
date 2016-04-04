@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import org.apache.commons.io.Charsets;
+
 import java.util.ArrayList;
 
 import example.kozaczekapp.Component.DaggerIConnectionComponent;
@@ -51,6 +53,7 @@ public class KozaczekService extends IntentService {
         loadPreferences();
         if (connection.getResponse(url) != null) {
             Parser parser1 = new Parser(connection.getResponse(url));
+            parser1.setEncoding(connection.getEncoding());
             ArrayList<Article> articles = parser1.parse();
             Intent broadcastIntent = new Intent();
             broadcastIntent.setAction(INTENT_FILTER);
@@ -67,15 +70,19 @@ public class KozaczekService extends IntentService {
         switch (downloadType) {
             case HTTP_CONNECTION:
                 connection = component.provideConnection();
+                connection.setEncoding("ISO-8859-2");
                 break;
             case URL_CONNECTION:
                 connection = component.provideMyUrlConnection();
+                connection.setEncoding("ISO-8859-2");
                 break;
             case OK_HTTP_CONNECTION:
                 connection = component.provideOKHttpConnection();
+                connection.setEncoding("UTF-8");
                 break;
             default:
                 connection = component.provideConnection();
+                connection.setEncoding("UTF-8");
         }
     }
 }

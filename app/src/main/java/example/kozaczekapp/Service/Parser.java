@@ -31,7 +31,9 @@ public class Parser {
     private static final String ENCLOSURE = "enclosure";
     private static final String LINK_GUIDE = "link";
     private static final String UNUSED_LINE = "#text";
+    private String encoding;
     String response;
+
 
     @Inject
     public Parser(String response) {
@@ -52,8 +54,6 @@ public class Parser {
         ArrayList<Article> arrayOfArticles = new ArrayList<>();
         try {
             doc = buildDocumentFromInputStream(response);
-            Log.d("Parser", "parse: InpucEncoding: " + doc.getInputEncoding());
-            Log.d("Parser", "parse: XmlEncoding: " + doc.getXmlEncoding());
             nodeList = doc.getElementsByTagName(ITEM_TAG_NAME);
         } catch (IOException | ParserConfigurationException | SAXException e) {
             e.printStackTrace();
@@ -74,7 +74,7 @@ public class Parser {
         DocumentBuilder db = factory.newDocumentBuilder();
         //InputSource inStream = new InputSource();
         //inStream.setCharacterStream(new StringReader(response));
-        InputStream inStream = IOUtils.toInputStream(response, "UTF-8");
+        InputStream inStream = IOUtils.toInputStream(response, encoding);
         return db.parse(inStream);
     }
 
@@ -113,5 +113,9 @@ public class Parser {
         String linkToImage = node.getAttributes().item(1).getNodeValue();
         String imageSize = node.getAttributes().item(2).getNodeValue();
         return new Image(linkToImage, imageSize);
+    }
+
+    public void setEncoding(String encoding){
+        this.encoding=encoding;
     }
 }

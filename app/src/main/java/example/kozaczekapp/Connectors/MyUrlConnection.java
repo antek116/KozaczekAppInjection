@@ -12,6 +12,7 @@ import example.kozaczekapp.ConnectionProvider.IConnection;
 
 public class MyUrlConnection implements IConnection {
     private static final String ENCODING_STANDARD = "ISO-8859-2";
+    private String encoding;
 
 
     /**
@@ -41,5 +42,23 @@ public class MyUrlConnection implements IConnection {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * Sets encoding for current connection
+     *
+     * @param encoding to be set
+     */
+    @Override
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
+    }
+
+    /**
+     * @return Encoding for current connection
+     */
+    @Override
+    public String getEncoding() {
+        return encoding;
     }
 }
