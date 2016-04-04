@@ -7,6 +7,7 @@ import dagger.Component;
 import example.kozaczekapp.Connectors.MyHttpConnection;
 import example.kozaczekapp.Connectors.MyUrlConnection;
 import example.kozaczekapp.Connectors.OkHttpCommunicator;
+import example.kozaczekapp.Connectors.VolleyConnection;
 import example.kozaczekapp.Module.ConnectionModule;
 
 
@@ -36,4 +37,11 @@ public interface IConnectionComponent {
      * @return response from service as a String
      */
     MyUrlConnection provideMyUrlConnection();
+
+    /**
+     * Method use to connect to service via VolleyConnection.
+     *
+     * @return response from service as a String
+     */
+    VolleyConnection provideVolleyConnection();
 }

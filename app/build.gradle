@@ -29,6 +29,7 @@ dependencies {
     compile 'com.android.support:design:23.2.1'
     compile 'com.android.support:cardview-v7:23.2.0'
     compile group: 'org.apache.httpcomponents' , name: 'httpclient-android' , version: '4.3.5.1'
+    compile 'com.mcxiaoke.volley:library:1.0.19'
 
     // Dagger 2 and Compiler
     compile 'com.google.dagger:dagger:2.0.1'

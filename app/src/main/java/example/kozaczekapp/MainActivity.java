@@ -1,6 +1,7 @@
 package example.kozaczekapp;
 
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -206,8 +207,10 @@ public class MainActivity extends AppCompatActivity {
      */
     private void setupPullToRefreshListener() {
         pullToRefresh = (SwipeRefreshLayout) findViewById(R.id.pullToRefresh);
-        pullToRefresh.setRefreshing(false);
-        pullToRefresh.setEnabled(true);
+        if (pullToRefresh != null) {
+            pullToRefresh.setRefreshing(false);
+            pullToRefresh.setEnabled(true);
+        }
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -241,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
     private void initializationOfRefreshItemInMenu() {
 
         LayoutInflater inflater = (LayoutInflater) getApplication().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        FrameLayout frameLayout = (FrameLayout) inflater.inflate(R.layout.iv_refresh,null);
+        FrameLayout frameLayout = (FrameLayout) inflater.inflate(R.layout.iv_refresh,null,false);
         image = (ImageView) frameLayout.findViewById(R.id.refresh);
         image.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -62,7 +62,6 @@ public class Parser {
     private Document buildDocumentFromInputStream(String response) throws IOException,
             ParserConfigurationException,
             SAXException {
-
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = factory.newDocumentBuilder();
         InputSource inStream = new InputSource();

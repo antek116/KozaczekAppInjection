@@ -28,20 +28,22 @@ public class KozaczekService extends IntentService {
     private static final String HTTP_CONNECTION = "HttpConnection";
     private static final String URL_CONNECTION = "UrlConnection";
     private static final String OK_HTTP_CONNECTION = "OkHttpConnection";
+    private static final String VOLLEY_CONNECTION = "VolleyConnection";
 
     private static final String TAG = "KozaczekService";
-    private static IConnectionComponent component = DaggerIConnectionComponent
-            .builder()
-            .connectionModule(new ConnectionModule())
-            .build();
-    private static IConnection connection = component.provideConnection();
+    private IConnectionComponent component;
+    private IConnection connection;
 
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
      */
     public KozaczekService() {
         super(KozaczekService.class.getName());
-
+         component = DaggerIConnectionComponent
+                .builder()
+                .connectionModule(new ConnectionModule(this))
+                .build();
+        connection = component.provideConnection();
     }
 
     @Override
@@ -73,6 +75,9 @@ public class KozaczekService extends IntentService {
                 break;
             case OK_HTTP_CONNECTION:
                 connection = component.provideOKHttpConnection();
+                break;
+            case VOLLEY_CONNECTION :
+                connection = component.provideVolleyConnection();
                 break;
             default:
                 connection = component.provideConnection();
