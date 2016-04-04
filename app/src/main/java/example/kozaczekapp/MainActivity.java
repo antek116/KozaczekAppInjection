@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import example.kozaczekapp.DatabaseConnection.DatabaseHandler;
 import example.kozaczekapp.Fragments.ArticleListFragment;
@@ -66,49 +67,30 @@ public class MainActivity extends AppCompatActivity {
         return articlesFromDB;
     }
 
-    class GetArticlesFromDataBase extends AsyncTask<String, String, String> {
+    class GetArticlesFromDataBase extends AsyncTask<String, String, List<Article>> {
 
         /**
-         * Override this method to perform a computation on a background thread. The
-         * specified parameters are the parameters passed to {@link #execute}
-         * by the caller of this task.
-         * <p/>
-         * This method can call {@link #publishProgress} to publish updates
-         * on the UI thread.
-         *
-         * @param params The parameters of the task.
-         * @return A result, defined by the subclass of this task.
-         * @see #onPreExecute()
-         * @see #onPostExecute
-         * @see #publishProgress
+         * {@inheritDoc}
          */
         @Override
-        protected String doInBackground(String... params) {
+        protected List<Article> doInBackground(String... params) {
             DatabaseHandler db = new DatabaseHandler(MainActivity.this);
             articlesFromDB = (ArrayList<Article>) db.getAllArticles();
-            return null;
+            return articlesFromDB;
         }
 
         /**
-         * <p>Runs on the UI thread after {@link #doInBackground}. The
-         * specified result is the value returned by {@link #doInBackground}.</p>
-         * <p/>
-         * <p>This method won't be invoked if the task was cancelled.</p>
-         *
-         * @param s The result of the operation computed by {@link #doInBackground}.
-         * @see #onPreExecute
-         * @see #doInBackground
-         * @see #onCancelled(Object)
+         * {@inheritDoc}
          */
         @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
+        protected void onPostExecute(List<Article> articlesFromDB) {
             listArticle.updateTasksInList(articlesFromDB);
             updateImageToLabCache(listArticle.getImageManager(), articlesFromDB);
             startOrStopRefreshingAnimation(false, 0);
         }
     }
-    private void updateImageToLabCache(ImageManager imageManager, ArrayList<Article> articles) {
+
+    private void updateImageToLabCache(ImageManager imageManager, List<Article> articles) {
         imageManager.addImagesFromArticlesToLruCache(articles);
     }
 
@@ -117,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Methods where we initialize servis.
+     * Methods where we initialize service.
      *
      * @param savedInstanceState saved instance bundle.
      */
@@ -170,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         getSupportFragmentManager().putFragment(outState, FRAGMENT_KEY, listArticle);
-        outState.putInt(SCREEN_WIDTH,screenWidth);
+        outState.putInt(SCREEN_WIDTH, screenWidth);
     }
 
     /**
@@ -229,6 +211,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * @return true if is internet connection yet, false if not.
+     */
     public boolean checkNetworkConnection() {
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -241,8 +226,10 @@ public class MainActivity extends AppCompatActivity {
      */
     private void setupPullToRefreshListener() {
         pullToRefresh = (SwipeRefreshLayout) findViewById(R.id.pullToRefresh);
-        pullToRefresh.setRefreshing(false);
-        pullToRefresh.setEnabled(true);
+        if (pullToRefresh != null) {
+            pullToRefresh.setRefreshing(false);
+            pullToRefresh.setEnabled(true);
+        }
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -276,12 +263,12 @@ public class MainActivity extends AppCompatActivity {
     private void initializationOfRefreshItemInMenu() {
 
         LayoutInflater inflater = (LayoutInflater) getApplication().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        FrameLayout frameLayout = (FrameLayout) inflater.inflate(R.layout.iv_refresh,null);
+        FrameLayout frameLayout = (FrameLayout) inflater.inflate(R.layout.iv_refresh, null, false);
         image = (ImageView) frameLayout.findViewById(R.id.refresh);
         image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(checkNetworkConnection()) {
+                if (checkNetworkConnection()) {
                     startOrStopRefreshingAnimation(true, 1);
                     startService(getKozaczekServiceIntent());
                 } else {
@@ -326,8 +313,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             boolean isConnected = checkNetworkConnection();
-            if (isConnected){
-                if(!isInvertedScreen()){
+            if (isConnected) {
+                if (!isInvertedScreen()) {
                     getData();
                     showNoConnectionMsg = true;
                 }
@@ -339,16 +326,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private boolean isInvertedScreen(){
+    private boolean isInvertedScreen() {
         int newWidth = getScreenWidth();
-        if(screenWidth != newWidth){
+        if (screenWidth != newWidth) {
             screenWidth = newWidth;
             return true;
         } else {
             return false;
         }
     }
-    private int getScreenWidth(){
+
+    private int getScreenWidth() {
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         return displaymetrics.widthPixels;

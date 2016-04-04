@@ -10,8 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -24,7 +23,6 @@ import example.kozaczekapp.R;
  */
 public class ArticleListFragment extends Fragment implements Observer {
     ArticleListAdapter adapter;
-    public static final String PARCELABLE_ARTICLE_ARRAY_KEY = "FragmentParcelable";
     public static final String PARCELABLE_ADAPTER_KEY = "Adapter_Parcelable";
     private static final String PARCELABLE_IMAGE_MANAGER_KEY = "ImageManagerKeyParcelable";
     private ImageManager imageManager;
@@ -60,7 +58,7 @@ public class ArticleListFragment extends Fragment implements Observer {
      *
      * @param articles ArrayList of articles.
      */
-    public void updateTasksInList(ArrayList<Article> articles) {
+    public void updateTasksInList(List<Article> articles) {
         adapter.replaceListOfArticles(articles);
         adapter.notifyDataSetChanged();
     }
@@ -70,13 +68,6 @@ public class ArticleListFragment extends Fragment implements Observer {
      */
     public ImageManager getImageManager() {
         return this.imageManager;
-    }
-
-    /**
-     * @return instance of arrayAdapter.
-     */
-    public ArticleListAdapter getAdapter() {
-        return this.adapter;
     }
 
     /**
@@ -94,6 +85,13 @@ public class ArticleListFragment extends Fragment implements Observer {
         outState.putParcelable(PARCELABLE_IMAGE_MANAGER_KEY, imageManager);
     }
 
+    /**
+     * This method is called if the specified Observable object's
+     * notifyObservers method is called (because the Observable object has been updated
+     *
+     * @param observable the Observable object.
+     * @param data the data passed to notifyObservers(Object).
+     */
     @Override
     public void update(Observable observable, Object data) {
         if (mActivity != null) {
@@ -116,11 +114,16 @@ public class ArticleListFragment extends Fragment implements Observer {
             adapter = new ArticleListAdapter(imageManager.getLruCache());
         }
     }
+
+    /**
+     * Called when a fragment is first attached to its context. onCreate(Bundle) will be called after this.
+     * @param context context of application.
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof Activity){
-            mActivity =(Activity) context;
+        if (context instanceof Activity) {
+            mActivity = (Activity) context;
         }
     }
 }

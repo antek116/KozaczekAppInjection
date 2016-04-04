@@ -7,11 +7,12 @@ import dagger.Component;
 import example.kozaczekapp.Connectors.MyHttpConnection;
 import example.kozaczekapp.Connectors.MyUrlConnection;
 import example.kozaczekapp.Connectors.OkHttpCommunicator;
+import example.kozaczekapp.Connectors.VolleyConnection;
 import example.kozaczekapp.Module.ConnectionModule;
 
 
 /**
- *
+ * interface of IconnectionComponent class used to Dagger Injection.
  */
 @Singleton
 @Component(modules = ConnectionModule.class)
@@ -36,4 +37,11 @@ public interface IConnectionComponent {
      * @return response from service as a String
      */
     MyUrlConnection provideMyUrlConnection();
+
+    /**
+     * Method use to connect to service via VolleyConnection.
+     *
+     * @return response from service as a String
+     */
+    VolleyConnection provideVolleyConnection();
 }

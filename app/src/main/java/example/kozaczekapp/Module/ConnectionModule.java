@@ -1,6 +1,8 @@
 package example.kozaczekapp.Module;
 
 
+import android.content.Context;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -8,12 +10,19 @@ import dagger.Provides;
 import example.kozaczekapp.Connectors.MyHttpConnection;
 import example.kozaczekapp.Connectors.MyUrlConnection;
 import example.kozaczekapp.Connectors.OkHttpCommunicator;
+import example.kozaczekapp.Connectors.VolleyConnection;
 
 /**
  * Module class used to make dependency to injection.
  */
 @Module
 public class ConnectionModule {
+
+    Context context;
+
+    public ConnectionModule(Context context){
+        this.context = context;
+    }
 
 
     /**
@@ -41,5 +50,14 @@ public class ConnectionModule {
     @Singleton
     MyUrlConnection provideMyUrlConnection() {
         return new MyUrlConnection();
+    }
+
+    /**
+     * @return instance of VolleyConnection class
+     */
+    @Provides
+    @Singleton
+    VolleyConnection provideVolleyConnection() {
+        return new VolleyConnection(context);
     }
 }

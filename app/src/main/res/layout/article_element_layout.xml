@@ -6,8 +6,8 @@
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
     card_view:cardBackgroundColor="#FEFEFE"
-    card_view:cardCornerRadius="15dp"
-    card_view:cardElevation="3dp">
+    card_view:cardCornerRadius="@dimen/cardCornerRadiusValue"
+    card_view:cardElevation="@dimen/cardEvlevationValue">
 
 
 <RelativeLayout
@@ -32,32 +32,35 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Title"
+        android:text="@string/titleTextLayout"
         android:id="@+id/titleTextView"
         android:layout_alignTop="@+id/articleImage"
         android:layout_toRightOf="@+id/articleImage"
-        android:layout_toEndOf="@+id/articleImage" />
+        android:layout_toEndOf="@+id/articleImage"
+        android:textSize="@dimen/titleTextSize"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="description"
+        android:text="@string/descriptionTextLayout"
         android:id="@+id/descriptionTextView"
         android:layout_below="@+id/titleTextView"
         android:layout_alignLeft="@+id/titleTextView"
-        android:layout_alignStart="@+id/titleTextView" />
+        android:layout_alignStart="@+id/titleTextView"
+        android:textSize="@dimen/descriptionTextSize"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Date"
+        android:text="@string/pubDateTextLayout"
         android:id="@+id/publicDateTextView"
         android:layout_gravity="center_vertical"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/descriptionTextView"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:textSize="@dimen/pubDateTextSize"/>
 
 </RelativeLayout>
 

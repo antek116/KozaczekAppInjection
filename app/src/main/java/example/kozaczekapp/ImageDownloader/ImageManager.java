@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import android.support.v4.util.LruCache;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.concurrent.ExecutorService;
@@ -85,7 +86,7 @@ public class ImageManager extends Observable implements Observer, Parcelable {
      *
      * @param articleArrayList Articles as ArrayList.
      */
-    public void addImagesFromArticlesToLruCache(ArrayList<Article> articleArrayList) {
+    public void addImagesFromArticlesToLruCache(List<Article> articleArrayList) {
         for (Article article : articleArrayList) {
 
             String imageUrl = article.getImage().getImageUrl();

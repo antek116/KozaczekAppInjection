@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import example.kozaczekapp.KozaczekItems.Article;
 import example.kozaczekapp.R;
@@ -22,7 +23,7 @@ import example.kozaczekapp.R;
  * Adapter Class implementation of ArticleList adapter.
  */
 public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.ViewHolder> implements Parcelable {
-    ArrayList<Article> listOfArticles = new ArrayList<>();
+    List<Article> listOfArticles = new ArrayList<>();
     private LruCache<String, Bitmap> mLruCache;
 
     /**
@@ -61,15 +62,8 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
      *
      * @param list ArrayList of Articles.
      */
-    public void replaceListOfArticles(ArrayList<Article> list) {
+    public void replaceListOfArticles(List<Article> list) {
         this.listOfArticles = list;
-    }
-
-    /**
-     * @return count of images in Lrucache.
-     */
-    public int getImagesOnLruCacheCount() {
-        return mLruCache.putCount();
     }
 
     /**

@@ -1,5 +1,7 @@
 package example.kozaczekapp.Connectors;
 
+import org.apache.commons.io.Charsets;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -13,6 +15,7 @@ import okhttp3.Response;
  * Class of implementation OkHttpCommunicator.
  */
 public class OkHttpCommunicator implements IConnection {
+    private String encoding;
     OkHttpClient client;
 
     /**
@@ -31,6 +34,7 @@ public class OkHttpCommunicator implements IConnection {
     @Override
     public String getResponse(String mBaseUrl) {
         String responseString = null;
+
         Response response;
         if (isValidAddress(mBaseUrl)) {
             Request request = new Request.Builder()
@@ -44,7 +48,26 @@ public class OkHttpCommunicator implements IConnection {
                 e.printStackTrace();
             }
         }
+
         return responseString;
+    }
+
+    /**
+     * Sets encoding for current connection
+     *
+     * @param encoding to be set
+     */
+    @Override
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
+    }
+
+    /**
+     * @return Encoding for current connection
+     */
+    @Override
+    public String getEncoding() {
+        return encoding;
     }
 
     private boolean isValidAddress(String mBaseUrl){

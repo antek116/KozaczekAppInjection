@@ -27,7 +27,7 @@ public class DatabaseHandler extends SQLiteOpenHelper implements IDatabaseHelper
     private static final String COMMA_SEP = ",";
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + FeedEntry.TABLE_NAME + " (" +
-                    FeedEntry.KEY_ID + " INTEGER PRIMARY KEY," +
+                    FeedEntry._ID + " INTEGER PRIMARY KEY," +
                     FeedEntry.COLUMN_TITLE + TEXT_TYPE + COMMA_SEP +
                     FeedEntry.COLUMN_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
                     FeedEntry.COLUMN_PUB_DATE + TEXT_TYPE + COMMA_SEP +
@@ -61,10 +61,26 @@ public class DatabaseHandler extends SQLiteOpenHelper implements IDatabaseHelper
      */
     @Override
     public void addArticleList(List<Article> articleList) {
-        //delete records in DB
-        deleteAll();
-        for (Article article : articleList) {
-            addArticle(article);
+        SQLiteDatabase database = getWritableDatabase();
+
+        try {
+            //transaction
+            database.beginTransaction();
+            //delete records in DB
+            deleteAll(database);
+
+            for (Article article : articleList) {
+                addArticle(database, article);
+            }
+
+            database.setTransactionSuccessful();
+        }
+        catch (Exception e) {
+            database.endTransaction();
+        }
+        finally {
+            database.endTransaction();
+            database.close();
         }
     }
 
@@ -74,9 +90,7 @@ public class DatabaseHandler extends SQLiteOpenHelper implements IDatabaseHelper
      * @param article to be added
      */
     @Override
-    public void addArticle(Article article) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
+    public void addArticle(SQLiteDatabase db, Article article) {
         ContentValues values = new ContentValues();
         values.put(FeedEntry.COLUMN_TITLE, article.getTitle());
         values.put(FeedEntry.COLUMN_DESCRIPTION, article.getDescription());
@@ -86,7 +100,6 @@ public class DatabaseHandler extends SQLiteOpenHelper implements IDatabaseHelper
 
         // Inserting Row
         db.insert(FeedEntry.TABLE_NAME, null, values);
-        db.close(); // Closing database connection
     }
 
     /**
@@ -100,11 +113,13 @@ public class DatabaseHandler extends SQLiteOpenHelper implements IDatabaseHelper
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(FeedEntry.TABLE_NAME, new String[]{
-                        FeedEntry.KEY_ID,
-                        FeedEntry.COLUMN_TITLE, FeedEntry.COLUMN_DESCRIPTION,
-                        FeedEntry.COLUMN_PUB_DATE, FeedEntry.COLUMN_ARTICLE_LINK,
+                        FeedEntry._ID,
+                        FeedEntry.COLUMN_TITLE,
+                        FeedEntry.COLUMN_DESCRIPTION,
+                        FeedEntry.COLUMN_PUB_DATE,
+                        FeedEntry.COLUMN_ARTICLE_LINK,
                         FeedEntry.COLUMN_IMAGE_LINK},
-                FeedEntry.KEY_ID + "=?",
+                FeedEntry._ID + "= ?",
                 new String[]{String.valueOf(id)}, null, null, null, null);
 
         Article article = null;
@@ -112,12 +127,13 @@ public class DatabaseHandler extends SQLiteOpenHelper implements IDatabaseHelper
             cursor.moveToFirst();
 
             article = new Article(
-                    cursor.getString(1),
-                    new Image(cursor.getString(2), IMAGE_SIZE),
-                    cursor.getString(3),
-                    cursor.getString(4),
-                    cursor.getString(5));
-            article.setId(cursor.getInt(0));
+                    cursor.getString(cursor.getColumnIndex(FeedEntry.COLUMN_PUB_DATE)),
+                    new Image(cursor.getString(cursor.getColumnIndex(FeedEntry.COLUMN_IMAGE_LINK)),
+                            IMAGE_SIZE),
+                    cursor.getString(cursor.getColumnIndex(FeedEntry.COLUMN_ARTICLE_LINK)),
+                    cursor.getString(cursor.getColumnIndex(FeedEntry.COLUMN_TITLE)),
+                    cursor.getString(cursor.getColumnIndex(FeedEntry.COLUMN_DESCRIPTION)));
+            article.setId(cursor.getColumnIndex(FeedEntry._ID));
             cursor.close();
         }
         return article;
@@ -141,17 +157,23 @@ public class DatabaseHandler extends SQLiteOpenHelper implements IDatabaseHelper
         if (cursor.moveToFirst()) {
             do {
                 Article article = new Article();
-                article.setId(cursor.getInt(0));
-                article.setTitle(cursor.getString(1));
-                article.setDescription(cursor.getString(2));
-                article.setPubDate(cursor.getString(3));
-                article.setLinkToArticle(cursor.getString(4));
-                article.setImage(new Image(cursor.getString(5), IMAGE_SIZE));
+                article.setId(cursor.getColumnIndex(FeedEntry._ID));
+                article.setTitle(cursor.getString(cursor
+                        .getColumnIndex(FeedEntry.COLUMN_TITLE)));
+                article.setDescription(cursor.getString(cursor
+                        .getColumnIndex(FeedEntry.COLUMN_DESCRIPTION)));
+                article.setPubDate(cursor.getString(cursor
+                        .getColumnIndex(FeedEntry.COLUMN_PUB_DATE)));
+                article.setLinkToArticle(cursor.getString(cursor
+                        .getColumnIndex(FeedEntry.COLUMN_ARTICLE_LINK)));
+                article.setImage(new Image(cursor.getString(cursor
+                        .getColumnIndex(FeedEntry.COLUMN_IMAGE_LINK)), IMAGE_SIZE));
 
                 // Adding article to list
                 articleList.add(article);
             } while (cursor.moveToNext());
         }
+
         cursor.close();
         // return article list
         return articleList;
@@ -163,8 +185,12 @@ public class DatabaseHandler extends SQLiteOpenHelper implements IDatabaseHelper
      * @return articles' count
      */
     @Override
-    public int getArticlesCount() {
-        return 0;
+    public int getArticlesCount(SQLiteDatabase db) {
+        String countQuery = "SELECT  * FROM " + FeedEntry.TABLE_NAME;
+        Cursor cursor = db.rawQuery(countQuery, null);
+        int cnt = cursor.getCount();
+        cursor.close();
+        return cnt;
     }
 
     /**
@@ -192,10 +218,8 @@ public class DatabaseHandler extends SQLiteOpenHelper implements IDatabaseHelper
      * deletes all records from database
      */
     @Override
-    public void deleteAll() {
-        SQLiteDatabase db = this.getWritableDatabase();
+    public void deleteAll(SQLiteDatabase db) {
         db.execSQL("delete  from " + FeedEntry.TABLE_NAME);
-        db.close();
     }
 
 }

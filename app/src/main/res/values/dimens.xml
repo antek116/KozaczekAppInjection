@@ -6,4 +6,11 @@
     <dimen name="descriptionTextViewSize">10dp</dimen>
     <dimen name="titleTextViewFontSize">15dp</dimen>
     <dimen name="publicDateTextViewFontSize">8dp</dimen>
+    <dimen name="titleTextSize">14dp</dimen>
+    <dimen name="descriptionTextSize">10dp</dimen>
+    <dimen name="pubDateTextSize">8dp</dimen>
+    <dimen name="cardCornerRadiusValue">15dp</dimen>
+    <dimen name="cardEvlevationValue">3dp</dimen>
+    <dimen name="refreshViewWidth">50dp</dimen>
+    <dimen name="refreshFrameLayoutMinWidth">56dp</dimen>
 </resources>
