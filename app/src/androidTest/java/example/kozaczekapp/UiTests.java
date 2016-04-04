@@ -1,6 +1,5 @@
 package example.kozaczekapp;
 
-import android.content.Intent;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.rule.ActivityTestRule;
@@ -10,14 +9,21 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
+
 import example.kozaczekapp.KozaczekItems.Article;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.contrib.RecyclerViewActions.scrollToPosition;
+import static android.support.test.espresso.matcher.ViewMatchers.hasDescendant;
+import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static example.kozaczekapp.TestUtils.atPosition;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Class contains Tests for application UI
@@ -57,21 +63,32 @@ public class UiTests {
     }
 
     @Test
-    public void testClickedArticleTitle() {
+    public void testRecyclerViewDBCompatibility() {
 
         // given
-        Intent intent = new Intent();
-        activityRule.launchActivity(intent);
+        ArrayList<Article> articles = activityRule.getActivity().getArticlesFromDB();
+        if (articles != null) {
+            int listPosition = 3;
+            String title = articles.get(listPosition).getTitle();
 
-        int listPosition = 3;
-        Article article = activityRule.getActivity().getArticlesFromDB().get(listPosition);
-        String title = article.getTitle();
+            // when
+            ViewInteraction viewInteraction = onView(withId(R.id.allTasks)).
+                    perform(scrollToPosition(listPosition));
+            // then
+            viewInteraction.check(matches(atPosition(listPosition, hasDescendant(withText(title)))));
+        }
+    }
 
-        // when
-        ViewInteraction viewInteraction = onView(withId(R.id.allTasks)).perform(
-                RecyclerViewActions.actionOnItemAtPosition(listPosition, click()));
+    @Test
+    public void testIfServiceOnlyOnceStarted() {
+        boolean isStartedServiceNumberTrue = (activityRule.getActivity().startingServiceCounter == 1);
+        assertTrue(isStartedServiceNumberTrue);
+    }
 
-        // then
-        viewInteraction.check(matches(withText(title)));
+    @Test
+    public void testIfServiceNotStartedWhenOrientationChanged() {
+        onView(isRoot()).perform(OrientationChangeAction.orientationLandscape());
+        boolean isStartedRightNumberOfServices = (activityRule.getActivity().startingServiceCounter == 1);
+        assertTrue(isStartedRightNumberOfServices);
     }
 }

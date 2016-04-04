@@ -27,7 +27,6 @@ import java.util.List;
 import example.kozaczekapp.DatabaseConnection.DatabaseHandler;
 import example.kozaczekapp.Fragments.ArticleListFragment;
 import example.kozaczekapp.ImageDownloader.ImageManager;
-import example.kozaczekapp.Interfaces.OnVisibilityChange;
 import example.kozaczekapp.KozaczekItems.Article;
 import example.kozaczekapp.Preferences.PreferencesActivity;
 import example.kozaczekapp.Service.KozaczekService;
@@ -37,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     public static final String SERVICE_URL = "http://www.kozaczek.pl/rss/plotki.xml";
     private static final String SCREEN_WIDTH = "SCREEN_WIDTH";
     private static boolean showNoConnectionMsg = true;
+    private static boolean isActivityVisible;
+    public int startingServiceCounter = 0;
     ArticleListFragment listArticle;
     Intent kozaczekServiceIntent;
     SwipeRefreshLayout pullToRefresh;
@@ -48,10 +49,6 @@ public class MainActivity extends AppCompatActivity {
     private MenuItem refreshMenuItem;
     private boolean isInternetConnection;
     private ArrayList<Article> articlesFromDB;
-    private static boolean isActivityVisible;
-
-
-
     private BroadcastReceiver articlesRefreshReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -65,29 +62,6 @@ public class MainActivity extends AppCompatActivity {
 
     public ArrayList<Article> getArticlesFromDB() {
         return articlesFromDB;
-    }
-
-    class GetArticlesFromDataBase extends AsyncTask<String, String, List<Article>> {
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        protected List<Article> doInBackground(String... params) {
-            DatabaseHandler db = new DatabaseHandler(MainActivity.this);
-            articlesFromDB = (ArrayList<Article>) db.getAllArticles();
-            return articlesFromDB;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        protected void onPostExecute(List<Article> articlesFromDB) {
-            listArticle.updateTasksInList(articlesFromDB);
-            updateImageToLabCache(listArticle.getImageManager(), articlesFromDB);
-            startOrStopRefreshingAnimation(false, 0);
-        }
     }
 
     private void updateImageToLabCache(ImageManager imageManager, List<Article> articles) {
@@ -251,12 +225,15 @@ public class MainActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().add(R.id.container, listArticle).commit();
             isInternetConnection = checkNetworkConnection();
             screenWidth = getScreenWidth();
-            if (isInternetConnection) {
-                getData();
+//            if (isInternetConnection) {
+//                getData();
+//            }
+//        }
+            if (!isInternetConnection) {
+                listArticle = (ArticleListFragment) getSupportFragmentManager().getFragment(savedInstanceState, FRAGMENT_KEY);
+                screenWidth = savedInstanceState.getInt(SCREEN_WIDTH);
             }
-        } else {
-            listArticle = (ArticleListFragment) getSupportFragmentManager().getFragment(savedInstanceState, FRAGMENT_KEY);
-            screenWidth = savedInstanceState.getInt(SCREEN_WIDTH);
+
         }
     }
 
@@ -269,8 +246,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (checkNetworkConnection()) {
-                    startOrStopRefreshingAnimation(true, 1);
-                    startService(getKozaczekServiceIntent());
+                    getData();
+//                    startOrStopRefreshingAnimation(true, 1);
+//                    startService(getKozaczekServiceIntent());
+//                    startingServiceCounter++;
                 } else {
                     startOrStopRefreshingAnimation(true, 2);
                     String message = getResources().getString(R.string.no_internet_connection);
@@ -289,6 +268,7 @@ public class MainActivity extends AppCompatActivity {
     private void getData() {
         startOrStopRefreshingAnimation(true, 1);
         startService(getKozaczekServiceIntent());
+        startingServiceCounter++;
     }
 
     /**
@@ -300,6 +280,45 @@ public class MainActivity extends AppCompatActivity {
         if (showNoConnectionMsg) {
             toast.show();
             showNoConnectionMsg = false;
+        }
+    }
+
+    private boolean isInvertedScreen() {
+        int newWidth = getScreenWidth();
+        if (screenWidth != newWidth) {
+            screenWidth = newWidth;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private int getScreenWidth() {
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        return displaymetrics.widthPixels;
+    }
+
+    class GetArticlesFromDataBase extends AsyncTask<String, String, List<Article>> {
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected List<Article> doInBackground(String... params) {
+            DatabaseHandler db = new DatabaseHandler(MainActivity.this);
+            articlesFromDB = (ArrayList<Article>) db.getAllArticles();
+            return articlesFromDB;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void onPostExecute(List<Article> articlesFromDB) {
+            listArticle.updateTasksInList(articlesFromDB);
+            updateImageToLabCache(listArticle.getImageManager(), articlesFromDB);
+            startOrStopRefreshingAnimation(false, 0);
         }
     }
 
@@ -324,22 +343,6 @@ public class MainActivity extends AppCompatActivity {
                 showInternetNoConnectionMsg();
             }
         }
-    }
-
-    private boolean isInvertedScreen() {
-        int newWidth = getScreenWidth();
-        if (screenWidth != newWidth) {
-            screenWidth = newWidth;
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private int getScreenWidth() {
-        DisplayMetrics displaymetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-        return displaymetrics.widthPixels;
     }
 }
 
