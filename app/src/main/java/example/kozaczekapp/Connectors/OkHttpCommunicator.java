@@ -48,13 +48,14 @@ public class OkHttpCommunicator implements IConnection {
     }
 
     private boolean isValidAddress(String mBaseUrl){
+        boolean isValidAddress = false;
         try {
             URL url = new URL(mBaseUrl);
-            boolean isValidAddress = (url.getHost() != null && url.getPath() != null);
-            return isValidAddress;
+            isValidAddress = (url.getHost() != null && url.getPath() != null);
+
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        return false;
+        return isValidAddress;
     }
 }
