@@ -3,10 +3,10 @@
     android:id="@+id/itemRefreshFrameLayout"
     android:layout_width="56dp"
     android:layout_height="wrap_content"
-    android:minWidth="56dp">
+    android:minWidth="@dimen/refreshFrameLayoutMinWidth">
     <ImageView
         android:id="@+id/refresh"
-        android:layout_width="50dp"
+        android:layout_width="@dimen/refreshViewWidth"
         android:layout_height="wrap_content"
         android:contentDescription="@string/app_name"
         android:src="@drawable/refreshbutton" />

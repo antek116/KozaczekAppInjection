@@ -13,4 +13,7 @@
     <string name="downloadValue">1</string>
     <string name="selected_download_preference">"Selected : "</string>
     <string name="no_internet_connection">NO INTERNET CONNECTION</string>
+    <string name="titleTextLayout">Title</string>
+    <string name="descriptionTextLayout">description</string>
+    <string name="pubDateTextLayout">Date</string>
 </resources>
