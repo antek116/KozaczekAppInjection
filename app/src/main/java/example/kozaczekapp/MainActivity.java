@@ -231,15 +231,12 @@ public class MainActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().add(R.id.container, listArticle).commit();
             boolean isInternetConnection = checkNetworkConnection();
             screenWidth = getScreenWidth();
-//            if (isInternetConnection) {
-//                getData();
-//            }
-//        }
-            if (!isInternetConnection) {
-                listArticle = (ArticleListFragment) getSupportFragmentManager().getFragment(savedInstanceState, FRAGMENT_KEY);
-                screenWidth = savedInstanceState.getInt(SCREEN_WIDTH);
+            if (isInternetConnection) {
+                getData();
             }
-
+        } else {
+            listArticle = (ArticleListFragment) getSupportFragmentManager().getFragment(savedInstanceState, FRAGMENT_KEY);
+            screenWidth = savedInstanceState.getInt(SCREEN_WIDTH);
         }
     }
 
