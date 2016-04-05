@@ -6,8 +6,6 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import org.apache.commons.io.Charsets;
-
 import java.util.ArrayList;
 
 import example.kozaczekapp.Component.DaggerIConnectionComponent;
@@ -25,8 +23,6 @@ import example.kozaczekapp.R;
 public class KozaczekService extends IntentService {
 
     public static final String URL = "url";
-    public static final String INTENT_FILTER = "example.kozaczekapp.broadcast.intent.filter";
-
     private static final String HTTP_CONNECTION = "HttpConnection";
     private static final String URL_CONNECTION = "UrlConnection";
     private static final String OK_HTTP_CONNECTION = "OkHttpConnection";
@@ -45,7 +41,7 @@ public class KozaczekService extends IntentService {
                 .builder()
                 .connectionModule(new ConnectionModule(this))
                 .build();
-        connection = component.provideConnection();
+        connection = component.provideMyHttpConnection();
     }
 
     @Override
@@ -57,8 +53,6 @@ public class KozaczekService extends IntentService {
             Parser parser1 = new Parser(connection.getResponse(url));
             parser1.setEncoding(connection.getEncoding());
             ArrayList<Article> articles = parser1.parse();
-            Intent broadcastIntent = new Intent();
-            broadcastIntent.setAction(INTENT_FILTER);
             DatabaseHandler db = new DatabaseHandler(this);
             db.addArticleList(articles);
         }
@@ -69,7 +63,7 @@ public class KozaczekService extends IntentService {
         String downloadType = SP.getString(getString(R.string.downloadType), getString(R.string.downloadValue));
         switch (downloadType) {
             case HTTP_CONNECTION:
-                connection = component.provideConnection();
+                connection = component.provideMyHttpConnection();
                 connection.setEncoding(Encoding.ISO_8859_2);
                 break;
             case URL_CONNECTION:
@@ -85,7 +79,7 @@ public class KozaczekService extends IntentService {
                 connection.setEncoding(Encoding.ISO_8859_1);
                 break;
             default:
-                connection = component.provideConnection();
+                connection = component.provideMyHttpConnection();
                 connection.setEncoding("UTF-8");
         }
     }

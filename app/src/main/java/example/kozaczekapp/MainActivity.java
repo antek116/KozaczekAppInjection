@@ -191,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     /**
      * @return true if is internet connection yet, false if not.
      */

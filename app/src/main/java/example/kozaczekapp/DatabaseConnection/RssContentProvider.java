@@ -26,6 +26,9 @@ public class RssContentProvider extends ContentProvider {
     private static final UriMatcher sURIMatcher =
             new UriMatcher(UriMatcher.NO_MATCH);
 
+    /**
+     * TODO: FIXME
+     */
     static {
         sURIMatcher.addURI(RssContract.AUTHORITY, RssContract.Columns.TABLE_NAME, ARTICLES);
         sURIMatcher.addURI(RssContract.AUTHORITY, RssContract.Columns.TABLE_NAME + "/#",
@@ -39,6 +42,7 @@ public class RssContentProvider extends ContentProvider {
         db = new DatabaseHandler(getContext());
         return false;
     }
+
 
     @Nullable
     @Override

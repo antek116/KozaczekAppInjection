@@ -11,7 +11,6 @@ import java.net.URL;
 import example.kozaczekapp.ConnectionProvider.IConnection;
 
 public class MyUrlConnection implements IConnection {
-    private static final String ENCODING_STANDARD = "ISO-8859-2";
     private String encoding;
 
 
@@ -35,7 +34,7 @@ public class MyUrlConnection implements IConnection {
                 int statusCode = urlConnection.getResponseCode();
                 if (statusCode == 200) {
                     inputStream = new BufferedInputStream(urlConnection.getInputStream());
-                    return IOUtils.toString(inputStream, ENCODING_STANDARD);
+                    return IOUtils.toString(inputStream, getEncoding());
                 }
             }
         } catch (IOException e) {

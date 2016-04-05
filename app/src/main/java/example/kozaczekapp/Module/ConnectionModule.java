@@ -18,7 +18,7 @@ import example.kozaczekapp.Connectors.VolleyConnection;
 @Module
 public class ConnectionModule {
 
-    Context context;
+    private Context context;
 
     public ConnectionModule(Context context){
         this.context = context;
