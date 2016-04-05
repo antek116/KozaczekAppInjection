@@ -34,7 +34,6 @@ public class Parser {
     private String encoding;
     String response;
 
-
     @Inject
     public Parser(String response) {
         this.response = response;

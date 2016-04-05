@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import example.kozaczekapp.Component.DaggerIConnectionComponent;
 import example.kozaczekapp.Component.IConnectionComponent;
+import example.kozaczekapp.ConnectionProvider.ConnectionProvider;
 import example.kozaczekapp.ConnectionProvider.IConnection;
 import example.kozaczekapp.Connectors.Encoding;
 import example.kozaczekapp.DatabaseConnection.DatabaseHandler;
@@ -29,8 +30,11 @@ public class KozaczekService extends IntentService {
     private static final String VOLLEY_CONNECTION = "VolleyConnection";
 
     private static final String TAG = "KozaczekService";
+    private static final String ENCODING_ISO_8859_2_KEY = "ISO_8859_2";
+    private static final String ENCODING_ISO_8859_1_KEY = Encoding.ISO_8859_1;
     private IConnectionComponent component;
     private IConnection connection;
+    ConnectionProvider provider;
 
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
@@ -42,6 +46,7 @@ public class KozaczekService extends IntentService {
                 .connectionModule(new ConnectionModule(this))
                 .build();
         connection = component.provideMyHttpConnection();
+        provider = ConnectionProvider.getInstance(connection);
     }
 
     @Override
@@ -50,9 +55,10 @@ public class KozaczekService extends IntentService {
         String url = intent.getStringExtra(URL);
         loadPreferences();
         if (connection.getResponse(url) != null) {
-            Parser parser1 = new Parser(connection.getResponse(url));
-            parser1.setEncoding(connection.getEncoding());
-            ArrayList<Article> articles = parser1.parse();
+            Parser parser = new Parser(provider.getResponseAsStringFromUrl(url));
+//            Parser parser = new Parser(connection.getResponse(url));
+            parser.setEncoding(connection.getEncoding());
+            ArrayList<Article> articles = parser.parse();
             DatabaseHandler db = new DatabaseHandler(this);
             db.addArticleList(articles);
         }
@@ -64,25 +70,26 @@ public class KozaczekService extends IntentService {
         switch (downloadType) {
             case HTTP_CONNECTION:
                 connection = component.provideMyHttpConnection();
-                connection.setEncoding(Encoding.ISO_8859_2);
+                connection.setEncoding(ENCODING_ISO_8859_2_KEY);
                 break;
             case URL_CONNECTION:
                 connection = component.provideMyUrlConnection();
-                connection.setEncoding(Encoding.ISO_8859_2);
+                connection.setEncoding(ENCODING_ISO_8859_2_KEY);
                 break;
             case OK_HTTP_CONNECTION:
                 connection = component.provideOKHttpConnection();
-                connection.setEncoding(Encoding.ISO_8859_1);
+                connection.setEncoding(ENCODING_ISO_8859_1_KEY);
                 break;
             case VOLLEY_CONNECTION :
                 connection = component.provideVolleyConnection();
-                connection.setEncoding(Encoding.ISO_8859_1);
+                connection.setEncoding(ENCODING_ISO_8859_1_KEY);
                 break;
             default:
                 connection = component.provideMyHttpConnection();
-                connection.setEncoding(Encoding.ISO_8859_1);
+                connection.setEncoding(ENCODING_ISO_8859_1_KEY);
             break;
         }
+        provider = ConnectionProvider.getInstance(connection);
     }
 }
 
