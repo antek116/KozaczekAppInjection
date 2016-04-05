@@ -16,6 +16,7 @@ public class VolleyConnection implements IConnection {
 
     private Context context;
     private String result = null;
+    private String encoding;
 
     /**
      * Constructor
@@ -42,13 +43,31 @@ public class VolleyConnection implements IConnection {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                result="";
             }
         });
         queue.add(req);
         while (result == null) {
         }
         return result;
+    }
+
+    /**
+     * Sets encoding for current connection
+     *
+     * @param encoding to be set
+     */
+    @Override
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
+    }
+
+    /**
+     * @return Encoding for current connection
+     */
+    @Override
+    public String getEncoding() {
+        return encoding;
     }
 }
 

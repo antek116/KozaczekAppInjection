@@ -22,7 +22,21 @@ import example.kozaczekapp.R;
 /**
  * Adapter Class implementation of ArticleList adapter.
  */
-public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.ViewHolder> implements Parcelable {
+public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.MyViewHolder> implements Parcelable {
+    /**
+     * Creator class for parcelable.
+     */
+    public static final Creator<ArticleListAdapter> CREATOR = new Creator<ArticleListAdapter>() {
+        @Override
+        public ArticleListAdapter createFromParcel(Parcel in) {
+            return new ArticleListAdapter(in);
+        }
+
+        @Override
+        public ArticleListAdapter[] newArray(int size) {
+            return new ArticleListAdapter[size];
+        }
+    };
     List<Article> listOfArticles = new ArrayList<>();
     private LruCache<String, Bitmap> mLruCache;
 
@@ -43,21 +57,6 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
     }
 
     /**
-     * Creator class for parcelable.
-     */
-    public static final Creator<ArticleListAdapter> CREATOR = new Creator<ArticleListAdapter>() {
-        @Override
-        public ArticleListAdapter createFromParcel(Parcel in) {
-            return new ArticleListAdapter(in);
-        }
-
-        @Override
-        public ArticleListAdapter[] newArray(int size) {
-            return new ArticleListAdapter[size];
-        }
-    };
-
-    /**
      * Method to replace ArrayList of Articles.
      *
      * @param list ArrayList of Articles.
@@ -73,10 +72,10 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
      * @return instance of ViewHolder;
      */
     @Override
-    public ArticleListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.article_element_layout, parent, false);
-        return new ViewHolder(view);
+        return new MyViewHolder(view);
     }
 
     /**
@@ -87,7 +86,7 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
      * @param position The position of the item within the adapter's data set.
      */
     @Override
-    public void onBindViewHolder(ArticleListAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(MyViewHolder holder, final int position) {
 
         if (listOfArticles.size() != 0) {
             holder.mView.setOnClickListener(new View.OnClickListener() {
@@ -111,7 +110,7 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
      * @param holder   instance of ViewHolder.
      * @param position position in list;
      */
-    public void loadImageToImageView(ArticleListAdapter.ViewHolder holder, int position) {
+    public void loadImageToImageView(MyViewHolder holder, int position) {
         String imageUrl = listOfArticles.get(position).getImage().getImageUrl();
         if (getBitmapFromMemCache(imageUrl) != null) {
             holder.imageView.setImageBitmap(mLruCache.get(imageUrl));
@@ -168,7 +167,7 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
      * class of ViewHolder implementation.
      * Use to remember each element in list.
      */
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mTitle;
         public final TextView mDescription;
@@ -180,7 +179,7 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
          *
          * @param view instance of view.
          */
-        public ViewHolder(View view) {
+        public MyViewHolder(View view) {
             super(view);
             mView = view;
             mTitle = (TextView) view.findViewById(R.id.titleTextView);

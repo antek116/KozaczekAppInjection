@@ -5,11 +5,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.ContentObserver;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
@@ -22,15 +24,10 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
-
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import example.kozaczekapp.DatabaseConnection.DatabaseHandler;
+import example.kozaczekapp.DatabaseConnection.RssContract;
 import example.kozaczekapp.Fragments.ArticleListFragment;
 import example.kozaczekapp.ImageDownloader.ImageManager;
 import example.kozaczekapp.KozaczekItems.Article;
@@ -42,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     public static final String SERVICE_URL = "http://www.kozaczek.pl/rss/plotki.xml";
     private static final String SCREEN_WIDTH = "SCREEN_WIDTH";
     private static boolean showNoConnectionMsg = true;
+    private static boolean isActivityVisible;
+    public int startingServiceCounter = 0;
     ArticleListFragment listArticle;
     Intent kozaczekServiceIntent;
     SwipeRefreshLayout pullToRefresh;
@@ -49,85 +48,12 @@ public class MainActivity extends AppCompatActivity {
     int screenWidth;
     ImageView image;
     private ObjectAnimator anim;
-    private IntentFilter filterAdapterArticlesChange = new IntentFilter(KozaczekService.INTENT_FILTER);
     private MenuItem refreshMenuItem;
-    private boolean isInternetConnection;
-    private ArrayList<Article> articlesFromDB;
 
-    private BroadcastReceiver articlesRefreshReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            new GetArticlesFromDataBase().execute();
-        }
-    };
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Main Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app deep link URI is correct.
-                Uri.parse("android-app://example.kozaczekapp/http/host/path")
-        );
-        AppIndex.AppIndexApi.start(client, viewAction);
+    public static boolean getActivityVisibilityState() {
+        return isActivityVisible;
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Main Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app deep link URI is correct.
-                Uri.parse("android-app://example.kozaczekapp/http/host/path")
-        );
-        AppIndex.AppIndexApi.end(client, viewAction);
-        client.disconnect();
-    }
-
-    class GetArticlesFromDataBase extends AsyncTask<String, String, List<Article>> {
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        protected List<Article> doInBackground(String... params) {
-            DatabaseHandler db = new DatabaseHandler(MainActivity.this);
-            articlesFromDB = (ArrayList<Article>) db.getAllArticles();
-            return articlesFromDB;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        protected void onPostExecute(List<Article> articlesFromDB) {
-            listArticle.updateTasksInList(articlesFromDB);
-            updateImageToLabCache(listArticle.getImageManager(), articlesFromDB);
-            startOrStopRefreshingAnimation(false, 0);
-        }
-    }
 
     private void updateImageToLabCache(ImageManager imageManager, List<Article> articles) {
         imageManager.addImagesFromArticlesToLruCache(articles);
@@ -150,9 +76,25 @@ public class MainActivity extends AppCompatActivity {
         kozaczekServiceIntent.putExtra(KozaczekService.URL, SERVICE_URL);
         initializationOfSaveInstanceState(savedInstanceState);
         initializationOfRefreshItemInMenu();
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+        getContentResolver().registerContentObserver(RssContract.CONTENT_URI, true,
+                new ContentObserver(new Handler()) {
+                    @Override
+                    public boolean deliverSelfNotifications() {
+                        return super.deliverSelfNotifications();
+                    }
+
+                    @Override
+                    public void onChange(boolean selfChange) {
+                        super.onChange(selfChange);
+                    }
+
+                    @Override
+                    public void onChange(boolean selfChange, Uri uri) {
+                        new GetArticlesFromDataBase().execute();
+                        super.onChange(selfChange, uri);
+
+                    }
+                });
     }
 
     /**
@@ -203,12 +145,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         setupPullToRefreshListener();
-        this.registerReceiver(articlesRefreshReceiver, filterAdapterArticlesChange);
         IntentFilter connectivityChangefilter =
                 new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
 
         connectivityChangeReceiver = new OnConnectivityChangeReceiver();
         registerReceiver(connectivityChangeReceiver, connectivityChangefilter);
+        isActivityVisible = true;
     }
 
     /**
@@ -216,7 +158,6 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     public void onPause() {
-        unregisterReceiver(articlesRefreshReceiver);
         unregisterReceiver(connectivityChangeReceiver);
         super.onPause();
     }
@@ -288,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             listArticle = new ArticleListFragment();
             getSupportFragmentManager().beginTransaction().add(R.id.container, listArticle).commit();
-            isInternetConnection = checkNetworkConnection();
+            boolean isInternetConnection = checkNetworkConnection();
             screenWidth = getScreenWidth();
             if (isInternetConnection) {
                 getData();
@@ -308,8 +249,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (checkNetworkConnection()) {
-                    startOrStopRefreshingAnimation(true, 1);
-                    startService(getKozaczekServiceIntent());
+                    getData();
                 } else {
                     startOrStopRefreshingAnimation(true, 2);
                     String message = getResources().getString(R.string.no_internet_connection);
@@ -328,6 +268,7 @@ public class MainActivity extends AppCompatActivity {
     private void getData() {
         startOrStopRefreshingAnimation(true, 1);
         startService(getKozaczekServiceIntent());
+        startingServiceCounter++;
     }
 
     /**
@@ -339,6 +280,44 @@ public class MainActivity extends AppCompatActivity {
         if (showNoConnectionMsg) {
             toast.show();
             showNoConnectionMsg = false;
+        }
+    }
+
+    private boolean isInvertedScreen() {
+        int newWidth = getScreenWidth();
+        if (screenWidth != newWidth) {
+            screenWidth = newWidth;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private int getScreenWidth() {
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        return displaymetrics.widthPixels;
+    }
+
+    class GetArticlesFromDataBase extends AsyncTask<String, String, List<Article>> {
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected List<Article> doInBackground(String... params) {
+            DatabaseHandler db = new DatabaseHandler(MainActivity.this);
+            return db.getAllArticles();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void onPostExecute(List<Article> articlesFromDB) {
+            listArticle.updateTasksInList(articlesFromDB);
+            updateImageToLabCache(listArticle.getImageManager(), articlesFromDB);
+            startOrStopRefreshingAnimation(false, 0);
         }
     }
 
@@ -363,22 +342,6 @@ public class MainActivity extends AppCompatActivity {
                 showInternetNoConnectionMsg();
             }
         }
-    }
-
-    private boolean isInvertedScreen() {
-        int newWidth = getScreenWidth();
-        if (screenWidth != newWidth) {
-            screenWidth = newWidth;
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private int getScreenWidth() {
-        DisplayMetrics displaymetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-        return displaymetrics.widthPixels;
     }
 }
 

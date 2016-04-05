@@ -1,5 +1,9 @@
 package example.kozaczekapp.Service;
 
+import android.util.Log;
+
+import org.apache.commons.io.Charsets;
+import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -7,6 +11,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 
@@ -26,7 +31,9 @@ public class Parser {
     private static final String ENCLOSURE = "enclosure";
     private static final String LINK_GUIDE = "link";
     private static final String UNUSED_LINE = "#text";
+    private String encoding;
     String response;
+
 
     @Inject
     public Parser(String response) {
@@ -64,8 +71,9 @@ public class Parser {
             SAXException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = factory.newDocumentBuilder();
-        InputSource inStream = new InputSource();
-        inStream.setCharacterStream(new StringReader(response));
+        //InputSource inStream = new InputSource();
+        //inStream.setCharacterStream(new StringReader(response));
+        InputStream inStream = IOUtils.toInputStream(response, encoding);
         return db.parse(inStream);
     }
 
@@ -104,5 +112,9 @@ public class Parser {
         String linkToImage = node.getAttributes().item(1).getNodeValue();
         String imageSize = node.getAttributes().item(2).getNodeValue();
         return new Image(linkToImage, imageSize);
+    }
+
+    public void setEncoding(String encoding){
+        this.encoding=encoding;
     }
 }

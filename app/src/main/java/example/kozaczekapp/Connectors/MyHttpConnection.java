@@ -18,6 +18,7 @@ import example.kozaczekapp.ConnectionProvider.IConnection;
 public class MyHttpConnection implements IConnection {
 
     private static final String ENCODING_STANDARD = "ISO-8859-2";
+    private String encoding;
 
     /**
      * Method used to get Response from Server.
@@ -45,4 +46,24 @@ public class MyHttpConnection implements IConnection {
         }
         return xmlString;
     }
+
+    /**
+     * Sets encoding for current connection
+     *
+     * @param encoding to be set
+     */
+    @Override
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
+    }
+
+    /**
+     * @return Encoding for current connection
+     */
+    @Override
+    public String getEncoding() {
+        return encoding;
+    }
+
+
 }
