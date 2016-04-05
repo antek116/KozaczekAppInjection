@@ -18,9 +18,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    // This is important, it will run lint checks but won't abort build
     lintOptions {
-        abortOnError false
+//        This kid of error was throw when I add okHttp to dependecy and Okio-1.6.0.jar was not included to Android
+        warning 'InvalidPackage'
     }
     useLibrary 'org.apache.http.legacy'
 }
@@ -45,14 +45,6 @@ dependencies {
     compile 'com.squareup.okhttp3:okhttp:3.2.0'
     compile 'commons-io:commons-io:2.4'
 
-//    //Robolectric
-//    testCompile "org.robolectric:robolectric:3.0"
-//    compile 'junit:junit:4.12'
-//    androidTestCompile('com.android.support.test.espresso:espresso-contrib:2.0') {
-//        exclude group: 'com.android.support', module: 'appcompat'
-//        exclude group: 'com.android.support', module: 'support-v4'
-//        exclude module: 'recyclerview-v7'
-//    }
     androidTestCompile ('com.android.support.test:rules:0.5'){
 //        exclude group: 'com.android.support', module: 'support-annotations'
     }

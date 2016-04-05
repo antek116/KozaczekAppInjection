@@ -3,12 +3,10 @@ package example.kozaczekapp;
 import android.support.annotation.NonNull;
 import android.support.test.espresso.matcher.BoundedMatcher;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-
 
 import example.kozaczekapp.Fragments.ArticleListAdapter;
 

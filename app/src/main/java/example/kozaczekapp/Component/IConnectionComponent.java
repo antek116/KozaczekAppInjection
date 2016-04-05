@@ -22,7 +22,7 @@ public interface IConnectionComponent {
      *
      * @return instance of HttpConnection
      */
-    MyHttpConnection provideConnection();
+    MyHttpConnection provideMyHttpConnection();
 
     /**
      * Method use to connect to service via HttpConnection.

@@ -18,14 +18,13 @@
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".Preferences.PreferencesActivity"
             android:label="@string/preferencesLabel"
-            android:screenOrientation="nosensor"></activity>
+            android:screenOrientation="nosensor"/>
 
         <service
             android:name=".Service.KozaczekService"
@@ -34,7 +33,6 @@
             android:name=".DatabaseConnection.RssContentProvider"
             android:authorities="example.kozaczekapp.DatabaseConnection.RssContentProvider"
             android:exported="false"/>
-
     </application>
 
 

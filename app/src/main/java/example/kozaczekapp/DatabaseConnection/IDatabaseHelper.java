@@ -29,16 +29,13 @@ public interface IDatabaseHelper {
      *
      * @return list of all articles
      */
-
     List<Article> getAllArticles();
-
 
     /**
      * gets number of articles in database
      *
      * @return articles' count
      */
-
     int getArticlesCount();
 
 
@@ -47,8 +44,5 @@ public interface IDatabaseHelper {
      *
      * @param id specify index of article to be deleted
      */
-
     void deleteArticle(int id);
-
-
 }
