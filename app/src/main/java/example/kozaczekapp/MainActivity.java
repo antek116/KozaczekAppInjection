@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String SERVICE_URL = "http://www.kozaczek.pl/rss/plotki.xml";
     private static final String SCREEN_WIDTH = "SCREEN_WIDTH";
     private static boolean showNoConnectionMsg = true;
-    private static boolean isActivityVisible;
+    private static boolean isActivityVisible = false;
     public int startingServiceCounter = 0;
     ArticleListFragment listArticle;
     Intent kozaczekServiceIntent;
@@ -160,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
     public void onPause() {
         unregisterReceiver(connectivityChangeReceiver);
         super.onPause();
+        isActivityVisible = false;
     }
 
     /**
@@ -229,11 +230,7 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             listArticle = new ArticleListFragment();
             getSupportFragmentManager().beginTransaction().add(R.id.container, listArticle).commit();
-            boolean isInternetConnection = checkNetworkConnection();
             screenWidth = getScreenWidth();
-            if (isInternetConnection) {
-                getData();
-            }
         } else {
             listArticle = (ArticleListFragment) getSupportFragmentManager().getFragment(savedInstanceState, FRAGMENT_KEY);
             screenWidth = savedInstanceState.getInt(SCREEN_WIDTH);

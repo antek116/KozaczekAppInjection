@@ -10,7 +10,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import example.kozaczekapp.DatabaseConnection.DatabaseHandler;
 import example.kozaczekapp.KozaczekItems.Article;
 
 import static android.support.test.espresso.Espresso.onView;
@@ -54,19 +56,19 @@ public class UiTests {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
         // when
         boolean activityVisibilityState = MainActivity.getActivityVisibilityState();
-
         // then
         assertFalse(activityVisibilityState);
     }
-/*
+
     @Test
     public void testRecyclerViewDBCompatibility() {
 
         // given
-        ArrayList<Article> articles = activityRule.getActivity().getArticlesFromDB();
+        DatabaseHandler databaseHandler = new DatabaseHandler(activityRule.getActivity());
+        List<Article> articles = databaseHandler.getAllArticles();
+//        ArrayList<Article> articles = activityRule.getActivity().getArticlesFromDB();
         if (articles != null) {
             int listPosition = 3;
             String title = articles.get(listPosition).getTitle();
@@ -77,18 +79,24 @@ public class UiTests {
             // then
             viewInteraction.check(matches(atPosition(listPosition, hasDescendant(withText(title)))));
         }
-    }*/
+    }
 
     @Test
     public void testIfServiceOnlyOnceStarted() {
+        // given
+        // when
         boolean isStartedServiceNumberTrue = (activityRule.getActivity().startingServiceCounter == 1);
+        // then
         assertTrue(isStartedServiceNumberTrue);
     }
 
     @Test
     public void testIfServiceNotStartedWhenOrientationChanged() {
+        // given
+        // when
         onView(isRoot()).perform(OrientationChangeAction.orientationLandscape());
         boolean isStartedRightNumberOfServices = (activityRule.getActivity().startingServiceCounter == 1);
+        // then
         assertTrue(isStartedRightNumberOfServices);
     }
 
