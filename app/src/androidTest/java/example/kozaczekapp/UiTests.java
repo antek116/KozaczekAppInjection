@@ -15,6 +15,7 @@ import example.kozaczekapp.KozaczekItems.Article;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.swipeDown;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.contrib.RecyclerViewActions.scrollToPosition;
 import static android.support.test.espresso.matcher.ViewMatchers.hasDescendant;
@@ -91,5 +92,25 @@ public class UiTests {
         boolean isStartedRightNumberOfServices = (activityRule.getActivity().startingServiceCounter == 1);
         assertTrue(isStartedRightNumberOfServices);
     }
+    @Test
+    public void testCheckIfFragmentIsSameAfterRotation() {
+        //given
+        String fragmentString = activityRule.getActivity().listArticle.toString();
+        onView(isRoot()).perform(OrientationChangeAction.orientationLandscape());
+        String fragmentStringAfterRotation = activityRule.getActivity().listArticle.toString();
+        //when
+        boolean isSame = fragmentString.equals(fragmentStringAfterRotation);
+        //then
+        assertTrue("After rotation Fragment should be the same as before",isSame);
+    }
 
+    @Test
+    public void testButtonIsClickableAfterPullToRefresh(){
+        //given
+        onView(withId(R.id.allTasks)).perform(swipeDown());
+        //when
+        boolean isClickable = activityRule.getActivity().image.isClickable();
+        //then
+        assertFalse("Button should't be clickable after pull to refresh", isClickable);
+    }
 }
