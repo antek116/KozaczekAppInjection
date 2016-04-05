@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
-
 import example.kozaczekapp.ImageDownloader.ImageManager;
 import example.kozaczekapp.KozaczekItems.Article;
 import example.kozaczekapp.R;

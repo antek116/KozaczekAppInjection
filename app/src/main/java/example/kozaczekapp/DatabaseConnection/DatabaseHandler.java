@@ -81,11 +81,7 @@ public class DatabaseHandler extends SQLiteOpenHelper implements IDatabaseHelper
     @Override
     public void addArticle(Article article) {
         ContentValues values = new ContentValues();
-        values.put(RssContract.Columns.COLUMN_TITLE, article.getTitle());
-        values.put(RssContract.Columns.COLUMN_DESCRIPTION, article.getDescription());
-        values.put(RssContract.Columns.COLUMN_PUB_DATE, article.getPubDate());
-        values.put(RssContract.Columns.COLUMN_ARTICLE_LINK, article.getLinkToArticle());
-        values.put(RssContract.Columns.COLUMN_IMAGE_LINK, article.getImage().getImageUrl());
+        putArticlesFieldsToValuesMap(article, values);
 
         Cursor c = resolver.query(RssContract.CONTENT_URI, null, RssContract.Columns
                 .COLUMN_PUB_DATE + " = " + DatabaseUtils.sqlEscapeString(article.getPubDate())
@@ -94,18 +90,29 @@ public class DatabaseHandler extends SQLiteOpenHelper implements IDatabaseHelper
         if ((c != null ? c.getCount() : 0) != 0) {
             Log.d("ADD ARTICLE: ", "Article exists!");
         } else {
-            if (getArticlesCount() >= MAX_NUMBER_OF_ARTICLES) {
-                Log.d("ADD ARTICLE: ", "Rows >= " + MAX_NUMBER_OF_ARTICLES +
-                        " . Removing first element!");
-                deleteArticle(FIRST_ID);
-            }
+            deleteExceededArticles();
             resolver.insert(RssContract.CONTENT_URI, values);
-
             Log.d("ADD ARTICLE: ", "Article added!");
         }
         if (c != null) {
             c.close();
         }
+    }
+
+    private void deleteExceededArticles() {
+        if (getArticlesCount() >= MAX_NUMBER_OF_ARTICLES) {
+            Log.d("ADD ARTICLE: ", "Rows >= " + MAX_NUMBER_OF_ARTICLES +
+                    " . Removing first element!");
+            deleteArticle(FIRST_ID);
+        }
+    }
+
+    private void putArticlesFieldsToValuesMap(Article article, ContentValues values) {
+        values.put(RssContract.Columns.COLUMN_TITLE, article.getTitle());
+        values.put(RssContract.Columns.COLUMN_DESCRIPTION, article.getDescription());
+        values.put(RssContract.Columns.COLUMN_PUB_DATE, article.getPubDate());
+        values.put(RssContract.Columns.COLUMN_ARTICLE_LINK, article.getLinkToArticle());
+        values.put(RssContract.Columns.COLUMN_IMAGE_LINK, article.getImage().getImageUrl());
     }
 
     /**
@@ -121,7 +128,6 @@ public class DatabaseHandler extends SQLiteOpenHelper implements IDatabaseHelper
             do {
                 Article article = new Article();
                 article.fromCursor(cursor);
-
                 // Adding article to list
                 articleList.add(article);
             } while (cursor.moveToNext());
@@ -156,7 +162,6 @@ public class DatabaseHandler extends SQLiteOpenHelper implements IDatabaseHelper
         resolver.delete(RssContract.CONTENT_URI, RssContract.Columns
                 ._ID + " = " + id, null);
     }
-
 
 
 }
