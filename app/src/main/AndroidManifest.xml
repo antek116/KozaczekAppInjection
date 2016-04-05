@@ -32,7 +32,8 @@
             android:label="@string/service_name"/>
         <provider
             android:name=".DatabaseConnection.RssContentProvider"
-            android:authorities="example.kozaczekapp.DatabaseConnection.RssContentProvider" />
+            android:authorities="example.kozaczekapp.DatabaseConnection.RssContentProvider"
+            android:exported="false"/>
 
     </application>
 
