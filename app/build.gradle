@@ -19,6 +19,7 @@ android {
         }
     }
     lintOptions {
+//        This kid of error was throw when I add okHttp to dependecy and Okio-1.6.0.jar was not included to Android
         warning 'InvalidPackage'
     }
     useLibrary 'org.apache.http.legacy'
