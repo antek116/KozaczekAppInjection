@@ -85,8 +85,8 @@ public class KozaczekService extends IntentService {
                 connection.setEncoding(Encoding.ISO_8859_1);
                 break;
             default:
-                connection = component.provideConnection();
-                connection.setEncoding("UTF-8");
+                connection = component.provideOKHttpConnection();
+                connection.setEncoding(Encoding.ISO_8859_1);
         }
     }
 }

@@ -113,4 +113,14 @@ public class UiTests {
         //then
         assertFalse("Button should't be clickable after pull to refresh", isClickable);
     }
+
+    @Test
+    public void testIfButtonIsAnimatingAfterClick(){
+        //given
+        onView(withId(R.id.refresh)).perform(click());
+        //when
+        boolean isAnimating = activityRule.getActivity().isRefreshAnimating();
+        //then
+        assertTrue("Button animation should be running",isAnimating);
+    }
 }

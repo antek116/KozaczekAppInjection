@@ -201,6 +201,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     *
+     * @return true if anim is running
+     */
+    public boolean isRefreshAnimating(){
+        return anim.isRunning();
+    }
+    /**
      * Method sets the listener for PullToRefresh event.
      * On PullToRefresh when the device is connected to internet the rss data are reloaded.
      */
@@ -343,5 +350,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
 }
 

@@ -1,22 +1,27 @@
 package example.kozaczekapp.Connectors;
 
-import org.apache.commons.io.Charsets;
+import android.util.Log;
+
+import org.apache.http.entity.ContentType;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 
 import example.kozaczekapp.ConnectionProvider.IConnection;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 /**
  * Class of implementation OkHttpCommunicator.
  */
 public class OkHttpCommunicator implements IConnection {
-    private String encoding;
     OkHttpClient client;
+    private String encoding;
 
     /**
      * Constructor where we create clinet as a new isnstance of OkHttpClient;
@@ -43,13 +48,23 @@ public class OkHttpCommunicator implements IConnection {
 
             try {
                 response = client.newCall(request).execute();
+                response.header("encoding",getEncoding());
                 responseString = response.body().string();
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
         return responseString;
+    }
+
+    /**
+     * @return Encoding for current connection
+     */
+    @Override
+    public String getEncoding() {
+        return encoding;
     }
 
     /**
@@ -62,15 +77,7 @@ public class OkHttpCommunicator implements IConnection {
         this.encoding = encoding;
     }
 
-    /**
-     * @return Encoding for current connection
-     */
-    @Override
-    public String getEncoding() {
-        return encoding;
-    }
-
-    private boolean isValidAddress(String mBaseUrl){
+    private boolean isValidAddress(String mBaseUrl) {
         boolean isValidAddress = false;
         try {
             URL url = new URL(mBaseUrl);
