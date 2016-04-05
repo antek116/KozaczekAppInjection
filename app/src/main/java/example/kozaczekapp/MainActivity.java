@@ -38,6 +38,9 @@ public class MainActivity extends AppCompatActivity {
     public static final String FRAGMENT_KEY = "ArticleListFragmentSaveState";
     public static final String SERVICE_URL = "http://www.kozaczek.pl/rss/plotki.xml";
     private static final String SCREEN_WIDTH = "SCREEN_WIDTH";
+    private static final int NO_INTERNET_CONNECTION_KIND = 2;
+    private static final int START_ANIMATE_KIND = 1;
+    private static final int STOP_ANIMATION_KIND = 0;
     private static boolean showNoConnectionMsg = true;
     private static boolean isActivityVisible;
     public int startingServiceCounter = 0;
@@ -173,11 +176,11 @@ public class MainActivity extends AppCompatActivity {
             image.setClickable(false);
             pullToRefresh.setEnabled(false);
             pullToRefresh.setRefreshing(false);
-            if (refreshing && kind == 1) {
+            if (refreshing && kind == START_ANIMATE_KIND) {
                 anim.setRepeatCount(ObjectAnimator.INFINITE);
                 anim.setRepeatMode(ObjectAnimator.RESTART);
                 anim.start();
-            } else if (refreshing && kind == 2) {
+            } else if (refreshing && kind == NO_INTERNET_CONNECTION_KIND) {
                 anim.setRepeatCount(1);
                 anim.setRepeatMode(ObjectAnimator.REVERSE);
                 anim.start();
@@ -252,7 +255,7 @@ public class MainActivity extends AppCompatActivity {
                 if (checkNetworkConnection()) {
                     getData();
                 } else {
-                    startOrStopRefreshingAnimation(true, 2);
+                    startOrStopRefreshingAnimation(true, NO_INTERNET_CONNECTION_KIND);
                     String message = getResources().getString(R.string.no_internet_connection);
                     Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                 }
@@ -267,7 +270,7 @@ public class MainActivity extends AppCompatActivity {
      * Method getData starts the animation of refresh button and starts service which downloads rss feeds
      */
     private void getData() {
-        startOrStopRefreshingAnimation(true, 1);
+        startOrStopRefreshingAnimation(true, START_ANIMATE_KIND);
         startService(getKozaczekServiceIntent());
         startingServiceCounter++;
     }
@@ -318,7 +321,7 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(List<Article> articlesFromDB) {
             listArticle.updateTasksInList(articlesFromDB);
             updateImageToLabCache(listArticle.getImageManager(), articlesFromDB);
-            startOrStopRefreshingAnimation(false, 0);
+            startOrStopRefreshingAnimation(false, STOP_ANIMATION_KIND);
         }
     }
 
