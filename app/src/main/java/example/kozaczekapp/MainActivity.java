@@ -19,15 +19,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import example.kozaczekapp.DatabaseConnection.DatabaseHandler;
 import example.kozaczekapp.Fragments.ArticleListFragment;
 import example.kozaczekapp.ImageDownloader.ImageManager;
-import example.kozaczekapp.Interfaces.OnVisibilityChange;
 import example.kozaczekapp.KozaczekItems.Article;
 import example.kozaczekapp.Preferences.PreferencesActivity;
 import example.kozaczekapp.Service.KozaczekService;
@@ -263,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
     private void initializationOfRefreshItemInMenu() {
 
         LayoutInflater inflater = (LayoutInflater) getApplication().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        FrameLayout frameLayout = (FrameLayout) inflater.inflate(R.layout.iv_refresh, null, false);
+        FrameLayout frameLayout = (FrameLayout) inflater.inflate( R.layout.iv_refresh,new LinearLayout(getApplicationContext()), false);
         image = (ImageView) frameLayout.findViewById(R.id.refresh);
         image.setOnClickListener(new View.OnClickListener() {
             @Override
