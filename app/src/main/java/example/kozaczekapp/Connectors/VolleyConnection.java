@@ -43,7 +43,7 @@ public class VolleyConnection implements IConnection {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                result="";
             }
         });
         queue.add(req);
