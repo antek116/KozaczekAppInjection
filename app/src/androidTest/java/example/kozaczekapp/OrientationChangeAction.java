@@ -17,7 +17,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 public class OrientationChangeAction implements ViewAction {
     private final int orientation;
 
-    private OrientationChangeAction(int orientation) {
+    private OrientationChangeAction(final int orientation) {
         this.orientation = orientation;
     }
 
@@ -43,7 +43,7 @@ public class OrientationChangeAction implements ViewAction {
     public void perform(UiController uiController, View view) {
         uiController.loopMainThreadUntilIdle();
         final Activity activity = (Activity) view.getContext();
-        activity.setRequestedOrientation(orientation);
+        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         Collection<Activity> resumedActivities = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED);
         if (resumedActivities.isEmpty()) {
