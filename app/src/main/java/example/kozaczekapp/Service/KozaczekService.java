@@ -37,7 +37,7 @@ public class KozaczekService extends IntentService {
         ((MyApp)getApplication()).getComponentInstance().inject(this);
         Log.d(TAG, "onHandleIntent: Service Started");
         String url = intent.getStringExtra(URL);
-        if (connection.getResponse(url) != null) {
+        if (connection.getResponse(url) != null){
             Parser parser1 = new Parser(connection.getResponse(url));
             parser1.setEncoding(connection.getEncoding());
             ArrayList<Article> articles = parser1.parse();

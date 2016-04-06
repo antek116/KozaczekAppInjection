@@ -21,7 +21,7 @@ import okhttp3.ResponseBody;
  */
 public class OkHttpCommunicator implements IConnection {
     OkHttpClient client;
-    private String encoding;
+    private static String encoding = "ISO-8859-1";
 
     /**
      * Constructor where we create clinet as a new isnstance of OkHttpClient;
@@ -66,18 +66,7 @@ public class OkHttpCommunicator implements IConnection {
     public String getEncoding() {
         return encoding;
     }
-
-    /**
-     * Sets encoding for current connection
-     *
-     * @param encoding to be set
-     */
-    @Override
-    public void setEncoding(String encoding) {
-        this.encoding = encoding;
-    }
-
-    private boolean isValidAddress(String mBaseUrl) {
+        private boolean isValidAddress(String mBaseUrl) {
         boolean isValidAddress = false;
         try {
             URL url = new URL(mBaseUrl);

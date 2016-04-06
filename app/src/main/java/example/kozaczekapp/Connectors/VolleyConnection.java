@@ -16,7 +16,7 @@ public class VolleyConnection implements IConnection {
 
     private Context context;
     private String result = null;
-    private String encoding;
+    private static String encoding = "ISO-8859-1";
 
     /**
      * Constructor
@@ -50,16 +50,6 @@ public class VolleyConnection implements IConnection {
         while (result == null) {
         }
         return result;
-    }
-
-    /**
-     * Sets encoding for current connection
-     *
-     * @param encoding to be set
-     */
-    @Override
-    public void setEncoding(String encoding) {
-        this.encoding = encoding;
     }
 
     /**
