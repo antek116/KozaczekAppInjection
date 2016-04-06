@@ -7,8 +7,6 @@ import android.os.Bundle;
 import example.kozaczekapp.R;
 
 /**
- * Created by Patryk Gwiazdowski on 06.04.2016.
- * // Good Job Patryk
  */
 public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 
@@ -22,6 +20,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
     public final static String PARAM_USER_PASS = "USER_PASS";
 
     private final int REQ_SIGNUP = 1;
+
     /**
      * {@inheritDoc}
      */
@@ -40,7 +39,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
     }
 
 
-     /**
+    /**
      * Called when submitting form
      * It gets field values from form, adds them to intent and calls finishLogin(Intent)
      */

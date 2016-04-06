@@ -14,12 +14,11 @@ import static android.accounts.AccountManager.KEY_BOOLEAN_RESULT;
 
 /**
  */
-public class MyAuthenticator extends AbstractAccountAuthenticator implements AccountGeneral{
+public class MyAuthenticator extends AbstractAccountAuthenticator implements AccountGeneral {
 
     private final Context context;
 
-    public MyAuthenticator(Context context)
-    {
+    public MyAuthenticator(Context context) {
         super(context);
         this.context = context;
     }
@@ -39,7 +38,6 @@ public class MyAuthenticator extends AbstractAccountAuthenticator implements Acc
      * It is called when user click Add Account in device settings
      *
      * @return Bundle with intent to start AuthenticatorActivity
-     * TODO: probably it is important
      */
     @Override
     public Bundle addAccount(AccountAuthenticatorResponse response, String accountType, String authTokenType, String[] requiredFeatures, Bundle options) throws NetworkErrorException {
@@ -66,7 +64,6 @@ public class MyAuthenticator extends AbstractAccountAuthenticator implements Acc
     /**
      * Gets an authtoken for an account from previous successful login on device.
      * If there is no account user will be prompted to log-in
-     * TODO probably it is important
      */
     @Override
     public Bundle getAuthToken(AccountAuthenticatorResponse response, Account account, String authTokenType, Bundle options) throws NetworkErrorException {
@@ -87,14 +84,7 @@ public class MyAuthenticator extends AbstractAccountAuthenticator implements Acc
 
         // Lets give another try to authenticate the user
         if (TextUtils.isEmpty(authToken)) {
-            final String password = am.getPassword(account);
-            if (password != null) {
-                try {
-//                    authToken = sServerAuthenticate.userSignIn(account.name, password, authTokenType);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+            authToken = "TEST_AUTH_TOKEN";
         }
 
         // If we get an authToken - we return it
