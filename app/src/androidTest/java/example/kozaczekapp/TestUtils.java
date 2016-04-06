@@ -8,7 +8,7 @@ import android.view.View;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 
-import example.kozaczekapp.fragments.ArticleListAdapter;
+import example.kozaczekapp.fragments2.ArticleListAdapter;
 
 import static android.support.test.espresso.core.deps.guava.base.Preconditions.checkNotNull;
 

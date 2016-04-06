@@ -26,22 +26,22 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".preferences.PreferencesActivity"
+            android:name=".preferences2.PreferencesActivity"
             android:label="@string/preferencesLabel"
             android:screenOrientation="nosensor" />
 
         <service
-            android:name=".service.KozaczekService"
+            android:name=".service2.KozaczekService"
             android:label="@string/service_name" />
-        <service android:name=".authenticator.AuthenticatorService">
+        <service android:name=".authenticator2.AuthenticatorService">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
         </service>
 
         <provider
-            android:name=".databaseConnection.RssContentProvider"
-            android:authorities="example.kozaczekapp.databaseConnection.RssContentProvider"
+            android:name=".databaseConnection2.RssContentProvider"
+            android:authorities="example.kozaczekapp.databaseConnection2.RssContentProvider"
             android:exported="false" />
     </application>
 

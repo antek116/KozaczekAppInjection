@@ -10,8 +10,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import java.util.List;
 
-import example.kozaczekapp.databaseConnection.DatabaseHandler;
-import example.kozaczekapp.kozaczekItems.Article;
+import example.kozaczekapp.databaseConnection2.DatabaseHandler;
+import example.kozaczekapp.kozaczekItems2.Article;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;

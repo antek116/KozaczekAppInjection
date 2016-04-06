@@ -4,7 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <header
-        android:fragment="example.kozaczekapp.preferences.PreferenceFragment"
+        android:fragment="example.kozaczekapp.preferences2.PreferenceFragment"
         android:title="Download Preference"
         android:summary="Download Methods" />
 
