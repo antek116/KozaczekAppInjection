@@ -1,19 +1,21 @@
 package example.kozaczekapp.Authenticator;
 
-import android.accounts.*;
+import android.accounts.AbstractAccountAuthenticator;
+import android.accounts.Account;
+import android.accounts.AccountAuthenticatorResponse;
+import android.accounts.AccountManager;
+import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 
 import static android.accounts.AccountManager.KEY_BOOLEAN_RESULT;
 
 /**
  */
-public class MyAuthenticator extends AbstractAccountAuthenticator {
+public class MyAuthenticator extends AbstractAccountAuthenticator implements AccountGeneral{
 
-    private String TAG = "UdinicAuthenticator";
     private final Context context;
 
     public MyAuthenticator(Context context)
@@ -41,7 +43,6 @@ public class MyAuthenticator extends AbstractAccountAuthenticator {
      */
     @Override
     public Bundle addAccount(AccountAuthenticatorResponse response, String accountType, String authTokenType, String[] requiredFeatures, Bundle options) throws NetworkErrorException {
-        Log.d("udinic", TAG + "> addAccount");
 
         final Intent intent = new Intent(context, AuthenticatorActivity.class);
         intent.putExtra(AuthenticatorActivity.ARG_ACCOUNT_TYPE, accountType);
@@ -69,7 +70,6 @@ public class MyAuthenticator extends AbstractAccountAuthenticator {
      */
     @Override
     public Bundle getAuthToken(AccountAuthenticatorResponse response, Account account, String authTokenType, Bundle options) throws NetworkErrorException {
-        Log.d("udinic", TAG + "> getAuthToken");
 
         // If the caller requested an authToken type we don't support, then
         // return an error
@@ -82,18 +82,15 @@ public class MyAuthenticator extends AbstractAccountAuthenticator {
         // Extract the username and password from the Account Manager, and ask
         // the server for an appropriate AuthToken.
         final AccountManager am = AccountManager.get(context);
-
         String authToken = am.peekAuthToken(account, authTokenType);
 
-        Log.d("udinic", TAG + "> peekAuthToken returned - " + authToken);
 
         // Lets give another try to authenticate the user
         if (TextUtils.isEmpty(authToken)) {
             final String password = am.getPassword(account);
             if (password != null) {
                 try {
-                    Log.d("udinic", TAG + "> re-authenticating with the existing password");
-                    authToken = sServerAuthenticate.userSignIn(account.name, password, authTokenType);
+//                    authToken = sServerAuthenticate.userSignIn(account.name, password, authTokenType);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -127,7 +124,7 @@ public class MyAuthenticator extends AbstractAccountAuthenticator {
      */
     @Override
     public String getAuthTokenLabel(String authTokenType) {
-        if (AUTHTOKEN_TYPE_FULL_ACCESS.equals(authTokenType))
+        if (AccountGeneral.AUTHTOKEN_TYPE_FULL_ACCESS.equals(authTokenType))
             return AUTHTOKEN_TYPE_FULL_ACCESS_LABEL;
         else if (AUTHTOKEN_TYPE_READ_ONLY.equals(authTokenType))
             return AUTHTOKEN_TYPE_READ_ONLY_LABEL;
