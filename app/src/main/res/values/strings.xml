@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">KozaczekApp</string>
+    <string name="app_name">Kozaczek</string>
     <string name="action_settings">Settings</string>
     <string name="service_name">KozaczekService</string>
     <string name="option">Option</string>
