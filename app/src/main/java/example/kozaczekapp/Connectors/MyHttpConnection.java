@@ -17,7 +17,7 @@ import example.kozaczekapp.ConnectionProvider.IConnection;
  */
 public class MyHttpConnection implements IConnection {
 
-    private String encoding;
+    private static String encoding = "ISO-8859-2";
 
     /**
      * Method used to get Response from Server.
@@ -38,24 +38,13 @@ public class MyHttpConnection implements IConnection {
             try {
                 response = httpClient.execute(httpGet);
                 HttpEntity r_entity = response.getEntity();
-                xmlString = EntityUtils.toString(r_entity, getEncoding());
+                xmlString = EntityUtils.toString(r_entity, encoding);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
         return xmlString;
     }
-
-    /**
-     * Sets encoding for current connection
-     *
-     * @param encoding to be set
-     */
-    @Override
-    public void setEncoding(String encoding) {
-        this.encoding = encoding;
-    }
-
     /**
      * @return Encoding for current connection
      */

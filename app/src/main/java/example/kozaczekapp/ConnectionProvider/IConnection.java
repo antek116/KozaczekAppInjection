@@ -11,12 +11,6 @@ public interface IConnection {
     String getResponse(String mBaseUrl);
 
     /**
-     * Sets encoding for current connection
-     * @param encoding to be set
-     */
-    void setEncoding(String encoding);
-
-    /**
      *
      * @return Encoding for current connection
      */
