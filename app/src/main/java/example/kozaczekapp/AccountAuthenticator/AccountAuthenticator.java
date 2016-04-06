@@ -5,6 +5,7 @@ import android.accounts.Account;
 import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.NetworkErrorException;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 public class AccountAuthenticator extends AbstractAccountAuthenticator {
@@ -19,7 +20,14 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
 
     @Override
     public Bundle addAccount(AccountAuthenticatorResponse response, String accountType, String authTokenType, String[] requiredFeatures, Bundle options) throws NetworkErrorException {
-        return null;
+        final Intent intent = new Intent(mContext, AuthenticatorActivity.class);
+        intent.putExtra(AuthenticatorActivity.ARG_ACCOUNT_TYPE, accountType);
+        intent.putExtra(AuthenticatorActivity.ARG_AUTH_TYPE, authTokenType);
+        intent.putExtra(AuthenticatorActivity.ARG_IS_ADDING_NEW_ACCOUNT, true);
+        intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
+        final Bundle bundle = new Bundle();
+        bundle.putParcelable(AccountManager.KEY_INTENT, intent);
+        return bundle;
     }
 
     @Override
