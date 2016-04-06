@@ -10,15 +10,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import static android.accounts.AccountManager.KEY_BOOLEAN_RESULT;
-
-/**
- */
-public class MyAuthenticator extends AbstractAccountAuthenticator implements AccountGeneral {
+public class AccountAuthenticator extends AbstractAccountAuthenticator implements AccountConstants {
 
     private final Context context;
 
-    public MyAuthenticator(Context context) {
+    public AccountAuthenticator(Context context) {
         super(context);
         this.context = context;
     }
@@ -70,7 +66,7 @@ public class MyAuthenticator extends AbstractAccountAuthenticator implements Acc
 
         // If the caller requested an authToken type we don't support, then
         // return an error
-        if (!authTokenType.equals(AccountGeneral.AUTHTOKEN_TYPE_READ_ONLY) && !authTokenType.equals(AccountGeneral.AUTHTOKEN_TYPE_FULL_ACCESS)) {
+        if (!authTokenType.equals(AccountConstants.AUTHTOKEN_TYPE_READ_ONLY) && !authTokenType.equals(AccountConstants.AUTHTOKEN_TYPE_FULL_ACCESS)) {
             final Bundle result = new Bundle();
             result.putString(AccountManager.KEY_ERROR_MESSAGE, "invalid authTokenType");
             return result;
@@ -114,7 +110,7 @@ public class MyAuthenticator extends AbstractAccountAuthenticator implements Acc
      */
     @Override
     public String getAuthTokenLabel(String authTokenType) {
-        if (AccountGeneral.AUTHTOKEN_TYPE_FULL_ACCESS.equals(authTokenType))
+        if (AccountConstants.AUTHTOKEN_TYPE_FULL_ACCESS.equals(authTokenType))
             return AUTHTOKEN_TYPE_FULL_ACCESS_LABEL;
         else if (AUTHTOKEN_TYPE_READ_ONLY.equals(authTokenType))
             return AUTHTOKEN_TYPE_READ_ONLY_LABEL;
@@ -136,7 +132,7 @@ public class MyAuthenticator extends AbstractAccountAuthenticator implements Acc
     @Override
     public Bundle hasFeatures(AccountAuthenticatorResponse response, Account account, String[] features) throws NetworkErrorException {
         final Bundle result = new Bundle();
-        result.putBoolean(KEY_BOOLEAN_RESULT, false);
+        result.putBoolean(AccountManager.KEY_BOOLEAN_RESULT, false);
         return result;
     }
 }

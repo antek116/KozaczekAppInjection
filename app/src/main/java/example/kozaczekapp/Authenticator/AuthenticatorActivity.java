@@ -6,8 +6,6 @@ import android.os.Bundle;
 
 import example.kozaczekapp.R;
 
-/**
- */
 public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 
     public final static String ARG_ACCOUNT_TYPE = "ACCOUNT_TYPE";

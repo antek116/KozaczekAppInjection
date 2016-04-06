@@ -1,7 +1,6 @@
 package example.kozaczekapp.Authenticator;
 
-interface AccountGeneral {
-
+interface AccountConstants {
     /**
      * Auth token types
      */
@@ -10,6 +9,4 @@ interface AccountGeneral {
 
     String AUTHTOKEN_TYPE_FULL_ACCESS = "Full access";
     String AUTHTOKEN_TYPE_FULL_ACCESS_LABEL = "Full access to account";
-
-
 }
