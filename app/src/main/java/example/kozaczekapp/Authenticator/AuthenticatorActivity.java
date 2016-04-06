@@ -5,6 +5,7 @@ import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -29,7 +30,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
     private EditText editTextName;
     private EditText editTextSurname;
     private EditText editTextEmail;
-    private Button buttonConfirm;
     private AccountManager accountManager;
 
     /**
@@ -42,7 +42,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         editTextName = (EditText) findViewById(R.id.editTextName);
         editTextSurname = (EditText) findViewById(R.id.editTextSurname);
         editTextEmail = (EditText) findViewById(R.id.editTextEnterEmail);
-        buttonConfirm = (Button) findViewById(R.id.buttonConfirmLogin);
 
     }
 
@@ -50,7 +49,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
      * Called when submitting form
      * It gets field values from form, adds them to intent and calls finishLogin(Intent)
      */
-    public void submit() {
+    public void onSubmitClick(View view) {
         Intent intent = new Intent();
         intent.putExtra(AccountKeyStorage.KEY_ACCOUNT_NAME, editTextName.getText().toString());
         intent.putExtra(AccountKeyStorage.KEY_ACCOUNT_SURNAME, editTextSurname.getText().toString());
@@ -58,19 +57,14 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         finishLogin(intent);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-    }
 
     /**
      * Creates or updates Account with data specified in intent
      * @param intent created in submit class
      */
     private void finishLogin(Intent intent) {
-        accountManager.addAccountExplicitly()
+        final Account account = new Account(intent.getStringExtra(AccountKeyStorage.KEY_ACCOUNT_NAME),"type");
+        accountManager.addAccountExplicitly(account, null, null);
+        setAccountAuthenticatorResult(intent.getExtras());
     }
 }
