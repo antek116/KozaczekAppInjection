@@ -4,7 +4,6 @@ import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.NetworkErrorException;
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -29,11 +28,11 @@ public class MyAuthenticator extends AbstractAccountAuthenticator {
     }
 
     /**
-     *
      * Adds an account of the specified accountType.
      * It is called when user click Add Account in device settings
-     * @return Bundle woth intent to start AuthenticatorActivity
-     * TODO probably it is important
+     *
+     * @return Bundle with intent to start AuthenticatorActivity
+     * TODO: probably it is important
      */
     @Override
     public Bundle addAccount(AccountAuthenticatorResponse response, String accountType, String authTokenType, String[] requiredFeatures, Bundle options) throws NetworkErrorException {
@@ -49,8 +48,8 @@ public class MyAuthenticator extends AbstractAccountAuthenticator {
     }
 
     /**
-     * Gets an authtoken for an account from previous succesful login on device.
-     * If ther eis no account user will be prompted to log-in
+     * Gets an authtoken for an account from previous successful login on device.
+     * If there is no account user will be prompted to log-in
      * TODO probably it is important
      */
     @Override
