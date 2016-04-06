@@ -1,15 +1,6 @@
 package example.kozaczekapp.Authenticator;
 
 interface AccountGeneral {
-    /**
-     * Account type id
-     */
-    String ACCOUNT_TYPE = "com.udinic.auth_example";
-
-    /**
-     * Account name
-     */
-    public static final String ACCOUNT_NAME = "Udinic";
 
     /**
      * Auth token types
