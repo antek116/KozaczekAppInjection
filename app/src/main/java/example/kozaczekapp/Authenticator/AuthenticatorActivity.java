@@ -11,6 +11,7 @@ import example.kozaczekapp.R;
  * // Good Job Patryk
  */
 public class AuthenticatorActivity extends AccountAuthenticatorActivity {
+
     public final static String ARG_ACCOUNT_TYPE = "ACCOUNT_TYPE";
     public final static String ARG_AUTH_TYPE = "AUTH_TYPE";
     public final static String ARG_ACCOUNT_NAME = "ACCOUNT_NAME";
@@ -38,7 +39,8 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    /**
+
+     /**
      * Called when submitting form
      * It gets field values from form, adds them to intent and calls finishLogin(Intent)
      */
