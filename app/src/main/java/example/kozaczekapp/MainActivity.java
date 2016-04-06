@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
      * @param refreshing true if wanna start animation, false if wanna stop animation, animation is stoping by dooing last circle.
      * @param kind       1 - Infinite animation, 2 - one loop animation.
      */
-    public void startOrStopRefreshingAnimation(boolean refreshing, int kind) {
+    public void refreshingAnimationSetUp(boolean refreshing, int kind) {
         if (refreshMenuItem != null) {
             image.setClickable(false);
             pullToRefresh.setEnabled(false);
@@ -259,7 +259,7 @@ public class MainActivity extends AppCompatActivity {
                 if (checkNetworkConnection()) {
                     getData();
                 } else {
-                    startOrStopRefreshingAnimation(true, NO_INTERNET_CONNECTION_KIND);
+                    refreshingAnimationSetUp(true, NO_INTERNET_CONNECTION_KIND);
                     String message = getResources().getString(R.string.no_internet_connection);
                     Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                 }
@@ -274,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
      * Method getData starts the animation of refresh button and starts service which downloads rss feeds
      */
     private void getData() {
-        startOrStopRefreshingAnimation(true, START_ANIMATE_KIND);
+        refreshingAnimationSetUp(true, START_ANIMATE_KIND);
         startService(getKozaczekServiceIntent());
         startingServiceCounter++;
     }
@@ -325,7 +325,7 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(List<Article> articlesFromDB) {
             listArticle.updateTasksInList(articlesFromDB);
             updateImageToLabCache(listArticle.getImageManager(), articlesFromDB);
-            startOrStopRefreshingAnimation(false, STOP_ANIMATION_KIND);
+            refreshingAnimationSetUp(false, STOP_ANIMATION_KIND);
         }
     }
 
