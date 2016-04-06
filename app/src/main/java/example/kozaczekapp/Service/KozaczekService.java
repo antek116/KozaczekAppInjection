@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-import example.kozaczekapp.application.MyApp;
+import example.kozaczekapp.application2.MyApp;
 import example.kozaczekapp.connectionProvider.IConnection;
 import example.kozaczekapp.databaseConnection.DatabaseHandler;
 import example.kozaczekapp.kozaczekItems.Article;

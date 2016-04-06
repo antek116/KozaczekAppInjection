@@ -1,4 +1,4 @@
-package example.kozaczekapp.application;
+package example.kozaczekapp.application2;
 
 import android.app.Application;
 
