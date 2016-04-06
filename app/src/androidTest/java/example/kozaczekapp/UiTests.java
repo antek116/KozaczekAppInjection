@@ -61,23 +61,23 @@ public class UiTests {
         assertFalse(activityVisibilityState);
     }
 
-//    @Test
-//    public void testRecyclerViewDBCompatibility() {
-//
-//        // given
-//        DatabaseHandler databaseHandler = new DatabaseHandler(activityRule.getActivity());
-//        List<Article> articles = databaseHandler.getAllArticles();
-//        if (articles != null) {
-//            int listPosition = 3;
-//            String title = articles.get(listPosition).getTitle();
-//
-//            // when
-//            ViewInteraction viewInteraction = onView(withId(R.id.allTasks)).
-//                    perform(scrollToPosition(listPosition));
-//            // then
-//            viewInteraction.check(matches(atPosition(listPosition, hasDescendant(withText(title)))));
-//        }
-//    }
+    @Test
+    public void testRecyclerViewDBCompatibility() {
+
+        // given
+        DatabaseHandler databaseHandler = new DatabaseHandler(activityRule.getActivity());
+        List<Article> articles = databaseHandler.getAllArticles();
+        if (articles != null) {
+            int listPosition = 3;
+            String title = articles.get(listPosition).getTitle();
+
+            // when
+            ViewInteraction viewInteraction = onView(withId(R.id.allTasks)).
+                    perform(scrollToPosition(listPosition));
+            // then
+            viewInteraction.check(matches(atPosition(listPosition, hasDescendant(withText(title)))));
+        }
+    }
 
     @Test
     public void testIfServiceOnlyOnceStarted() {
