@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
+import example.kozaczekapp.Application.MyApp;
 import example.kozaczekapp.Component.DaggerIConnectionComponent;
 import example.kozaczekapp.Component.IConnectionComponent;
 import example.kozaczekapp.ConnectionProvider.IConnection;
@@ -38,7 +39,7 @@ public class KozaczekService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        component.inject(this);
+        ((MyApp)getApplication()).getComponentInstance().inject(this);
         Log.d(TAG, "onHandleIntent: Service Started");
         String url = intent.getStringExtra(URL);
         if (connection.getResponse(url) != null) {
@@ -48,28 +49,6 @@ public class KozaczekService extends IntentService {
             DatabaseHandler db = new DatabaseHandler(this);
             db.addArticleList(articles);
         }
-    }
-    private IConnectionComponent getComponentInstance() {
-        if (component == null) {
-            return component = DaggerIConnectionComponent
-                    .builder()
-                    .connectionModule(new ConnectionModule(getBaseContext()))
-                    .build();
-        } else {
-            return component;
-        }
-    }
-
-    @Override
-    public void onDestroy(){
-        super.onDestroy();
-    }
-
-    @Override
-    public void onStart(Intent intent, int startId) {
-        this.component = getComponentInstance();
-        super.onStart(intent, startId);
-
     }
 }
 
