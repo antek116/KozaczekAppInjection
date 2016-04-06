@@ -1,4 +1,4 @@
-package example.kozaczekapp.Fragments;
+package example.kozaczekapp.fragments;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -16,7 +16,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import example.kozaczekapp.KozaczekItems.Article;
+import example.kozaczekapp.kozaczekItems.Article;
 import example.kozaczekapp.R;
 
 /**

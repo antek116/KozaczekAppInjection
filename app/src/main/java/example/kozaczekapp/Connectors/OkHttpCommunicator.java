@@ -1,20 +1,13 @@
-package example.kozaczekapp.Connectors;
-
-import android.util.Log;
-
-import org.apache.http.entity.ContentType;
+package example.kozaczekapp.connectors;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.Charset;
 
-import example.kozaczekapp.ConnectionProvider.IConnection;
-import okhttp3.MediaType;
+import example.kozaczekapp.connectionProvider.IConnection;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 /**
  * Class of implementation OkHttpCommunicator.

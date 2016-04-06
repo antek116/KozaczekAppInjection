@@ -1,4 +1,4 @@
-package example.kozaczekapp.Connectors;
+package example.kozaczekapp.connectors;
 
 import org.apache.commons.io.IOUtils;
 
@@ -8,7 +8,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import example.kozaczekapp.ConnectionProvider.IConnection;
+import example.kozaczekapp.connectionProvider.IConnection;
 
 public class MyUrlConnection implements IConnection {
     private static String encoding = "ISO-8859-2";

@@ -1,10 +1,10 @@
-package example.kozaczekapp.KozaczekItems;
+package example.kozaczekapp.kozaczekItems;
 
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import example.kozaczekapp.DatabaseConnection.RssContract;
+import example.kozaczekapp.databaseConnection.RssContract;
 
 /**
  * Article class implementation of one Article.

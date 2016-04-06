@@ -1,11 +1,10 @@
-package example.kozaczekapp.ImageDownloader;
+package example.kozaczekapp.imageDownloader;
 
 import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v4.util.LruCache;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -14,7 +13,7 @@ import java.util.concurrent.Executors;
 
 import javax.inject.Singleton;
 
-import example.kozaczekapp.KozaczekItems.Article;
+import example.kozaczekapp.kozaczekItems.Article;
 
 /**
  * Implementation of Class ImageManager;

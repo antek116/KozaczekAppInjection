@@ -1,4 +1,4 @@
-package example.kozaczekapp.Preferences;
+package example.kozaczekapp.preferences;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;

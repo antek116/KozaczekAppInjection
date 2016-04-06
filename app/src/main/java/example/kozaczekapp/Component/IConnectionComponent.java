@@ -1,15 +1,11 @@
-package example.kozaczekapp.Component;
+package example.kozaczekapp.component;
 
 
 import javax.inject.Singleton;
 
 import dagger.Component;
-import example.kozaczekapp.Connectors.MyHttpConnection;
-import example.kozaczekapp.Connectors.MyUrlConnection;
-import example.kozaczekapp.Connectors.OkHttpCommunicator;
-import example.kozaczekapp.Connectors.VolleyConnection;
-import example.kozaczekapp.Module.ConnectionModule;
-import example.kozaczekapp.Service.KozaczekService;
+import example.kozaczekapp.module.ConnectionModule;
+import example.kozaczekapp.service.KozaczekService;
 
 
 /**

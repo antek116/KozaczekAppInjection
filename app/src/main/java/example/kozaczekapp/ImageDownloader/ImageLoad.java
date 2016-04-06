@@ -1,4 +1,4 @@
-package example.kozaczekapp.ImageDownloader;
+package example.kozaczekapp.imageDownloader;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

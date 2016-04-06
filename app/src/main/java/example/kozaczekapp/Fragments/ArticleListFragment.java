@@ -1,4 +1,4 @@
-package example.kozaczekapp.Fragments;
+package example.kozaczekapp.fragments;
 
 
 import android.app.Activity;
@@ -13,8 +13,8 @@ import android.view.ViewGroup;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
-import example.kozaczekapp.ImageDownloader.ImageManager;
-import example.kozaczekapp.KozaczekItems.Article;
+import example.kozaczekapp.imageDownloader.ImageManager;
+import example.kozaczekapp.kozaczekItems.Article;
 import example.kozaczekapp.R;
 
 /**

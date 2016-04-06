@@ -1,18 +1,13 @@
-package example.kozaczekapp.Service;
+package example.kozaczekapp.service;
 
-import android.util.Log;
-
-import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
@@ -20,8 +15,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import example.kozaczekapp.KozaczekItems.Article;
-import example.kozaczekapp.KozaczekItems.Image;
+import example.kozaczekapp.kozaczekItems.Article;
+import example.kozaczekapp.kozaczekItems.Image;
 
 public class Parser {
     private static final String ITEM_TAG_NAME = "item";

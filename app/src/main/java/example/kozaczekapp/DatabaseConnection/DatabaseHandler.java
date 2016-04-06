@@ -1,4 +1,4 @@
-package example.kozaczekapp.DatabaseConnection;
+package example.kozaczekapp.databaseConnection;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -12,7 +12,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import example.kozaczekapp.KozaczekItems.Article;
+import example.kozaczekapp.kozaczekItems.Article;
 
 /**
  * A helper class that manages database.

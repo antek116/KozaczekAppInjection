@@ -1,4 +1,4 @@
-package example.kozaczekapp.Authenticator;
+package example.kozaczekapp.authenticator;
 
 import android.app.Service;
 import android.content.Intent;

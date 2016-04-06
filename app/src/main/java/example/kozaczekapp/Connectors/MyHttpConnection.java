@@ -1,4 +1,4 @@
-package example.kozaczekapp.Connectors;
+package example.kozaczekapp.connectors;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -9,7 +9,7 @@ import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 
-import example.kozaczekapp.ConnectionProvider.IConnection;
+import example.kozaczekapp.connectionProvider.IConnection;
 
 
 /**

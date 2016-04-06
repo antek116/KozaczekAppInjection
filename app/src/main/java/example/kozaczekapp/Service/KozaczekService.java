@@ -1,4 +1,4 @@
-package example.kozaczekapp.Service;
+package example.kozaczekapp.service;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -9,10 +9,10 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-import example.kozaczekapp.Application.MyApp;
-import example.kozaczekapp.ConnectionProvider.IConnection;
-import example.kozaczekapp.DatabaseConnection.DatabaseHandler;
-import example.kozaczekapp.KozaczekItems.Article;
+import example.kozaczekapp.application.MyApp;
+import example.kozaczekapp.connectionProvider.IConnection;
+import example.kozaczekapp.databaseConnection.DatabaseHandler;
+import example.kozaczekapp.kozaczekItems.Article;
 
 
 /**

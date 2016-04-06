@@ -1,4 +1,4 @@
-package example.kozaczekapp.Module;
+package example.kozaczekapp.module;
 
 
 import android.content.Context;
@@ -9,11 +9,11 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import example.kozaczekapp.ConnectionProvider.IConnection;
-import example.kozaczekapp.Connectors.MyHttpConnection;
-import example.kozaczekapp.Connectors.MyUrlConnection;
-import example.kozaczekapp.Connectors.OkHttpCommunicator;
-import example.kozaczekapp.Connectors.VolleyConnection;
+import example.kozaczekapp.connectionProvider.IConnection;
+import example.kozaczekapp.connectors.MyHttpConnection;
+import example.kozaczekapp.connectors.MyUrlConnection;
+import example.kozaczekapp.connectors.OkHttpCommunicator;
+import example.kozaczekapp.connectors.VolleyConnection;
 import example.kozaczekapp.R;
 
 /**

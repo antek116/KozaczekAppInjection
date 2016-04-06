@@ -1,10 +1,10 @@
-package example.kozaczekapp.Application;
+package example.kozaczekapp.application;
 
 import android.app.Application;
 
-import example.kozaczekapp.Component.DaggerIConnectionComponent;
-import example.kozaczekapp.Component.IConnectionComponent;
-import example.kozaczekapp.Module.ConnectionModule;
+import example.kozaczekapp.component.DaggerIConnectionComponent;
+import example.kozaczekapp.component.IConnectionComponent;
+import example.kozaczekapp.module.ConnectionModule;
 
 /**
  * Creating Singleton IConnectionComponent instance

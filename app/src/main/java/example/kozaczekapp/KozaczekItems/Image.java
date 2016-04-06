@@ -1,4 +1,4 @@
-package example.kozaczekapp.KozaczekItems;
+package example.kozaczekapp.kozaczekItems;
 
 import android.os.Parcel;
 import android.os.Parcelable;

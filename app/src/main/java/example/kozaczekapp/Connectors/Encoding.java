@@ -1,4 +1,4 @@
-package example.kozaczekapp.Connectors;
+package example.kozaczekapp.connectors;
 
 /**
  * Created by Patryk Gwiazdowski on 04.04.2016.

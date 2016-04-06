@@ -1,8 +1,6 @@
-package example.kozaczekapp.ConnectionProvider;
+package example.kozaczekapp.connectionProvider;
 
 import javax.inject.Inject;
-
-import example.kozaczekapp.ImageDownloader.ImageManager;
 
 
 /**

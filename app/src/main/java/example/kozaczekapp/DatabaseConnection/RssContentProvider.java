@@ -1,4 +1,4 @@
-package example.kozaczekapp.DatabaseConnection;
+package example.kozaczekapp.databaseConnection;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;

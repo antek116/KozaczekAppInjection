@@ -1,9 +1,9 @@
-package example.kozaczekapp.Application;
+package example.kozaczekapp.application;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import example.kozaczekapp.Component.IConnectionComponent;
+import example.kozaczekapp.component.IConnectionComponent;
 
 import static org.junit.Assert.*;
 

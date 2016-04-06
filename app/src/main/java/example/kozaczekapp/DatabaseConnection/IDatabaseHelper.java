@@ -1,8 +1,8 @@
-package example.kozaczekapp.DatabaseConnection;
+package example.kozaczekapp.databaseConnection;
 
 import java.util.List;
 
-import example.kozaczekapp.KozaczekItems.Article;
+import example.kozaczekapp.kozaczekItems.Article;
 
 /**
  * interface that contains set of priceless methods using to manage database

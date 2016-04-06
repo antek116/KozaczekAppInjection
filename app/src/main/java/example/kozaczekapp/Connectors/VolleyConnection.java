@@ -1,4 +1,4 @@
-package example.kozaczekapp.Connectors;
+package example.kozaczekapp.connectors;
 
 
 import android.content.Context;
@@ -10,7 +10,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-import example.kozaczekapp.ConnectionProvider.IConnection;
+import example.kozaczekapp.connectionProvider.IConnection;
 
 public class VolleyConnection implements IConnection {
 

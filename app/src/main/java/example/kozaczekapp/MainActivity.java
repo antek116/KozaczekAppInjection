@@ -26,13 +26,13 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 import java.util.List;
 
-import example.kozaczekapp.DatabaseConnection.DatabaseHandler;
-import example.kozaczekapp.DatabaseConnection.RssContract;
-import example.kozaczekapp.Fragments.ArticleListFragment;
-import example.kozaczekapp.ImageDownloader.ImageManager;
-import example.kozaczekapp.KozaczekItems.Article;
-import example.kozaczekapp.Preferences.PreferencesActivity;
-import example.kozaczekapp.Service.KozaczekService;
+import example.kozaczekapp.databaseConnection.DatabaseHandler;
+import example.kozaczekapp.databaseConnection.RssContract;
+import example.kozaczekapp.fragments.ArticleListFragment;
+import example.kozaczekapp.imageDownloader.ImageManager;
+import example.kozaczekapp.kozaczekItems.Article;
+import example.kozaczekapp.preferences.PreferencesActivity;
+import example.kozaczekapp.service.KozaczekService;
 
 public class MainActivity extends AppCompatActivity {
     public static final String FRAGMENT_KEY = "ArticleListFragmentSaveState";

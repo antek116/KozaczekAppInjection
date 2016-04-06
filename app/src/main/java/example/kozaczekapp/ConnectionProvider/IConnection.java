@@ -1,4 +1,4 @@
-package example.kozaczekapp.ConnectionProvider;
+package example.kozaczekapp.connectionProvider;
 
 
 public interface IConnection {

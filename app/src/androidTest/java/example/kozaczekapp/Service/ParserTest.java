@@ -1,4 +1,4 @@
-package example.kozaczekapp.Service;
+package example.kozaczekapp.service;
 
 import android.support.test.runner.AndroidJUnit4;
 
@@ -7,7 +7,7 @@ import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 
-import example.kozaczekapp.KozaczekItems.Article;
+import example.kozaczekapp.kozaczekItems.Article;
 
 import static org.junit.Assert.*;
 

@@ -1,4 +1,4 @@
-package example.kozaczekapp.Connectors;
+package example.kozaczekapp.connectors;
 
 import android.support.test.runner.AndroidJUnit4;
 

@@ -1,4 +1,4 @@
-package example.kozaczekapp.ImageDownloader;
+package example.kozaczekapp.imageDownloader;
 
 
 import android.graphics.Bitmap;
@@ -12,8 +12,8 @@ import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 
-import example.kozaczekapp.KozaczekItems.Article;
-import example.kozaczekapp.KozaczekItems.Image;
+import example.kozaczekapp.kozaczekItems.Article;
+import example.kozaczekapp.kozaczekItems.Image;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;

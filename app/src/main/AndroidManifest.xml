@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="example.kozaczekapp">
 
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
@@ -7,12 +8,13 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
+        android:name=".application.MyApp"
         android:allowBackup="true"
-        android:name=".Application.MyApp"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="AllowBackup">
 
         <activity
             android:name=".MainActivity"
@@ -24,22 +26,23 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Preferences.PreferencesActivity"
+            android:name=".preferences.PreferencesActivity"
             android:label="@string/preferencesLabel"
-            android:screenOrientation="nosensor"/>
+            android:screenOrientation="nosensor" />
 
         <service
-            android:name=".Service.KozaczekService"
-            android:label="@string/service_name"/>
-        <service android:name=".Authenticator.AuthenticatorService">
+            android:name=".service.KozaczekService"
+            android:label="@string/service_name" />
+        <service android:name=".authenticator.AuthenticatorService">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
         </service>
+
         <provider
-            android:name=".DatabaseConnection.RssContentProvider"
-            android:authorities="example.kozaczekapp.DatabaseConnection.RssContentProvider"
-            android:exported="false"/>
+            android:name=".databaseConnection.RssContentProvider"
+            android:authorities="example.kozaczekapp.databaseConnection.RssContentProvider"
+            android:exported="false" />
     </application>
 
 

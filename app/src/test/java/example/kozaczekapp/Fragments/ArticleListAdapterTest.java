@@ -1,12 +1,12 @@
-package example.kozaczekapp.Fragments;
+package example.kozaczekapp.fragments;
 
 import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;
 import org.junit.Before;
 import org.junit.Test;
 import java.util.ArrayList;
-import example.kozaczekapp.KozaczekItems.Article;
-import example.kozaczekapp.KozaczekItems.Image;
+import example.kozaczekapp.kozaczekItems.Article;
+import example.kozaczekapp.kozaczekItems.Image;
 
 import static org.junit.Assert.*;
 
