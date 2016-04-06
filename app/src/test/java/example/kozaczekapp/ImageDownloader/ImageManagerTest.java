@@ -1,4 +1,4 @@
-package example.kozaczekapp.imageDownloader2;
+package example.kozaczekapp.imageDownloader;
 
 import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;
@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
-import example.kozaczekapp.kozaczekItems2.Article;
+import example.kozaczekapp.kozaczekItems.Article;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;

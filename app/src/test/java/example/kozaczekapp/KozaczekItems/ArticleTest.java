@@ -1,4 +1,4 @@
-package example.kozaczekapp.kozaczekItems2;
+package example.kozaczekapp.kozaczekItems;
 
 import org.junit.Before;
 import org.junit.Test;

@@ -3,7 +3,7 @@ package example.kozaczekapp.application;
 import org.junit.Before;
 import org.junit.Test;
 
-import example.kozaczekapp.component2.IConnectionComponent;
+import example.kozaczekapp.component.IConnectionComponent;
 
 import static org.junit.Assert.*;
 
