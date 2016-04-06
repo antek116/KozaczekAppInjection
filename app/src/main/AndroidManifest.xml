@@ -30,6 +30,11 @@
         <service
             android:name=".Service.KozaczekService"
             android:label="@string/service_name"/>
+        <service android:name=".Authenticator.AuthenticatorService">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+        </service>
         <provider
             android:name=".DatabaseConnection.RssContentProvider"
             android:authorities="example.kozaczekapp.DatabaseConnection.RssContentProvider"
