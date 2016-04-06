@@ -7,7 +7,7 @@ import example.kozaczekapp.Component.IConnectionComponent;
 import example.kozaczekapp.Module.ConnectionModule;
 
 /**
- * Creating SingleTone DaggerIConnectionComponent class
+ * Creating Singleton IConnectionComponent instance
  */
 public class MyApp extends Application {
 
