@@ -2,8 +2,11 @@ package example.kozaczekapp.Authenticator;
 
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
+import android.accounts.AccountManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.EditText;
 
 import example.kozaczekapp.R;
 
@@ -22,6 +25,13 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
     public final static String PARAM_USER_PASS = "USER_PASS";
 
     private final int REQ_SIGNUP = 1;
+
+    private EditText editTextName;
+    private EditText editTextSurname;
+    private EditText editTextEmail;
+    private Button buttonConfirm;
+    private AccountManager accountManager;
+
     /**
      * {@inheritDoc}
      */
@@ -29,6 +39,23 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.login_form_layout);
+        editTextName = (EditText) findViewById(R.id.editTextName);
+        editTextSurname = (EditText) findViewById(R.id.editTextSurname);
+        editTextEmail = (EditText) findViewById(R.id.editTextEnterEmail);
+        buttonConfirm = (Button) findViewById(R.id.buttonConfirmLogin);
+
+    }
+
+    /**
+     * Called when submitting form
+     * It gets field values from form, adds them to intent and calls finishLogin(Intent)
+     */
+    public void submit() {
+        Intent intent = new Intent();
+        intent.putExtra(AccountKeyStorage.KEY_ACCOUNT_NAME, editTextName.getText().toString());
+        intent.putExtra(AccountKeyStorage.KEY_ACCOUNT_SURNAME, editTextSurname.getText().toString());
+        intent.putExtra(AccountKeyStorage.KEY_ACCOUNT_EMAIL, editTextEmail.getText().toString());
+        finishLogin(intent);
     }
 
     /**
@@ -40,17 +67,10 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
     }
 
     /**
-     * Called when submiting form
-     * It gets field values from form, adds them to intent and calls finishLogin(Intent)
-     */
-    public void submit() {
-
-    }
-
-    /**
      * Creates or updates Account with data specified in intent
      * @param intent created in submit class
      */
     private void finishLogin(Intent intent) {
+        accountManager.addAccountExplicitly()
     }
 }

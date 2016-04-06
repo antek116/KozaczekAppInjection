@@ -16,4 +16,8 @@
     <string name="titleTextLayout">Title</string>
     <string name="descriptionTextLayout">description</string>
     <string name="pubDateTextLayout">Date</string>
+    <string name="enter_name">Enter name</string>
+    <string name="enter_surname">Enter surname</string>
+    <string name="enter_email">Enter email</string>
+    <string name="Confirm">Confirm</string>
 </resources>
