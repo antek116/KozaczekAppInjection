@@ -10,8 +10,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import java.util.List;
 
-import example.kozaczekapp.DatabaseConnection.DatabaseHandler;
-import example.kozaczekapp.KozaczekItems.Article;
+import example.kozaczekapp.databaseConnection.DatabaseHandler;
+import example.kozaczekapp.kozaczekItems.Article;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -51,6 +51,7 @@ public class UiTests {
         onView(withId(R.id.allTasks)).perform(
                 RecyclerViewActions.actionOnItemAtPosition(0, click()));
         try {
+            // FIXME może jakoś by się pozbyć ?
             Thread.sleep(500);
         } catch (InterruptedException e) {
             e.printStackTrace();

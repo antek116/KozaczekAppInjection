@@ -26,13 +26,13 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 import java.util.List;
 
-import example.kozaczekapp.DatabaseConnection.DatabaseHandler;
-import example.kozaczekapp.DatabaseConnection.RssContract;
-import example.kozaczekapp.Fragments.ArticleListFragment;
-import example.kozaczekapp.ImageDownloader.ImageManager;
-import example.kozaczekapp.KozaczekItems.Article;
-import example.kozaczekapp.Preferences.PreferencesActivity;
-import example.kozaczekapp.Service.KozaczekService;
+import example.kozaczekapp.databaseConnection.DatabaseHandler;
+import example.kozaczekapp.databaseConnection.RssContract;
+import example.kozaczekapp.fragments.ArticleListFragment;
+import example.kozaczekapp.imageDownloader.ImageManager;
+import example.kozaczekapp.kozaczekItems.Article;
+import example.kozaczekapp.preferences.PreferencesActivity;
+import example.kozaczekapp.service.KozaczekService;
 
 public class MainActivity extends AppCompatActivity {
     public static final String FRAGMENT_KEY = "ArticleListFragmentSaveState";
@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
      * @param refreshing true if wanna start animation, false if wanna stop animation, animation is stoping by dooing last circle.
      * @param kind       1 - Infinite animation, 2 - one loop animation.
      */
-    public void startOrStopRefreshingAnimation(boolean refreshing, int kind) {
+    public void refreshingAnimationSetUp(boolean refreshing, int kind) {
         if (refreshMenuItem != null) {
             image.setClickable(false);
             pullToRefresh.setEnabled(false);
@@ -259,7 +259,7 @@ public class MainActivity extends AppCompatActivity {
                 if (checkNetworkConnection()) {
                     getData();
                 } else {
-                    startOrStopRefreshingAnimation(true, NO_INTERNET_CONNECTION_KIND);
+                    refreshingAnimationSetUp(true, NO_INTERNET_CONNECTION_KIND);
                     String message = getResources().getString(R.string.no_internet_connection);
                     Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                 }
@@ -274,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
      * Method getData starts the animation of refresh button and starts service which downloads rss feeds
      */
     private void getData() {
-        startOrStopRefreshingAnimation(true, START_ANIMATE_KIND);
+        refreshingAnimationSetUp(true, START_ANIMATE_KIND);
         startService(getKozaczekServiceIntent());
         startingServiceCounter++;
     }
@@ -325,7 +325,7 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(List<Article> articlesFromDB) {
             listArticle.updateTasksInList(articlesFromDB);
             updateImageToLabCache(listArticle.getImageManager(), articlesFromDB);
-            startOrStopRefreshingAnimation(false, STOP_ANIMATION_KIND);
+            refreshingAnimationSetUp(false, STOP_ANIMATION_KIND);
         }
     }
 
