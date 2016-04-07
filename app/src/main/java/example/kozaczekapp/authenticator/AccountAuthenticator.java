@@ -10,7 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-public class AccountAuthenticator extends AbstractAccountAuthenticator implements AccountConstants {
+public class AccountAuthenticator extends AbstractAccountAuthenticator {
 
     private final Context context;
 
@@ -66,7 +66,7 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator implement
 
         // If the caller requested an authToken type we don't support, then
         // return an error
-        if (!authTokenType.equals(AccountConstants.AUTHTOKEN_TYPE_READ_ONLY) && !authTokenType.equals(AccountConstants.AUTHTOKEN_TYPE_FULL_ACCESS)) {
+        if (!authTokenType.equals(AccountKeyStorage.AUTHTOKEN_TYPE_READ_ONLY) && !authTokenType.equals(AccountKeyStorage.AUTHTOKEN_TYPE_FULL_ACCESS)) {
             final Bundle result = new Bundle();
             result.putString(AccountManager.KEY_ERROR_MESSAGE, "invalid authTokenType");
             return result;
@@ -110,10 +110,10 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator implement
      */
     @Override
     public String getAuthTokenLabel(String authTokenType) {
-        if (AccountConstants.AUTHTOKEN_TYPE_FULL_ACCESS.equals(authTokenType))
-            return AUTHTOKEN_TYPE_FULL_ACCESS_LABEL;
-        else if (AUTHTOKEN_TYPE_READ_ONLY.equals(authTokenType))
-            return AUTHTOKEN_TYPE_READ_ONLY_LABEL;
+        if (AccountKeyStorage.AUTHTOKEN_TYPE_FULL_ACCESS.equals(authTokenType))
+            return AccountKeyStorage.AUTHTOKEN_TYPE_FULL_ACCESS_LABEL;
+        else if (AccountKeyStorage.AUTHTOKEN_TYPE_READ_ONLY.equals(authTokenType))
+            return AccountKeyStorage.AUTHTOKEN_TYPE_READ_ONLY_LABEL;
         else
             return authTokenType + " (Label)";
     }
