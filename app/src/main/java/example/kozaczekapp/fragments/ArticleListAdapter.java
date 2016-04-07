@@ -18,6 +18,7 @@ import java.util.List;
 
 import example.kozaczekapp.kozaczekItems.Article;
 import example.kozaczekapp.R;
+import example.kozaczekapp.webView.WebViewActivity;
 
 /**
  * Adapter Class implementation of ArticleList adapter.
@@ -37,6 +38,7 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
             return new ArticleListAdapter[size];
         }
     };
+    public static final String LINK_URL_KEY = "LinkUrl";
     List<Article> listOfArticles = new ArrayList<>();
     private LruCache<String, Bitmap> mLruCache;
 
@@ -92,9 +94,13 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent i = new Intent(Intent.ACTION_VIEW);
+                   /* Intent i = new Intent(Intent.ACTION_VIEW);
                     i.setData(Uri.parse(listOfArticles.get(position).getLinkToArticle()));
-                    v.getContext().startActivity(i);
+                    v.getContext().startActivity(i);*/
+                    Intent intent = new Intent(v.getContext(), WebViewActivity.class);
+                    //intent.setData(Uri.parse(listOfArticles.get(position).getLinkToArticle()));
+                    intent.putExtra(LINK_URL_KEY, listOfArticles.get(position).getLinkToArticle());
+                    v.getContext().startActivity(intent);
                 }
             });
             holder.mTitle.setText(listOfArticles.get(position).getTitle());
