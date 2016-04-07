@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import java.util.regex.Matcher;
@@ -21,10 +22,10 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
     public final static String ARG_AUTH_TYPE = "AUTH_TYPE";
     public final static String ARG_ACCOUNT_NAME = "ACCOUNT_NAME";
     public final static String ARG_IS_ADDING_NEW_ACCOUNT = "IS_ADDING_ACCOUNT";
-
     private EditText editTextName;
     private EditText editTextSurname;
     private EditText editTextEmail;
+
 
     /**
      * {@inheritDoc}
@@ -36,8 +37,14 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         editTextName = (EditText) findViewById(R.id.editTextName);
         editTextSurname = (EditText) findViewById(R.id.editTextSurname);
         editTextEmail = (EditText) findViewById(R.id.editTextEnterEmail);
-    }
 
+        //FormValidation.
+        Button confirmButton = (Button) findViewById(R.id.buttonConfirmLogin);
+        confirmButton.setClickable(false);
+        editTextEmail.addTextChangedListener(new GenericTextWatcher(editTextEmail, confirmButton));
+        editTextName.addTextChangedListener(new GenericTextWatcher(editTextName, confirmButton));
+        editTextSurname.addTextChangedListener(new GenericTextWatcher(editTextSurname, confirmButton));
+    }
     /**
      * Called when submitting form
      * It gets field values from form, adds them to intent and calls finishLogin(Intent)
@@ -49,7 +56,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         intent.putExtra(AccountKeyStorage.KEY_ACCOUNT_EMAIL, editTextEmail.getText().toString());
         finishLogin(intent);
     }
-
     /**
      * Creates or updates Account with data specified in intent
      *
