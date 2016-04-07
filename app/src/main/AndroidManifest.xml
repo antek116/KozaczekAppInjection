@@ -6,6 +6,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -16,7 +18,6 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -26,7 +27,8 @@
             android:name=".Preferences.PreferencesActivity"
             android:label="@string/preferencesLabel"
             android:screenOrientation="nosensor"/>
-
+        <activity android:name=".Authenticator.AuthenticatorActivity"
+            android:label="@string/app_name"/>
         <service
             android:name=".Service.KozaczekService"
             android:label="@string/service_name"/>
@@ -34,6 +36,8 @@
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
+            <meta-data android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
         </service>
         <provider
             android:name=".DatabaseConnection.RssContentProvider"
