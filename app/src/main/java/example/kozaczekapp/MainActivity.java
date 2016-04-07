@@ -33,6 +33,7 @@ import example.kozaczekapp.imageDownloader.ImageManager;
 import example.kozaczekapp.kozaczekItems.Article;
 import example.kozaczekapp.preferences.PreferencesActivity;
 import example.kozaczekapp.service.KozaczekService;
+import example.kozaczekapp.webView.WebViewActivity;
 
 public class MainActivity extends AppCompatActivity {
     public static final String FRAGMENT_KEY = "ArticleListFragmentSaveState";
@@ -98,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 });
+
     }
 
     /**

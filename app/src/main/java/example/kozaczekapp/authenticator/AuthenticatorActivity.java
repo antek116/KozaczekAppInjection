@@ -5,8 +5,13 @@ import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import example.kozaczekapp.R;
 
@@ -38,9 +43,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         editTextName = (EditText) findViewById(R.id.editTextName);
         editTextSurname = (EditText) findViewById(R.id.editTextSurname);
         editTextEmail = (EditText) findViewById(R.id.editTextEnterEmail);
-
     }
-
 
     /**
      * Called when submitting form
