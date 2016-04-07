@@ -22,16 +22,9 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
     public final static String ARG_ACCOUNT_NAME = "ACCOUNT_NAME";
     public final static String ARG_IS_ADDING_NEW_ACCOUNT = "IS_ADDING_ACCOUNT";
 
-    public static final String KEY_ERROR_MESSAGE = "ERR_MSG";
-
-    public final static String PARAM_USER_PASS = "USER_PASS";
-
-    private final int REQ_SIGNUP = 1;
-
     private EditText editTextName;
     private EditText editTextSurname;
     private EditText editTextEmail;
-    private AccountManager accountManager;
 
     /**
      * {@inheritDoc}
@@ -49,7 +42,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
      * Called when submitting form
      * It gets field values from form, adds them to intent and calls finishLogin(Intent)
      */
-
     public void onSubmitClick(View view) {
         Intent intent = new Intent();
         intent.putExtra(AccountKeyStorage.KEY_ACCOUNT_NAME, editTextName.getText().toString());
@@ -58,19 +50,23 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         finishLogin(intent);
     }
 
-
     /**
      * Creates or updates Account with data specified in intent
      *
      * @param intent created in submit class
      */
     private void finishLogin(Intent intent) {
-        accountManager = AccountManager.get(getBaseContext());
+        AccountManager accountManager = AccountManager.get(getBaseContext());
         String name = intent.getStringExtra(AccountKeyStorage.KEY_ACCOUNT_NAME);
         String surname = intent.getStringExtra(AccountKeyStorage.KEY_ACCOUNT_SURNAME);
-        final Account account = new Account(name, "example.kozaczek");
-        accountManager.addAccountExplicitly(account, null, null);
+        String email = intent.getStringExtra(AccountKeyStorage.KEY_ACCOUNT_EMAIL);
+        final Account account = new Account(name + " " + surname, "example.kozaczek");
+        Bundle customData = new Bundle();
+        customData.putString(AccountKeyStorage.KEY_ACCOUNT_EMAIL,email);
+        accountManager.addAccountExplicitly(account, null, customData);
+        accountManager.setUserData(account, AccountKeyStorage.KEY_ACCOUNT_EMAIL, email);
         setAccountAuthenticatorResult(intent.getExtras());
+        setResult(RESULT_OK);
         finish();
     }
 }

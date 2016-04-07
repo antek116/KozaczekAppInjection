@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="account_settings">
+    <PreferenceCategory android:title="@string/details" />
+    <Preference android:title="@string/email"
+        android:key="emailPref"
+        android:defaultValue="Tu bedzie email jak ogarne :("/>
+</PreferenceScreen>
