@@ -5,6 +5,7 @@ import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.view.View;
 import android.widget.EditText;
 
@@ -65,8 +66,11 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         accountManager = AccountManager.get(getBaseContext());
         String name = intent.getStringExtra(AccountKeyStorage.KEY_ACCOUNT_NAME);
         String surname = intent.getStringExtra(AccountKeyStorage.KEY_ACCOUNT_SURNAME);
-        final Account account = new Account(name, "example.kozaczek");
+        String email = intent.getStringExtra(AccountKeyStorage.KEY_ACCOUNT_EMAIL);
+        final Account account = new Account(name + " " + surname, "example.kozaczek");
         accountManager.addAccountExplicitly(account, null, null);
+        accountManager.setUserData(account, AccountKeyStorage.KEY_ACCOUNT_EMAIL, email);
+
         setAccountAuthenticatorResult(intent.getExtras());
         finish();
     }
