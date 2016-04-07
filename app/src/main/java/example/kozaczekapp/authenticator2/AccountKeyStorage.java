@@ -1,4 +1,4 @@
-package example.kozaczekapp.Authenticator;
+package example.kozaczekapp.authenticator2;
 
 /**
  * Created by Patryk Gwiazdowski on 06.04.2016.
