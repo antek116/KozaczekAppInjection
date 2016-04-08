@@ -6,6 +6,7 @@ import javax.inject.Singleton;
 import dagger.Component;
 import example.kozaczekapp.module.ConnectionModule;
 import example.kozaczekapp.service.KozaczekService;
+import example.kozaczekapp.syncAdapter.KozaczekSyncAdapter;
 
 
 /**
@@ -14,5 +15,5 @@ import example.kozaczekapp.service.KozaczekService;
 @Singleton
 @Component(modules = ConnectionModule.class)
 public interface IConnectionComponent {
-    void inject(KozaczekService kozaczekService);
+    void inject(KozaczekSyncAdapter kozaczekService);
 }
