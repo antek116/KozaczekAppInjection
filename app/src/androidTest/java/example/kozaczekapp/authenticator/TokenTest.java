@@ -19,7 +19,7 @@ public class TokenTest {
     }
 
     @Test
-    public void testCheckIfValidWhenValid() throws Exception {
+    public void checkIfValidWhenValid() throws Exception {
         // given
         Token token = new Token();
         //when
@@ -30,7 +30,7 @@ public class TokenTest {
 
 
     @Test
-    public void testCheckIfValidWhenInvalid() throws Exception {
+    public void checkIfValidWhenInvalid() throws Exception {
         // given
         Token token = new Token();
         token.setInvalid();
@@ -38,6 +38,18 @@ public class TokenTest {
         boolean isValid = token.checkIfValid();
         // then
         assertFalse(isValid);
+    }
+
+    @Test
+    public void generateTokenWhenSuccess() throws Exception {
+        // given
+        Token token = new Token();
+        token.setInvalid();
+        //when
+        token.generateToken();
+        boolean isValid = token.checkIfValid();
+        // then
+        assertTrue(isValid);
     }
 
 }

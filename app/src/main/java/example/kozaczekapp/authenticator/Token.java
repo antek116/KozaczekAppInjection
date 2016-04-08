@@ -8,7 +8,7 @@ public class Token {
     private final static long HOUR_IN_MILLIS = 3600000;
 
     public Token() {
-        timeStampEnd = new Timestamp(System.currentTimeMillis() + HOUR_IN_MILLIS);
+        timeStampEnd = new Timestamp(getValidity());
     }
 
     /**
@@ -16,8 +16,18 @@ public class Token {
      */
     public boolean checkIfValid() {
         Timestamp currentTimeStamp = new Timestamp(System.currentTimeMillis());
-        boolean isValid = (timeStampEnd.compareTo(currentTimeStamp) > 0);
+        boolean isValid = false;
+        if (timeStampEnd.compareTo(currentTimeStamp) > 0) {
+            isValid = true;
+        }
         return  isValid;
+    }
+
+    /**
+     * Generates new token.
+     */
+    public void generateToken() {
+        timeStampEnd.setTime(getValidity());
     }
 
     /**
@@ -27,6 +37,14 @@ public class Token {
     public String toString() {
         String stringWithToken = timeStampEnd.toString();
         return stringWithToken;
+    }
+
+    /**
+     * @return validity returns the end of 1 hour validity in millis
+     */
+    private long getValidity() {
+        long validity = System.currentTimeMillis() + HOUR_IN_MILLIS;
+        return validity;
     }
 
     /**
