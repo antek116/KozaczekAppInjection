@@ -45,9 +45,9 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
             String email = editTextEmail.getText().toString();
             final Account account = new Account(name + " " + surname, ACCOUNT_TYPE);
             accountManager.addAccountExplicitly(account, null, null);
-            accountManager.setUserData(account, AccountKeyStorage.KEY_ACCOUNT_EMAIL, email);
-            accountManager.setUserData(account, AccountKeyStorage.KEY_ACCOUNT_NAME, name);
-            accountManager.setUserData(account, AccountKeyStorage.KEY_ACCOUNT_SURNAME, surname);
+            accountManager.setUserData(account, AccountKeyConstants.KEY_ACCOUNT_EMAIL, email);
+            accountManager.setUserData(account, AccountKeyConstants.KEY_ACCOUNT_NAME, name);
+            accountManager.setUserData(account, AccountKeyConstants.KEY_ACCOUNT_SURNAME, surname);
             finish();
         }
     }

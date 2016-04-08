@@ -19,12 +19,13 @@ public class PreferencesActivity extends PreferenceActivity {
 
     /**
      * Subclasses should override this method and verify that the given fragment is a valid type to be attached to this activity.
+     *
      * @param fragmentName the class name of the Fragment about to be attached to this activity.
      * @return true if the fragment class name is valid for this Activity and false otherwise.
      */
     @Override
     protected boolean isValidFragment(String fragmentName) {
-        return PreferenceFragment.class.getName().equals(fragmentName) ||
+        return DownloadPreferencesFragment.class.getName().equals(fragmentName) ||
                 AccountPreferencesFragment.class.getName().equals(fragmentName);
     }
 }

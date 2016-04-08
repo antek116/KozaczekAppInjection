@@ -374,7 +374,9 @@ public class MainActivity extends AppCompatActivity {
          * Request the sync for the default account, authority, and
          * manual sync settings
          */
-        ContentResolver.requestSync(account[0],"example.kozaczekapp.DatabaseConnection.RssContentProvider", settingsBundle);
+        if(account.length > 0) {
+            ContentResolver.requestSync(account[0], "example.kozaczekapp.DatabaseConnection.RssContentProvider", settingsBundle);
+        }
     }
 }
 
