@@ -8,7 +8,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.database.ContentObserver;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -16,7 +15,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
+import android.support.annotation.IntDef;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
@@ -30,6 +29,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.List;
 import example.kozaczekapp.authenticator.AuthenticatorActivity;
 import example.kozaczekapp.databaseConnection.DatabaseHandler;
@@ -38,30 +40,38 @@ import example.kozaczekapp.fragments.ArticleListFragment;
 import example.kozaczekapp.imageDownloader.ImageManager;
 import example.kozaczekapp.kozaczekItems.Article;
 import example.kozaczekapp.preferences.PreferencesActivity;
-import example.kozaczekapp.service.KozaczekService;
 
 public class MainActivity extends AppCompatActivity {
+
+    //albo enum
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({ANIMATION_MODE_INFINTE, ANIMATION_MODE_ONCE, ANIMATION_MODE_STOP})
+    public @interface AnimationMode {}
+    public static final int ANIMATION_MODE_INFINTE = 0;
+    public static final int ANIMATION_MODE_ONCE = 1;
+    public static final int ANIMATION_MODE_STOP = 2;
+
+
     public static final String FRAGMENT_KEY = "ArticleListFragmentSaveState";
-    public static final String SERVICE_URL = "http://www.kozaczek.pl/rss/plotki.xml";
     private static final String SCREEN_WIDTH = "SCREEN_WIDTH";
-    private static final int NO_INTERNET_CONNECTION_KIND = 2;
-    private static final int START_ANIMATE_KIND = 1;
-    private static final int STOP_ANIMATION_KIND = 0;
+    private static final String CONNECTIVITY_CHANGE = "android.net.conn.CONNECTIVITY_CHANGE";
     private static boolean showNoConnectionMsg = true;
     ArticleListFragment listArticle;
-    Intent kozaczekServiceIntent;
     SwipeRefreshLayout pullToRefresh;
-    OnConnectivityChangeReceiver connectivityChangeReceiver;
+
     int screenWidth;
     ImageView image;
     private ObjectAnimator anim;
     private MenuItem refreshMenuItem;
 
+    //FIXME: nie przeplatamy kodu testowego z kodem produkcyjnym
     /**
      * Used to tests
      */
     private static boolean isActivityVisible = false;
     public int startingServiceCounter = 0;
+    private OnConnectivityChangeReceiver onConnectivityChangeReceiver = new OnConnectivityChangeReceiver();
+
     /*************************************************/
 
 
@@ -77,10 +87,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        kozaczekServiceIntent = new Intent(MainActivity.this, KozaczekService.class);
-        kozaczekServiceIntent.putExtra(KozaczekService.URL, SERVICE_URL);
+
+        //TODO: verify if account exist
+        // y -> validate token, open artiles
+        // n -> login/register
+
         initializationOfSaveInstanceState(savedInstanceState);
-        initializationOfRefreshItemInMenu();
+        initializationOfRefreshItemInMenu(); // TODO: przenieść do onOptionsMenu
+        //TODO: unregister
         getContentResolver().registerContentObserver(RssContract.CONTENT_URI, true,
                 new ContentObserver(new Handler()) {
                     @Override
@@ -100,9 +114,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-
-        Log.d("MaunActivity", "onCreate: " + prefs.getBoolean("emailPref", false));
     }
 
     /**
@@ -122,20 +133,17 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent i;
         switch (item.getItemId()) {
             case R.id.ulrConnectionOptions:
-                i = new Intent(this, PreferencesActivity.class);
-                startActivity(i);
-                break;
+                //TODO: używamy fragentów i jednego activity
+                startActivity(new Intent(this, PreferencesActivity.class));
+                return true;
             case R.id.createNewAccount:
-                i = new Intent(this, AuthenticatorActivity.class);
-                startActivity(i);
-                break;
+                startActivity(new Intent(this, AuthenticatorActivity.class));
+                return true;
             default:
-                break;
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -157,11 +165,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         setupPullToRefreshListener();
-        IntentFilter connectivityChangefilter =
-                new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
-
-        connectivityChangeReceiver = new OnConnectivityChangeReceiver();
-        registerReceiver(connectivityChangeReceiver, connectivityChangefilter);
+        registerReceiver(onConnectivityChangeReceiver, new IntentFilter(CONNECTIVITY_CHANGE));
         isActivityVisible = true;
     }
 
@@ -170,27 +174,27 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     public void onPause() {
-        unregisterReceiver(connectivityChangeReceiver);
+        unregisterReceiver(onConnectivityChangeReceiver);
         super.onPause();
         isActivityVisible = false;
     }
 
     /**
-     * Method starting chosen by kind refreshing animation.
+     * Toggles animation of refres icon
      *
-     * @param refreshing true if wanna start animation, false if wanna stop animation, animation is stoping by dooing last circle.
-     * @param kind       1 - Infinite animation, 2 - one loop animation.
+     * @param shouldAnimate indicates if animation should be enabled
+     * @param mode       elaborate on mode types
      */
-    public void refreshingAnimationSetUp(boolean refreshing, int kind) {
+    public void toggleAnimation(boolean shouldAnimate, @AnimationMode int mode) {
         if (refreshMenuItem != null) {
             image.setClickable(false);
             pullToRefresh.setEnabled(false);
             pullToRefresh.setRefreshing(false);
-            if (refreshing && kind == START_ANIMATE_KIND) {
+            if (shouldAnimate && mode == ANIMATION_MODE_INFINTE) {
                 anim.setRepeatCount(ObjectAnimator.INFINITE);
                 anim.setRepeatMode(ObjectAnimator.RESTART);
                 anim.start();
-            } else if (refreshing && kind == NO_INTERNET_CONNECTION_KIND) {
+            } else if (shouldAnimate && mode == ANIMATION_MODE_ONCE) {
                 anim.setRepeatCount(1);
                 anim.setRepeatMode(ObjectAnimator.REVERSE);
                 anim.start();
@@ -226,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
      * On PullToRefresh when the device is connected to internet the rss data are reloaded.
      */
     private void setupPullToRefreshListener() {
-        pullToRefresh = (SwipeRefreshLayout) findViewById(R.id.pullToRefresh);
+        pullToRefresh = (SwipeRefreshLayout) findViewById(R.id.pullToRefresh); //TODO: move to onCreate
         if (pullToRefresh != null) {
             pullToRefresh.setRefreshing(false);
             pullToRefresh.setEnabled(true);
@@ -268,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
                 if (checkNetworkConnection()) {
                     getData();
                 } else {
-                    refreshingAnimationSetUp(true, NO_INTERNET_CONNECTION_KIND);
+                    toggleAnimation(true, ANIMATION_MODE_INFINTE);
                     String message = getResources().getString(R.string.no_internet_connection);
                     Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                 }
@@ -283,8 +287,8 @@ public class MainActivity extends AppCompatActivity {
      * Method getData starts the animation of refresh button and starts service which downloads rss feeds
      */
     private void getData() {
-        refreshingAnimationSetUp(true, START_ANIMATE_KIND);
-        syncAdapterRequest();
+        toggleAnimation(true, ANIMATION_MODE_INFINTE);
+        requestSync();
         startingServiceCounter++;
     }
 
@@ -334,7 +338,7 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(List<Article> articlesFromDB) {
             listArticle.updateTasksInList(articlesFromDB);
             updateImageToLabCache(listArticle.getImageManager(), articlesFromDB);
-            refreshingAnimationSetUp(false, STOP_ANIMATION_KIND);
+            toggleAnimation(false, ANIMATION_MODE_INFINTE);
         }
     }
 
@@ -360,7 +364,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-    private void syncAdapterRequest(){
+    private void requestSync(){
         // Pass the settings flags by inserting them in a bundle
         AccountManager AccManager = AccountManager.get(this);
         Log.d("BUTTON", "getData: ButtonClicked");
@@ -374,7 +378,9 @@ public class MainActivity extends AppCompatActivity {
          * Request the sync for the default account, authority, and
          * manual sync settings
          */
-        ContentResolver.requestSync(account[0],"example.kozaczekapp.DatabaseConnection.RssContentProvider", settingsBundle);
+
+        //TODO: BRAKUJE KONTA w testach, testy leżą i kwiczą
+        ContentResolver.requestSync(account[0],RssContract.AUTHORITY, settingsBundle);
     }
 }
 

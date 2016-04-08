@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import example.kozaczekapp.application.MyApp;
 import example.kozaczekapp.connectionProvider.IConnection;
 import example.kozaczekapp.databaseConnection.DatabaseHandler;
+import example.kozaczekapp.databaseConnection.RssContract;
 import example.kozaczekapp.kozaczekItems.Article;
 import example.kozaczekapp.service.Parser;
 
@@ -31,6 +32,7 @@ public class KozaczekSyncAdapter extends AbstractThreadedSyncAdapter {
         super(context, autoInitialize);
         mAccountManager = AccountManager.get(context);
         this.context = context;
+
     }
 
     @Override
@@ -42,12 +44,27 @@ public class KozaczekSyncAdapter extends AbstractThreadedSyncAdapter {
 
             ((MyApp)getContext()).getComponentInstance().inject(this);
             Log.d("SyncAdapter", "SyncAdapter: Synchronize Started");
-            if (connection.getResponse(url) != null) {
-                Parser parser1 = new Parser(connection.getResponse(url));
-                parser1.setEncoding(connection.getEncoding());
-                ArrayList<Article> articles = parser1.parse();
+            String response = connection.getResponse(url);
+            if (response != null) {
+                Parser parser = new Parser(response);
+                parser.setEncoding(connection.getEncoding());
+                ArrayList<Article> articles = parser.parse();
+
+                //gdy uzywamy bulk operaions
+                //1. usuwamy wszystko co mamy (tworzymy lister operacji typu delete
+                //2. dodajemy nowe itemki -> tworzyy liste operacji insert()
+
+                /*
+                list<Operation> = new list()
+                createDeleteOperations(list, articles)
+                createAddOperations(list, articles)
+                getContext().getContentResolver().applyBatch(RssContract.AUTHORITY, list)
+                */
+
+                //TODO: mamy content providera, to go uzywamy
                 DatabaseHandler db = new DatabaseHandler(context);
                 db.addArticleList(articles);
+
             }
         } catch (Exception e) {
             e.printStackTrace();
