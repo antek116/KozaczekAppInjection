@@ -8,16 +8,6 @@ import static org.junit.Assert.*;
 
 public class TokenTest {
 
-    @Before
-    public void setUp() throws Exception {
-
-    }
-
-    @After
-    public void tearDown() throws Exception {
-
-    }
-
     @Test
     public void checkIfValidWhenValid() throws Exception {
         // given
