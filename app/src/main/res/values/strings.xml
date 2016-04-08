@@ -19,8 +19,13 @@
     <string name="enter_name">Enter name</string>
     <string name="enter_surname">Enter surname</string>
     <string name="enter_email">Enter email</string>
+    <string name="enter_password">Enter Password</string>
     <string name="Confirm">Confirm</string>
     <string name="details">Details</string>
     <string name="email">E-mail</string>
     <string name="newAccount">New account</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="accountExists">There is only one Kozaczek account supported</string>
 </resources>
+

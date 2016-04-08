@@ -4,23 +4,20 @@ import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import example.kozaczekapp.R;
 
 public class AuthenticatorActivity extends AccountAuthenticatorActivity {
-
-    public final static String ARG_ACCOUNT_TYPE = "ACCOUNT_TYPE";
-    public final static String ARG_AUTH_TYPE = "AUTH_TYPE";
-    public final static String ARG_ACCOUNT_NAME = "ACCOUNT_NAME";
-    public final static String ARG_IS_ADDING_NEW_ACCOUNT = "IS_ADDING_ACCOUNT";
-    public static final String ACCOUNT_TYPE = "example.kozaczek";
-
-    private EditText editTextName;
-    private EditText editTextSurname;
+    private static final String TAG = "AuthenticatorActiviy";
+    private EditText editTextPassword;
     private EditText editTextEmail;
-
+    private boolean accountExists;
+    private AccountManager accountManager;
     /**
      * {@inheritDoc}
      */
@@ -28,10 +25,23 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.login_form_layout);
-        editTextName = (EditText) findViewById(R.id.editTextName);
-        editTextSurname = (EditText) findViewById(R.id.editTextSurname);
+        accountManager = AccountManager.get(getBaseContext());
+        editTextPassword = (EditText) findViewById(R.id.editTextPassword);
         editTextEmail = (EditText) findViewById(R.id.editTextEnterEmail);
-
+        accountExists = accountManager.getAccountsByType(AccountKeyStorage.ACCOUNT_TYPE).length > 0;
+        if(getIntent().getBooleanExtra(AccountKeyStorage.ARG_CLICKED_FROM_SETTINGS, false)) {
+            if (accountExists) {
+                //TODO move this to AccountAuthenticator
+                Toast.makeText(getApplicationContext(),getText(R.string.accountExists),Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        }else {
+            if (accountExists) {
+                editTextEmail.setText(accountManager.getAccountsByType(AccountKeyStorage.ARG_ACCOUNT_TYPE)[0].name);
+                Button btnLogin = (Button) findViewById(R.id.buttonConfirmLogin);
+                btnLogin.setText(R.string.login);
+            }
+        }
     }
 
     /**
@@ -39,15 +49,24 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
      * It gets field values from form, adds them to intent and calls finishLogin(Intent)
      */
     public void onSubmitClick(View view) {
-        AccountManager accountManager = AccountManager.get(getBaseContext());
-        String name = editTextName.getText().toString();
-        String surname = editTextSurname.getText().toString();
+        Log.d(TAG, "onSubmitClick: " + accountManager.getAccountsByType(AccountKeyStorage.ACCOUNT_TYPE).length);
         String email = editTextEmail.getText().toString();
-        final Account account = new Account(name + " " + surname, ACCOUNT_TYPE);
-        accountManager.addAccountExplicitly(account, null, null);
-        accountManager.setUserData(account, AccountKeyStorage.KEY_ACCOUNT_EMAIL, email);
-        accountManager.setUserData(account, AccountKeyStorage.KEY_ACCOUNT_NAME, name);
-        accountManager.setUserData(account, AccountKeyStorage.KEY_ACCOUNT_SURNAME, surname);
-        finish();
+        String password = editTextPassword.getText().toString();
+        if (accountExists) {
+            Account[] account = accountManager.getAccountsByType(AccountKeyStorage.ACCOUNT_TYPE);
+            if (validatePassword(password, account[0])){
+                accountManager.setAuthToken(account[0], "", String.valueOf(System.currentTimeMillis()));
+                finish();
+            }
+        }else {
+            final Account account = new Account(email, AccountKeyStorage.ACCOUNT_TYPE);
+            accountManager.setPassword(account, password);
+            accountManager.addAccountExplicitly(account, password, null);
+            //TODO użyc Madzi tokena
+            finish();
+        }
+    }
+    private boolean validatePassword(String password, Account account){
+        return accountManager.getPassword(account).equals(password);
     }
 }
