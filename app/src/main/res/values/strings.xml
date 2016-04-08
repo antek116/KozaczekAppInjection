@@ -22,4 +22,8 @@
     <string name="Confirm">Confirm</string>
     <string name="details">Details</string>
     <string name="email">E-mail</string>
+    <string name="wrong_email_format">Wrong email Format</string>
+    <string name="wrong_name_format">Wrong name format</string>
+    <string name="wrong_surname_format">Wrong surname format</string>
+    <string name="empty_field_error">Field can not be empty</string>
 </resources>
