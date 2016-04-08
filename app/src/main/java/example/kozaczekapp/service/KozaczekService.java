@@ -36,17 +36,17 @@ public class KozaczekService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        ((MyApp)getApplication()).getComponentInstance().inject(this);
-        Log.d(TAG, "onHandleIntent: Service Started");
-        String url = intent.getStringExtra(URL);
-
-        if (connection.getResponse(url) != null){
-            Parser parser1 = new Parser(connection.getResponse(url));
-            parser1.setEncoding(connection.getEncoding());
-            ArrayList<Article> articles = parser1.parse();
-            DatabaseHandler db = new DatabaseHandler(this);
-            db.addArticleList(articles);
-        }
+//        ((MyApp)getApplication()).getComponentInstance().inject(this);
+//        Log.d(TAG, "onHandleIntent: Service Started");
+//        String url = intent.getStringExtra(URL);
+//
+//        if (connection.getResponse(url) != null){
+//            Parser parser1 = new Parser(connection.getResponse(url));
+//            parser1.setEncoding(connection.getEncoding());
+//            ArrayList<Article> articles = parser1.parse();
+//            DatabaseHandler db = new DatabaseHandler(this);
+//            db.addArticleList(articles);
+//        }
     }
 }
 

@@ -6,7 +6,6 @@ import android.accounts.AccountManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
-
 import example.kozaczekapp.R;
 
 public class AuthenticatorActivity extends AccountAuthenticatorActivity {
@@ -18,6 +17,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
     private EditText editTextName;
     private EditText editTextSurname;
     private EditText editTextEmail;
+    private  FormValidator validator = FormValidator.getInstance();
 
     /**
      * {@inheritDoc}
@@ -29,7 +29,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         editTextName = (EditText) findViewById(R.id.editTextName);
         editTextSurname = (EditText) findViewById(R.id.editTextSurname);
         editTextEmail = (EditText) findViewById(R.id.editTextEnterEmail);
-
+        fieldsListenersSetUp();
     }
 
     /**
@@ -90,5 +90,34 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
             editTextSurname.setError(null);
             return true;
         }
+    }
+    private void fieldsListenersSetUp(){
+        editTextName.addTextChangedListener(new ClearErrorWatcher(editTextName));
+        editTextSurname.addTextChangedListener(new ClearErrorWatcher(editTextSurname));
+        editTextEmail.addTextChangedListener(new ClearErrorWatcher(editTextEmail));
+        editTextEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!editTextEmail.isFocused()) {
+                    isEmailValid(validator);
+                }
+            }
+        });
+        editTextName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!editTextName.isFocused()) {
+                    isNameValid(validator);
+                }
+            }
+        });
+        editTextSurname.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!editTextSurname.isFocused()) {
+                    isSurnameValid(validator);
+                }
+            }
+        });
     }
 }
