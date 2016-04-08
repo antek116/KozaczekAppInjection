@@ -5,22 +5,13 @@ import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import example.kozaczekapp.R;
 
 public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 
     public final static String ARG_ACCOUNT_TYPE = "ACCOUNT_TYPE";
-    public final static String ARG_AUTH_TYPE = "AUTH_TYPE";
-    public final static String ARG_ACCOUNT_NAME = "ACCOUNT_NAME";
     public final static String ARG_IS_ADDING_NEW_ACCOUNT = "IS_ADDING_ACCOUNT";
     private EditText editTextName;
     private EditText editTextSurname;
@@ -37,25 +28,26 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         editTextName = (EditText) findViewById(R.id.editTextName);
         editTextSurname = (EditText) findViewById(R.id.editTextSurname);
         editTextEmail = (EditText) findViewById(R.id.editTextEnterEmail);
-
-        //FormValidation.
-        Button confirmButton = (Button) findViewById(R.id.buttonConfirmLogin);
-        confirmButton.setClickable(false);
-        editTextEmail.addTextChangedListener(new GenericTextWatcher(editTextEmail, confirmButton));
-        editTextName.addTextChangedListener(new GenericTextWatcher(editTextName, confirmButton));
-        editTextSurname.addTextChangedListener(new GenericTextWatcher(editTextSurname, confirmButton));
+        editTextName.addTextChangedListener(new ClearErrorWatcher(editTextName));
+        editTextSurname.addTextChangedListener(new ClearErrorWatcher(editTextSurname));
+        editTextEmail.addTextChangedListener(new ClearErrorWatcher(editTextEmail));
     }
+
     /**
      * Called when submitting form
      * It gets field values from form, adds them to intent and calls finishLogin(Intent)
      */
     public void onSubmitClick(View view) {
-        Intent intent = new Intent();
-        intent.putExtra(AccountKeyStorage.KEY_ACCOUNT_NAME, editTextName.getText().toString());
-        intent.putExtra(AccountKeyStorage.KEY_ACCOUNT_SURNAME, editTextSurname.getText().toString());
-        intent.putExtra(AccountKeyStorage.KEY_ACCOUNT_EMAIL, editTextEmail.getText().toString());
-        finishLogin(intent);
+        boolean isValidForm = isFormValid();
+        if (isValidForm) {
+            Intent intent = new Intent();
+            intent.putExtra(AccountKeyStorage.KEY_ACCOUNT_NAME, editTextName.getText().toString());
+            intent.putExtra(AccountKeyStorage.KEY_ACCOUNT_SURNAME, editTextSurname.getText().toString());
+            intent.putExtra(AccountKeyStorage.KEY_ACCOUNT_EMAIL, editTextEmail.getText().toString());
+            finishLogin(intent);
+        }
     }
+
     /**
      * Creates or updates Account with data specified in intent
      *
@@ -68,11 +60,51 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         String email = intent.getStringExtra(AccountKeyStorage.KEY_ACCOUNT_EMAIL);
         final Account account = new Account(name + " " + surname, "example.kozaczek");
         Bundle customData = new Bundle();
-        customData.putString(AccountKeyStorage.KEY_ACCOUNT_EMAIL,email);
+        customData.putString(AccountKeyStorage.KEY_ACCOUNT_EMAIL, email);
         accountManager.addAccountExplicitly(account, null, customData);
         accountManager.setUserData(account, AccountKeyStorage.KEY_ACCOUNT_EMAIL, email);
         setAccountAuthenticatorResult(intent.getExtras());
         setResult(RESULT_OK);
         finish();
+    }
+
+    private boolean isFormValid() {
+        FormValidator validator = FormValidator.getInstance();
+        return (isEmailValid(validator) & isSurnameValid(validator) & isNameValid(validator));
+    }
+
+    private boolean isEmailValid(FormValidator validator){
+        Integer hasEmailError = validator.isValid(editTextEmail.getText().toString(),
+                FormValidator.FieldType.EMAIL);
+        if(hasEmailError != null){
+            editTextEmail.setError(getString(hasEmailError));
+            return false;
+        }else{
+            editTextEmail.setError(null);
+            return true;
+        }
+    }
+
+    private boolean isNameValid(FormValidator validator){
+        Integer hasNameError = validator.isValid(editTextName.getText().toString(),
+                FormValidator.FieldType.NAME);
+        if(hasNameError != null){
+            editTextName.setError(getString(hasNameError));
+            return false;
+        } else{
+            editTextName.setError(null);
+            return true;
+        }
+    }
+    private boolean isSurnameValid(FormValidator validator){
+        Integer hasSurnameError = validator.isValid(editTextSurname.getText().toString(),
+                FormValidator.FieldType.NAME);
+        if(hasSurnameError != null){
+            editTextSurname.setError(getString(hasSurnameError));
+            return false;
+        } else{
+            editTextSurname.setError(null);
+            return true;
+        }
     }
 }

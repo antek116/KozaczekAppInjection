@@ -25,7 +25,6 @@ public class GenericTextWatcher implements TextWatcher {
     private String EMPTY_FIELD = "Empty Field";
     private static Set<Integer> wrongEditFieldsList = new HashSet<>();
 
-
     public GenericTextWatcher(View view, Button confirmButton) {
         this.view = view;
         this.confirmButton = confirmButton;
@@ -36,9 +35,7 @@ public class GenericTextWatcher implements TextWatcher {
             confirmButton.setClickable(false);
         }
     }
-
-    private enum wrongField {ADD, REMOVE}
-
+    private enum WrongField {ADD, REMOVE}
     /**
      *{@inheritDoc}
      */
@@ -53,28 +50,25 @@ public class GenericTextWatcher implements TextWatcher {
 
     @Override
     public void afterTextChanged(Editable editable) {
-        String text = editable.toString();
-        switch (view.getId()) {
-            case R.id.editTextEnterEmail:
-                emailValidator(text);
-                confirmButtonSetUp();
-                break;
-            case R.id.editTextName:
-                nameValidator(text);
-                confirmButtonSetUp();
-                break;
-            case R.id.editTextSurname:
-                surnameValidator(text);
-                confirmButtonSetUp();
-                break;
-            default:
-                confirmButtonSetUp();
-
-        }
+//        String text = editable.toString();
+//        switch (view.getId()) {
+//            case R.id.editTextEnterEmail:
+//                emailValidation(text);
+//                break;
+//            case R.id.editTextName:
+//                nameValidation(text);
+//                break;
+//            case R.id.editTextSurname:
+//                surnameValidation(text);
+//                break;
+//            default:
+//                break;
+//        }
+//        confirmButtonSetUp();
 
     }
 
-    private void emailValidator(String email) {
+    private void emailValidation(String email) {
         String regExpn =
                 "^(([\\w-]+\\.)+[\\w-]+|([a-zA-Z]{1}|[\\w-]{2,}))@"
                         + "((([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\.([0-1]?"
@@ -88,60 +82,60 @@ public class GenericTextWatcher implements TextWatcher {
         errorSetUp(matcher.matches() || email.isEmpty(), R.id.editTextEnterEmail);
     }
 
-    private void nameValidator(String name) {
+    private void nameValidation(String name) {
         String regExpn = "[A-Z][a-zA-Z]*";
         Pattern pattern = Pattern.compile(regExpn, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(name);
         errorSetUp(matcher.matches() || name.isEmpty(), R.id.editTextName);
     }
 
-    private void surnameValidator(String surname) {
+    private void surnameValidation(String surname) {
         String regExpn = "[a-zA-z]+([ '-][a-zA-Z]+)*";
         Pattern pattern = Pattern.compile(regExpn, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(surname);
-        errorSetUp(matcher.matches() || surname.isEmpty(), R.id.editTextSurname);
+        errorSetUp(matcher.matches() && (!surname.isEmpty()), R.id.editTextSurname);
     }
 
     private void errorSetUp(boolean textMatched, int itemId) {
         EditText textField = (EditText) view.findViewById(itemId);
-        errorMessageSetup(itemId);
         if (textMatched) {
-            wrongFieldsSetUp(itemId, wrongField.REMOVE);
+            textField.setError(null);
+            wrongFieldsSetUp(itemId, WrongField.REMOVE);
         } else {
-            wrongFieldsSetUp(itemId, wrongField.ADD);
-            textField.setError(errorMessage);
+            wrongFieldsSetUp(itemId, WrongField.ADD);
+            textField.setError(getErrorMesage(itemId));
         }
     }
 
-    private void errorMessageSetup(int itemId) {
+    private String getErrorMesage(int itemId) {
         switch (itemId) {
             case R.id.editTextEnterEmail:
-                errorMessage = WRONG_EMAIL_VALIDATION;
-                break;
+                return WRONG_EMAIL_VALIDATION;
             case R.id.editTextName:
-                errorMessage = WRONG_NAME_VALIDATION;
-                break;
+                return WRONG_NAME_VALIDATION;
             case R.id.editTextSurname:
-                errorMessage = WRONG_SURNAME_VALIDATION;
+                return WRONG_SURNAME_VALIDATION;
+        }
+        return null;
+    }
+
+    private void wrongFieldsSetUp(int itemId, WrongField field) {
+        switch (field){
+            case ADD:
+                wrongEditFieldsList.add(itemId);
+                break;
+            case REMOVE:
+                wrongEditFieldsList.remove(itemId);
+                break;
+            default:
                 break;
         }
     }
 
-    private void wrongFieldsSetUp(int itemId, wrongField field) {
-        if (field == wrongField.ADD) {
-            wrongEditFieldsList.add(itemId);
-        }
-        if(field == wrongField.REMOVE){
-            wrongEditFieldsList.remove(itemId);
-        }
-    }
-
-    private void confirmButtonSetUp() {
-        if(wrongEditFieldsList.size() == 0){
+    private void confirmButtonSetUp(){
+        if(wrongEditFieldsList.size() == 0) {
+            confirmButton.setError("HEHESZKI");
             confirmButton.setClickable(true);
-        }
-        if(confirmButton.isFocused()){
-            confirmButton.setError(BUTTON_NOT_CLICKABLE);
         }
     }
 }
