@@ -30,4 +30,6 @@
     <string name="login">Login</string>
     <string name="register">Register</string>
     <string name="accountExists">There is only one Kozaczek account supported</string>
+    <string name="enter_password">Enter password</string>
+    <string name="invalidPassword">Invalid password</string>
 </resources>
