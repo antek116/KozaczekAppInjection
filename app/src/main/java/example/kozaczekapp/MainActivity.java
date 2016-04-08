@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.database.ContentObserver;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -12,9 +13,11 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,6 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 import java.util.List;
 
+import example.kozaczekapp.authenticator.AuthenticatorActivity;
 import example.kozaczekapp.databaseConnection.DatabaseHandler;
 import example.kozaczekapp.databaseConnection.RssContract;
 import example.kozaczekapp.fragments.ArticleListFragment;
@@ -100,6 +104,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        Log.d("MaunActivity", "onCreate: "+ prefs.getBoolean("emailPref",false));
     }
 
     /**
@@ -119,11 +126,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent i;
         switch (item.getItemId()) {
             case R.id.ulrConnectionOptions:
-                Intent i = new Intent(this, PreferencesActivity.class);
+                i = new Intent(this, PreferencesActivity.class);
                 startActivity(i);
-
+                break;
+            case R.id.createNewAccount:
+                i = new Intent(this, AuthenticatorActivity.class);
+                startActivity(i);
                 break;
             default:
                 break;
