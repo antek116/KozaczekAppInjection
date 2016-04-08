@@ -2,7 +2,8 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:key="account_settings">
     <PreferenceCategory android:title="@string/details" />
-    <Preference android:title="@string/email"
+    <SwitchPreference android:title="@string/email"
         android:key="emailPref"
-        android:defaultValue="Tu bedzie email jak ogarne :("/>
+        android:enabled="true"
+        android:defaultValue="false"/>
 </PreferenceScreen>

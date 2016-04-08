@@ -1,8 +1,7 @@
 package example.kozaczekapp.authenticator;
 
 /**
- * Created by Patryk Gwiazdowski on 06.04.2016.
- * //
+ * Stores key strings for accounts.
  */
 public final class AccountKeyStorage {
     public static final String KEY_ACCOUNT_NAME = "Account_Name";
@@ -12,4 +11,6 @@ public final class AccountKeyStorage {
     public static final String AUTHTOKEN_TYPE_READ_ONLY_LABEL = "Read only access to account";
     public static final String AUTHTOKEN_TYPE_FULL_ACCESS = "Full access";
     public static final String AUTHTOKEN_TYPE_FULL_ACCESS_LABEL = "Full access to account";
+
+
 }
