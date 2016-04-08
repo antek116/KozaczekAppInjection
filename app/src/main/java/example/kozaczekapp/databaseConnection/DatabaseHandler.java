@@ -1,12 +1,15 @@
 package example.kozaczekapp.databaseConnection;
 
+import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.OperationApplicationException;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.RemoteException;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -67,6 +70,7 @@ public class DatabaseHandler extends SQLiteOpenHelper implements IDatabaseHelper
      */
     @Override
     public void addArticleList(List<Article> articleList) {
+        deleteAllArticle();
         for (Article article : articleList) {
             addArticle(article);
         }
@@ -82,21 +86,18 @@ public class DatabaseHandler extends SQLiteOpenHelper implements IDatabaseHelper
     public void addArticle(Article article) {
         ContentValues values = new ContentValues();
         putArticlesFieldsToValuesMap(article, values);
-
-        Cursor c = resolver.query(RssContract.CONTENT_URI, null, RssContract.Columns
-                .COLUMN_PUB_DATE + " = " + DatabaseUtils.sqlEscapeString(article.getPubDate())
-                , null, null);
-
-        if ((c != null ? c.getCount() : 0) != 0) {
-            Log.d("ADD ARTICLE: ", "Article exists!");
-        } else {
-            deleteExceededArticles();
-            resolver.insert(RssContract.CONTENT_URI, values);
-            Log.d("ADD ARTICLE: ", "Article added!");
+        ArrayList<ContentProviderOperation> ops =
+                new ArrayList<>();
+        ops.add(ContentProviderOperation.newInsert(RssContract.CONTENT_URI)
+                .withValues(values)
+                .withYieldAllowed(true)
+                .build());
+        try {
+            resolver.applyBatch(RssContract.AUTHORITY, ops);
+        } catch (RemoteException | OperationApplicationException e) {
+            e.printStackTrace();
         }
-        if (c != null) {
-            c.close();
-        }
+
     }
 
     private void deleteExceededArticles() {
@@ -107,7 +108,7 @@ public class DatabaseHandler extends SQLiteOpenHelper implements IDatabaseHelper
         }
     }
 
-    private void putArticlesFieldsToValuesMap(Article article, ContentValues values) {
+    private void putArticlesFieldsToValuesMap(Article article, @NonNull ContentValues values) {
         values.put(RssContract.Columns.COLUMN_TITLE, article.getTitle());
         values.put(RssContract.Columns.COLUMN_DESCRIPTION, article.getDescription());
         values.put(RssContract.Columns.COLUMN_PUB_DATE, article.getPubDate());
@@ -163,5 +164,10 @@ public class DatabaseHandler extends SQLiteOpenHelper implements IDatabaseHelper
                 ._ID + " = " + id, null);
     }
 
-
+    public void deleteAllArticle() {
+        resolver.delete(RssContract.CONTENT_URI, null, null);
+    }
 }
+
+
+

@@ -29,23 +29,14 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     testCompile "org.mockito:mockito-core:1.10.19"
-    compile 'com.android.support:appcompat-v7:23.2.1'
-    compile 'com.android.support:design:23.2.1'
-    compile 'com.android.support:cardview-v7:23.2.0'
-    compile group: 'org.apache.httpcomponents' , name: 'httpclient-android' , version: '4.3.5.1'
-    compile 'com.mcxiaoke.volley:library:1.0.19'
+    compile group: 'org.apache.httpcomponents', name: 'httpclient-android', version: '4.3.5.1'
 
     // Dagger 2 and Compiler
-    compile 'com.google.dagger:dagger:2.0.1'
     apt "com.google.dagger:dagger-compiler:2.0.1"
     // Needed for @Generated annotation (missing in Android API jar)
     // No longer needed in dagger >= 2.1-SNAPSHOT (github.com/google/dagger/issues/95)
-    compile 'javax.annotation:jsr250-api:1.0'
     //ok http
-    compile 'com.squareup.okhttp3:okhttp:3.2.0'
-    compile 'commons-io:commons-io:2.4'
-
-    androidTestCompile ('com.android.support.test:rules:0.5'){
+    androidTestCompile ('com.android.support.test:rules:0.5') {
 //        exclude group: 'com.android.support', module: 'support-annotations'
     }
     androidTestCompile 'com.android.support.test:runner:0.4.1'
@@ -60,6 +51,15 @@ dependencies {
         exclude module: 'recyclerview-v7'
     }
 
+    compile 'com.android.support:appcompat-v7:23.2.1'
+    compile 'com.android.support:design:23.2.1'
+    compile 'com.android.support:cardview-v7:23.2.1'
+    compile 'com.mcxiaoke.volley:library:1.0.19'
+    compile 'com.google.dagger:dagger:2.0.1'
+    compile 'javax.annotation:jsr250-api:1.0'
+    compile 'com.squareup.okhttp3:okhttp:3.2.0'
+    compile 'commons-io:commons-io:2.4'
     compile 'com.google.android.gms:play-services-appindexing:8.1.0'
+    compile 'com.android.support:support-v4:23.2.1'
 }
 

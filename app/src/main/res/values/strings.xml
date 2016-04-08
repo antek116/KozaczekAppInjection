@@ -32,4 +32,12 @@
     <string name="accountExists">There is only one Kozaczek account supported</string>
     <string name="enter_password">Enter password</string>
     <string name="invalidPassword">Invalid password</string>
+    <string name="account_preferences_title">Account Preferences</string>
+    <string name="account_preferences_summary">Account Details</string>
+    <string name="account_login_title">Email</string>
+    <string name="account_token_title">Token</string>
+    <string name="account_login_key">ACCOUNT_LOGIN</string>
+    <string name="account_token_key">ACCOUNT_TOKEN</string>
+    <string name="provider_content_authority">example.kozaczekapp.DatabaseConnection.RssContentProvider</string>
+    <string name="account_type">example.kozaczek</string>
 </resources>

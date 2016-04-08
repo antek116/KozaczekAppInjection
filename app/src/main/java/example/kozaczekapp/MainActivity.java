@@ -29,7 +29,6 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 import java.util.List;
 
-import example.kozaczekapp.authenticator.AccountKeyStorage;
 import example.kozaczekapp.authenticator.AuthenticatorActivity;
 import example.kozaczekapp.databaseConnection.DatabaseHandler;
 import example.kozaczekapp.databaseConnection.RssContract;
@@ -365,6 +364,22 @@ public class MainActivity extends AppCompatActivity {
                 showInternetNoConnectionMsg();
             }
         }
+    }
+    private void syncAdapterRequest(){
+        // Pass the settings flags by inserting them in a bundle
+        AccountManager AccManager = AccountManager.get(this);
+        Log.d("BUTTON", "getData: ButtonClicked");
+        Bundle settingsBundle = new Bundle();
+        settingsBundle.putBoolean(
+                ContentResolver.SYNC_EXTRAS_MANUAL, true);
+        settingsBundle.putBoolean(
+                ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+        Account[] account = AccManager.getAccountsByType(AuthenticatorActivity.ACCOUNT_TYPE);
+        /*
+         * Request the sync for the default account, authority, and
+         * manual sync settings
+         */
+        ContentResolver.requestSync(account[0],"example.kozaczekapp.DatabaseConnection.RssContentProvider", settingsBundle);
     }
 }
 

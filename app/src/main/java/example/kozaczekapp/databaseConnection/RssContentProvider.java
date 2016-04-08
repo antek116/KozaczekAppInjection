@@ -1,7 +1,10 @@
 package example.kozaczekapp.databaseConnection;
 
 import android.content.ContentProvider;
+import android.content.ContentProviderOperation;
+import android.content.ContentProviderResult;
 import android.content.ContentValues;
+import android.content.OperationApplicationException;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -10,6 +13,8 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+
+import java.util.ArrayList;
 
 /**
  * Class provides data do database
@@ -27,7 +32,7 @@ public class RssContentProvider extends ContentProvider {
             new UriMatcher(UriMatcher.NO_MATCH);
 
     /**
-     * TODO: FIXME
+     *
      */
     static {
         sURIMatcher.addURI(RssContract.AUTHORITY, RssContract.Columns.TABLE_NAME, ARTICLES);
@@ -98,6 +103,22 @@ public class RssContentProvider extends ContentProvider {
         }
 
         return Uri.parse(RssContract.Columns.TABLE_NAME + "/" + id);
+    }
+
+    @NonNull
+    @Override
+    public ContentProviderResult[] applyBatch
+            (@NonNull ArrayList<ContentProviderOperation> operations) throws
+            OperationApplicationException {
+        SQLiteDatabase sqlDB = db.getWritableDatabase();
+        sqlDB.beginTransaction();//Begin transaction
+        try {
+            ContentProviderResult[] results = super.applyBatch(operations);
+            sqlDB.setTransactionSuccessful();//Set the transaction marked successful
+            return results;
+        } finally {
+            sqlDB.endTransaction();//The end of the transaction
+        }
     }
 
     @Override
