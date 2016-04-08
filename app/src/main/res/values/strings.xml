@@ -27,4 +27,12 @@
     <string name="wrong_name_format">Wrong name format</string>
     <string name="wrong_surname_format">Wrong surname format</string>
     <string name="empty_field_error">Field can not be empty</string>
+
+    <string name="account_preferences_title">Account Preferences</string>
+    <string name="account_preferences_summary">Account Details</string>
+    <string name="account_login_title">Email</string>
+    <string name="account_token_title">Token</string>
+    <string name="account_login_key">ACCOUNT_LOGIN</string>
+    <string name="account_token_key">ACCOUNT_TOKEN</string>
+
 </resources>

@@ -15,7 +15,7 @@ public class PreferenceFragment extends android.preference.PreferenceFragment im
      */
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.preferences);
+        addPreferencesFromResource(R.xml.download_preferences);
         ListPreference listPreference = (ListPreference) findPreference(getString(R.string.downloadType));
         listPreference.setSummary(getString(R.string.selected_download_preference) + listPreference.getValue());
     }
