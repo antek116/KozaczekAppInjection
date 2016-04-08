@@ -6,7 +6,6 @@ import android.accounts.AccountManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
-
 import example.kozaczekapp.R;
 
 public class AuthenticatorActivity extends AccountAuthenticatorActivity {

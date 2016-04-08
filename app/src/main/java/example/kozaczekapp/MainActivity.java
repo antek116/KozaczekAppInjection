@@ -1,7 +1,10 @@
 package example.kozaczekapp;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.animation.ObjectAnimator;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -28,7 +31,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 import java.util.List;
-
 import example.kozaczekapp.authenticator.AuthenticatorActivity;
 import example.kozaczekapp.databaseConnection.DatabaseHandler;
 import example.kozaczekapp.databaseConnection.RssContract;
@@ -37,7 +39,6 @@ import example.kozaczekapp.imageDownloader.ImageManager;
 import example.kozaczekapp.kozaczekItems.Article;
 import example.kozaczekapp.preferences.PreferencesActivity;
 import example.kozaczekapp.service.KozaczekService;
-import example.kozaczekapp.webView.WebViewActivity;
 
 public class MainActivity extends AppCompatActivity {
     public static final String FRAGMENT_KEY = "ArticleListFragmentSaveState";
@@ -47,8 +48,6 @@ public class MainActivity extends AppCompatActivity {
     private static final int START_ANIMATE_KIND = 1;
     private static final int STOP_ANIMATION_KIND = 0;
     private static boolean showNoConnectionMsg = true;
-    private static boolean isActivityVisible = false;
-    public int startingServiceCounter = 0;
     ArticleListFragment listArticle;
     Intent kozaczekServiceIntent;
     SwipeRefreshLayout pullToRefresh;
@@ -58,19 +57,17 @@ public class MainActivity extends AppCompatActivity {
     private ObjectAnimator anim;
     private MenuItem refreshMenuItem;
 
-    public static boolean getActivityVisibilityState() {
-        return isActivityVisible;
-    }
+    /**
+     * Used to tests
+     */
+    private static boolean isActivityVisible = false;
+    public int startingServiceCounter = 0;
+    /*************************************************/
 
 
     private void updateImageToLabCache(ImageManager imageManager, List<Article> articles) {
         imageManager.addImagesFromArticlesToLruCache(articles);
     }
-
-    public Intent getKozaczekServiceIntent() {
-        return kozaczekServiceIntent;
-    }
-
     /**
      * Methods where we initialize service.
      *
@@ -100,13 +97,12 @@ public class MainActivity extends AppCompatActivity {
                     public void onChange(boolean selfChange, Uri uri) {
                         new GetArticlesFromDataBase().execute();
                         super.onChange(selfChange, uri);
-
                     }
                 });
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        Log.d("MaunActivity", "onCreate: "+ prefs.getBoolean("emailPref",false));
+        Log.d("MaunActivity", "onCreate: " + prefs.getBoolean("emailPref", false));
     }
 
     /**
@@ -288,7 +284,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void getData() {
         refreshingAnimationSetUp(true, START_ANIMATE_KIND);
-        startService(getKozaczekServiceIntent());
+        syncAdapterRequest();
         startingServiceCounter++;
     }
 
@@ -363,6 +359,22 @@ public class MainActivity extends AppCompatActivity {
                 showInternetNoConnectionMsg();
             }
         }
+    }
+    private void syncAdapterRequest(){
+        // Pass the settings flags by inserting them in a bundle
+        AccountManager AccManager = AccountManager.get(this);
+        Log.d("BUTTON", "getData: ButtonClicked");
+        Bundle settingsBundle = new Bundle();
+        settingsBundle.putBoolean(
+                ContentResolver.SYNC_EXTRAS_MANUAL, true);
+        settingsBundle.putBoolean(
+                ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+        Account[] account = AccManager.getAccountsByType(AuthenticatorActivity.ACCOUNT_TYPE);
+        /*
+         * Request the sync for the default account, authority, and
+         * manual sync settings
+         */
+        ContentResolver.requestSync(account[0],"example.kozaczekapp.DatabaseConnection.RssContentProvider", settingsBundle);
     }
 }
 

@@ -27,4 +27,6 @@
     <string name="wrong_name_format">Wrong name format</string>
     <string name="wrong_surname_format">Wrong surname format</string>
     <string name="empty_field_error">Field can not be empty</string>
+    <string name="provider_content_authority">example.kozaczekapp.DatabaseConnection.RssContentProvider</string>
+    <string name="account_type">example.kozaczek</string>
 </resources>
