@@ -24,6 +24,7 @@ public class PreferencesActivity extends PreferenceActivity {
      */
     @Override
     protected boolean isValidFragment(String fragmentName) {
-        return PreferenceFragment.class.getName().equals(fragmentName);
+        return PreferenceFragment.class.getName().equals(fragmentName) ||
+                AccountPreferencesFragment.class.getName().equals(fragmentName);
     }
 }

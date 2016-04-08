@@ -4,8 +4,8 @@ package example.kozaczekapp.authenticator;
 import java.sql.Timestamp;
 
 public class Token {
-    private Timestamp timeStampEnd;
     private final static long HOUR_IN_MILLIS = 3600000;
+    private Timestamp timeStampEnd;
 
     public Token() {
         timeStampEnd = new Timestamp(getValidity());
@@ -20,7 +20,7 @@ public class Token {
         if (timeStampEnd.compareTo(currentTimeStamp) > 0) {
             isValid = true;
         }
-        return  isValid;
+        return isValid;
     }
 
     /**
