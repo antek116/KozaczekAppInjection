@@ -18,4 +18,5 @@ public final class AccountKeyStorage {
     //TODO get this from string resource
     public static final String ACCOUNT_TYPE = "example.kozaczek";
 
+    public static final String ARG_IS_ADDING_NEW_ACCOUNT = "NEW_ACCOUNT";
 }

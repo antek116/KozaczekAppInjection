@@ -96,26 +96,5 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         }
     }
 
-    private boolean isNameValid(FormValidator validator){
-        Integer hasNameError = validator.isValid(editTextName.getText().toString(),
-                FormValidator.FieldType.NAME);
-        if(hasNameError != null){
-            editTextName.setError(getString(hasNameError));
-            return false;
-        } else{
-            editTextName.setError(null);
-            return true;
-        }
-    }
-    private boolean isSurnameValid(FormValidator validator){
-        Integer hasSurnameError = validator.isValid(editTextSurname.getText().toString(),
-                FormValidator.FieldType.NAME);
-        if(hasSurnameError != null){
-            editTextSurname.setError(getString(hasSurnameError));
-            return false;
-        } else{
-            editTextSurname.setError(null);
-            return true;
-        }
-    }
+
 }
