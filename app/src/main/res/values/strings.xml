@@ -27,4 +27,7 @@
     <string name="wrong_name_format">Wrong name format</string>
     <string name="wrong_surname_format">Wrong surname format</string>
     <string name="empty_field_error">Field can not be empty</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="accountExists">There is only one Kozaczek account supported</string>
 </resources>

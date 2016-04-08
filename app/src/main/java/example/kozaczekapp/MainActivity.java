@@ -29,6 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 import java.util.List;
 
+import example.kozaczekapp.authenticator.AccountKeyStorage;
 import example.kozaczekapp.authenticator.AuthenticatorActivity;
 import example.kozaczekapp.databaseConnection.DatabaseHandler;
 import example.kozaczekapp.databaseConnection.RssContract;
@@ -134,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.createNewAccount:
                 i = new Intent(this, AuthenticatorActivity.class);
+                i.putExtra(AccountKeyStorage.ARG_CLICKED_FROM_SETTINGS,false);
                 startActivity(i);
                 break;
             default:
