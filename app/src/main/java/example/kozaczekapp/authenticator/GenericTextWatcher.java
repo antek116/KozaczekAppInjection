@@ -50,21 +50,21 @@ public class GenericTextWatcher implements TextWatcher {
 
     @Override
     public void afterTextChanged(Editable editable) {
-//        String text = editable.toString();
-//        switch (view.getId()) {
-//            case R.id.editTextEnterEmail:
-//                emailValidation(text);
-//                break;
-//            case R.id.editTextName:
-//                nameValidation(text);
-//                break;
-//            case R.id.editTextSurname:
-//                surnameValidation(text);
-//                break;
-//            default:
-//                break;
-//        }
-//        confirmButtonSetUp();
+        String text = editable.toString();
+        switch (view.getId()) {
+            case R.id.editTextEnterEmail:
+                emailValidation(text);
+                break;
+            case R.id.editTextName:
+                nameValidation(text);
+                break;
+            case R.id.editTextSurname:
+                surnameValidation(text);
+                break;
+            default:
+                break;
+        }
+        confirmButtonSetUp();
 
     }
 
@@ -134,7 +134,6 @@ public class GenericTextWatcher implements TextWatcher {
 
     private void confirmButtonSetUp(){
         if(wrongEditFieldsList.size() == 0) {
-            confirmButton.setError("HEHESZKI");
             confirmButton.setClickable(true);
         }
     }
