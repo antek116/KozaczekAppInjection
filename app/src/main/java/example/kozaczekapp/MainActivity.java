@@ -26,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 import java.util.List;
 
+import example.kozaczekapp.authenticator.AuthenticatorActivity;
 import example.kozaczekapp.databaseConnection.DatabaseHandler;
 import example.kozaczekapp.databaseConnection.RssContract;
 import example.kozaczekapp.fragments.ArticleListFragment;
@@ -117,11 +118,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent i;
         switch (item.getItemId()) {
             case R.id.ulrConnectionOptions:
-                Intent i = new Intent(this, PreferencesActivity.class);
+                i = new Intent(this, PreferencesActivity.class);
                 startActivity(i);
-
+                break;
+            case R.id.createNewAccount:
+                i = new Intent(this, AuthenticatorActivity.class);
+                startActivity(i);
                 break;
             default:
                 break;
