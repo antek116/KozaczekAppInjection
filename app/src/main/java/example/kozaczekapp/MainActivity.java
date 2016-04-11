@@ -53,14 +53,19 @@ public class MainActivity extends AppCompatActivity {
     private static boolean showNoConnectionMsg = true;
     private static boolean isActivityVisible = false;
     public int startingServiceCounter = 0;
+    private int screenWidth;
+    private ImageView image;
+    private ObjectAnimator anim;
+    private MenuItem refreshMenuItem;
+    private Account[] accounts;
+    private static final long SECONDS_PER_MINUTE = 60L;
+    private static final long SYNC_INTERVAL_IN_MINUTES = 45L;
     ArticleListFragment listArticle;
     Intent kozaczekServiceIntent;
     SwipeRefreshLayout pullToRefresh;
     OnConnectivityChangeReceiver connectivityChangeReceiver;
-    int screenWidth;
-    ImageView image;
-    private ObjectAnimator anim;
-    private MenuItem refreshMenuItem;
+    public static final long SYNC_INTERVAL = SECONDS_PER_MINUTE * SYNC_INTERVAL_IN_MINUTES ;
+
 
     public static boolean getActivityVisibilityState() {
         return isActivityVisible;
@@ -84,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        syncAdapterRefreshingSetup();
         kozaczekServiceIntent = new Intent(MainActivity.this, KozaczekService.class);
         kozaczekServiceIntent.putExtra(KozaczekService.URL, SERVICE_URL);
         initializationOfSaveInstanceState(savedInstanceState);
@@ -109,8 +115,7 @@ public class MainActivity extends AppCompatActivity {
                 });
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-
-        Log.d("MaunActivity", "onCreate: "+ prefs.getBoolean("emailPref",false));
+        Log.d("MaunActivity", "onCreate: " + prefs.getBoolean("emailPref", false));
     }
 
     /**
@@ -346,7 +351,36 @@ public class MainActivity extends AppCompatActivity {
             refreshingAnimationSetUp(false, STOP_ANIMATION_KIND);
         }
     }
+    private void syncAdapterRequest(){
+        // Pass the settings flags by inserting them in a bundle
+        Log.d("BUTTON", "getData: ButtonClicked");
+        Bundle settingsBundle = new Bundle();
+        settingsBundle.putBoolean(
+                ContentResolver.SYNC_EXTRAS_MANUAL, true);
+        settingsBundle.putBoolean(
+                ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+        /*
+         * Request the sync for the default account, authority, and
+         * manual sync settings
+         */
+        if(accounts.length > 0) {
+            ContentResolver.requestSync(accounts[0], "example.kozaczekapp.DatabaseConnection.RssContentProvider", settingsBundle);
+        }
+    }
 
+    /**
+     * Turn on periodic syncing
+     */
+    private void syncAdapterRefreshingSetup(){
+        AccountManager AccManager = AccountManager.get(this);
+        accounts = AccManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE);
+        ContentResolver.setMasterSyncAutomatically(true);
+        ContentResolver.addPeriodicSync(
+                accounts[0],
+                "example.kozaczekapp.DatabaseConnection.RssContentProvider",
+                null,
+                SYNC_INTERVAL);
+    }
     /**
      * Receiver OnConnectivityChangeReceiver listens of the state of connection has changed.
      * If the device disconnects the suitable message is shown and PullToRefresh is disabled.
@@ -369,23 +403,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-    private void syncAdapterRequest(){
-        // Pass the settings flags by inserting them in a bundle
-        AccountManager AccManager = AccountManager.get(this);
-        Log.d("BUTTON", "getData: ButtonClicked");
-        Bundle settingsBundle = new Bundle();
-        settingsBundle.putBoolean(
-                ContentResolver.SYNC_EXTRAS_MANUAL, true);
-        settingsBundle.putBoolean(
-                ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-        Account[] account = AccManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE);
-        /*
-         * Request the sync for the default account, authority, and
-         * manual sync settings
-         */
-        if(account.length > 0) {
-            ContentResolver.requestSync(account[0], "example.kozaczekapp.DatabaseConnection.RssContentProvider", settingsBundle);
-        }
-    }
+
 }
 
