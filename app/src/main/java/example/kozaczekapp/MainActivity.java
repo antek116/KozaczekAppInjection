@@ -37,7 +37,6 @@ import java.util.List;
 
 import example.kozaczekapp.authenticator.AccountKeyConstants;
 import example.kozaczekapp.authenticator.AuthenticatorActivity;
-import example.kozaczekapp.databaseConnection.DatabaseHandler;
 import example.kozaczekapp.databaseConnection.RssContract;
 import example.kozaczekapp.fragments.ArticleListFragment;
 import example.kozaczekapp.imageDownloader.ImageManager;
@@ -46,7 +45,6 @@ import example.kozaczekapp.preferences.PreferencesActivity;
 
 public class MainActivity extends AppCompatActivity {
     public static final String FRAGMENT_KEY = "ArticleListFragmentSaveState";
-    public static final String SERVICE_URL = "http://www.kozaczek.pl/rss/plotki.xml";
     private static final String SCREEN_WIDTH = "SCREEN_WIDTH";
     private static final int NO_INTERNET_CONNECTION_KIND = 2;
     private static final int START_ANIMATE_KIND = 1;
@@ -55,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
     private static boolean isActivityVisible = false;
     public int startingServiceCounter = 0;
     ArticleListFragment listArticle;
-    Intent kozaczekServiceIntent;
     SwipeRefreshLayout pullToRefresh;
     OnConnectivityChangeReceiver connectivityChangeReceiver;
     int screenWidth;
@@ -70,10 +67,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateImageToLabCache(ImageManager imageManager, List<Article> articles) {
         imageManager.addImagesFromArticlesToLruCache(articles);
-    }
-
-    public Intent getKozaczekServiceIntent() {
-        return kozaczekServiceIntent;
     }
 
     /**
@@ -109,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        Log.d("MaunActivity", "onCreate: " + prefs.getBoolean("emailPref", false));
+        Log.d("MainActivity", "onCreate: " + prefs.getBoolean("emailPref", false));
     }
 
     /**
@@ -137,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.createNewAccount:
                 i = new Intent(this, AuthenticatorActivity.class);
-                i.putExtra(AccountKeyConstants.ARG_CLICKED_FROM_SETTINGS,false);
+                i.putExtra(AccountKeyConstants.ARG_CLICKED_FROM_SETTINGS, false);
                 startActivity(i);
                 break;
             default:
@@ -223,12 +216,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     *
      * @return true if anim is running
      */
-    public boolean isRefreshAnimating(){
+    public boolean isRefreshAnimating() {
         return anim.isRunning();
     }
+
     /**
      * Method sets the listener for PullToRefresh event.
      * On PullToRefresh when the device is connected to internet the rss data are reloaded.
@@ -268,7 +261,7 @@ public class MainActivity extends AppCompatActivity {
     private void initializationOfRefreshItemInMenu() {
 
         LayoutInflater inflater = (LayoutInflater) getApplication().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        FrameLayout frameLayout = (FrameLayout) inflater.inflate( R.layout.iv_refresh,new LinearLayout(getApplicationContext()), false);
+        FrameLayout frameLayout = (FrameLayout) inflater.inflate(R.layout.iv_refresh, new LinearLayout(getApplicationContext()), false);
         image = (ImageView) frameLayout.findViewById(R.id.refresh);
         image.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -324,6 +317,43 @@ public class MainActivity extends AppCompatActivity {
         return displaymetrics.widthPixels;
     }
 
+    private void syncAdapterRequest() {
+        // Pass the settings flags by inserting them in a bundle
+        AccountManager AccManager = AccountManager.get(this);
+        Log.d("BUTTON", "getData: ButtonClicked");
+        Bundle settingsBundle = new Bundle();
+        settingsBundle.putBoolean(
+                ContentResolver.SYNC_EXTRAS_MANUAL, true);
+        settingsBundle.putBoolean(
+                ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+        Account[] account = AccManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE);
+        /*
+         * Request the sync for the default account, authority, and
+         * manual sync settings
+         */
+        if (account.length > 0) {
+            ContentResolver.requestSync(account[0], "example.kozaczekapp.DatabaseConnection.RssContentProvider", settingsBundle);
+        }
+    }
+
+    /**
+     * @return list of all articles from db
+     */
+    public List<Article> getAllArticles() {
+        List<Article> articleList = new ArrayList<>();
+        Cursor cursor = getContentResolver().query(RssContract.CONTENT_URI, null, null, null, null);
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                Article article = new Article();
+                article.fromCursor(cursor);
+                // Adding article to list
+                articleList.add(article);
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+        return articleList;
+    }
+
     class GetArticlesFromDataBase extends AsyncTask<String, String, List<Article>> {
 
         /**
@@ -331,7 +361,6 @@ public class MainActivity extends AppCompatActivity {
          */
         @Override
         protected List<Article> doInBackground(String... params) {
-           // DatabaseHandler db = new DatabaseHandler(MainActivity.this);
             return getAllArticles();
         }
 
@@ -367,39 +396,6 @@ public class MainActivity extends AppCompatActivity {
                 showInternetNoConnectionMsg();
             }
         }
-    }
-    private void syncAdapterRequest(){
-        // Pass the settings flags by inserting them in a bundle
-        AccountManager AccManager = AccountManager.get(this);
-        Log.d("BUTTON", "getData: ButtonClicked");
-        Bundle settingsBundle = new Bundle();
-        settingsBundle.putBoolean(
-                ContentResolver.SYNC_EXTRAS_MANUAL, true);
-        settingsBundle.putBoolean(
-                ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-        Account[] account = AccManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE);
-        /*
-         * Request the sync for the default account, authority, and
-         * manual sync settings
-         */
-        if(account.length > 0) {
-            ContentResolver.requestSync(account[0], "example.kozaczekapp.DatabaseConnection.RssContentProvider", settingsBundle);
-        }
-    }
-
-    public List<Article> getAllArticles() {
-        List<Article> articleList = new ArrayList<>();
-        Cursor cursor = getContentResolver().query(RssContract.CONTENT_URI, null, null, null, null);
-        if (cursor != null && cursor.moveToFirst()) {
-            do {
-                Article article = new Article();
-                article.fromCursor(cursor);
-                // Adding article to list
-                articleList.add(article);
-            } while (cursor.moveToNext());
-            cursor.close();
-        }
-        return articleList;
     }
 }
 
