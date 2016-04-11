@@ -293,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void getData() {
         refreshingAnimationSetUp(true, START_ANIMATE_KIND);
-        startService(getKozaczekServiceIntent());
+        syncAdapterRequest();
         startingServiceCounter++;
     }
 
