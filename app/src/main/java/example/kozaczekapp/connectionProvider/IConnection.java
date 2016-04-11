@@ -9,7 +9,6 @@ public interface IConnection {
      * @return Response as a String
      */
     String getResponse(String mBaseUrl);
-
     /**
      *
      * @return Encoding for current connection

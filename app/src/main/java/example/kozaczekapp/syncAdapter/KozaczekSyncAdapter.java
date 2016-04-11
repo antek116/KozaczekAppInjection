@@ -51,8 +51,6 @@ public class KozaczekSyncAdapter extends AbstractThreadedSyncAdapter {
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
         Log.d("AccountSyncAdapter", "onPerformSync for account[ " + account.name + " ]");
         try {
-            //Get the auth token for the current account
-//            String authToken = mAccountManager.blockingGetAuthToken(account, "", true);
             if (checkTokenValidity(mAccountManager, account)) {
                 ((MyApp) getContext()).getComponentInstance().inject(this);
                 Log.d("SyncAdapter", "SyncAdapter: Synchronize Started");
