@@ -27,8 +27,11 @@
     <string name="wrong_name_format">Wrong name format</string>
     <string name="wrong_surname_format">Wrong surname format</string>
     <string name="empty_field_error">Field can not be empty</string>
-
-
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="accountExists">There is only one Kozaczek account supported</string>
+    <string name="enter_password">Enter password</string>
+    <string name="invalidPassword">Invalid password</string>
     <string name="account_preferences_title">Account Preferences</string>
     <string name="account_preferences_summary">Account Details</string>
     <string name="account_login_title">Email</string>
@@ -37,5 +40,4 @@
     <string name="account_token_key">ACCOUNT_TOKEN</string>
     <string name="provider_content_authority">example.kozaczekapp.DatabaseConnection.RssContentProvider</string>
     <string name="account_type">example.kozaczek</string>
-
 </resources>

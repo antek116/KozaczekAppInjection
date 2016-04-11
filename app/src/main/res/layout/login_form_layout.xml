@@ -7,30 +7,23 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/editTextName"
-        android:hint="@string/enter_name"
-        android:inputType="textCapWords"
-        android:layout_gravity="center_horizontal" />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/editTextSurname"
-        android:hint="@string/enter_surname"
-        android:inputType="textCapWords"/>
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:inputType="textEmailAddress"
         android:id="@+id/editTextEnterEmail"
         android:hint="@string/enter_email" />
 
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/editTextPassword"
+        android:hint="@string/enter_password"
+        android:inputType="textPassword"
+        android:layout_gravity="center_horizontal" />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/Confirm"
+        android:text="@string/register"
         android:id="@+id/buttonConfirmLogin"
         android:onClick="onSubmitClick"
-        android:layout_gravity="right" />
+        android:layout_gravity="end" />
 </LinearLayout>

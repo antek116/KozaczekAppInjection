@@ -31,6 +31,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 import java.util.List;
+
+import example.kozaczekapp.authenticator.AccountKeyConstants;
 import example.kozaczekapp.authenticator.AuthenticatorActivity;
 import example.kozaczekapp.databaseConnection.DatabaseHandler;
 import example.kozaczekapp.databaseConnection.RssContract;
@@ -39,6 +41,7 @@ import example.kozaczekapp.imageDownloader.ImageManager;
 import example.kozaczekapp.kozaczekItems.Article;
 import example.kozaczekapp.preferences.PreferencesActivity;
 import example.kozaczekapp.service.KozaczekService;
+import example.kozaczekapp.webView.WebViewActivity;
 
 public class MainActivity extends AppCompatActivity {
     public static final String FRAGMENT_KEY = "ArticleListFragmentSaveState";
@@ -48,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int START_ANIMATE_KIND = 1;
     private static final int STOP_ANIMATION_KIND = 0;
     private static boolean showNoConnectionMsg = true;
+    private static boolean isActivityVisible = false;
+    public int startingServiceCounter = 0;
     ArticleListFragment listArticle;
     Intent kozaczekServiceIntent;
     SwipeRefreshLayout pullToRefresh;
@@ -57,17 +62,19 @@ public class MainActivity extends AppCompatActivity {
     private ObjectAnimator anim;
     private MenuItem refreshMenuItem;
 
-    /**
-     * Used to tests
-     */
-    private static boolean isActivityVisible = false;
-    public int startingServiceCounter = 0;
-    /*************************************************/
+    public static boolean getActivityVisibilityState() {
+        return isActivityVisible;
+    }
 
 
     private void updateImageToLabCache(ImageManager imageManager, List<Article> articles) {
         imageManager.addImagesFromArticlesToLruCache(articles);
     }
+
+    public Intent getKozaczekServiceIntent() {
+        return kozaczekServiceIntent;
+    }
+
     /**
      * Methods where we initialize service.
      *
@@ -97,12 +104,13 @@ public class MainActivity extends AppCompatActivity {
                     public void onChange(boolean selfChange, Uri uri) {
                         new GetArticlesFromDataBase().execute();
                         super.onChange(selfChange, uri);
+
                     }
                 });
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        Log.d("MaunActivity", "onCreate: " + prefs.getBoolean("emailPref", false));
+        Log.d("MaunActivity", "onCreate: "+ prefs.getBoolean("emailPref",false));
     }
 
     /**
@@ -130,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.createNewAccount:
                 i = new Intent(this, AuthenticatorActivity.class);
+                i.putExtra(AccountKeyConstants.ARG_CLICKED_FROM_SETTINGS,false);
                 startActivity(i);
                 break;
             default:
@@ -284,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void getData() {
         refreshingAnimationSetUp(true, START_ANIMATE_KIND);
-        syncAdapterRequest();
+        startService(getKozaczekServiceIntent());
         startingServiceCounter++;
     }
 
@@ -369,7 +378,7 @@ public class MainActivity extends AppCompatActivity {
                 ContentResolver.SYNC_EXTRAS_MANUAL, true);
         settingsBundle.putBoolean(
                 ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-        Account[] account = AccManager.getAccountsByType(AuthenticatorActivity.ACCOUNT_TYPE);
+        Account[] account = AccManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE);
         /*
          * Request the sync for the default account, authority, and
          * manual sync settings

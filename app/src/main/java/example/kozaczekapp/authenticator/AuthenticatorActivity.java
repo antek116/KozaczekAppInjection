@@ -4,20 +4,21 @@ import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
 import example.kozaczekapp.R;
 
 public class AuthenticatorActivity extends AccountAuthenticatorActivity {
-
-    public final static String ARG_ACCOUNT_TYPE = "ACCOUNT_TYPE";
-    public final static String ARG_IS_ADDING_NEW_ACCOUNT = "IS_ADDING_ACCOUNT";
-    public static final String ACCOUNT_TYPE = "example.kozaczek";
-
-    private EditText editTextName;
-    private EditText editTextSurname;
+    private static final String TAG = "AuthenticatorActiviy";
+    private EditText editTextPassword;
     private EditText editTextEmail;
-    private  FormValidator validator = FormValidator.getInstance();
+    private Button btnLogin;
+    private boolean accountExists;
+    private AccountManager accountManager;
 
     /**
      * {@inheritDoc}
@@ -26,10 +27,25 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.login_form_layout);
-        editTextName = (EditText) findViewById(R.id.editTextName);
-        editTextSurname = (EditText) findViewById(R.id.editTextSurname);
+        accountManager = AccountManager.get(getBaseContext());
+        editTextPassword = (EditText) findViewById(R.id.editTextPassword);
         editTextEmail = (EditText) findViewById(R.id.editTextEnterEmail);
-        fieldsListenersSetUp();
+        btnLogin = (Button) findViewById(R.id.buttonConfirmLogin);
+        accountExists = accountManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE).length > 0;
+        if (getIntent().getBooleanExtra(AccountKeyConstants.ARG_CLICKED_FROM_SETTINGS, false)) {
+            if (accountExists) {
+                //TODO move this to AccountAuthenticator
+                Toast.makeText(getApplicationContext(), getText(R.string.accountExists), Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        } else {
+            if (accountExists) {
+                Account[] accounts = accountManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE);
+                editTextEmail.setText(accounts[0].name);
+                editTextEmail.setEnabled(false);
+                btnLogin.setText(R.string.login);
+            }
+        }
     }
 
     /**
@@ -37,38 +53,49 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
      * It gets field values from form, adds them to intent and calls finishLogin(Intent)
      */
     public void onSubmitClick(View view) {
-        boolean isValidForm = isFormValid();
-        if (isValidForm) {
-            AccountManager accountManager = AccountManager.get(getBaseContext());
-            String name = editTextName.getText().toString();
-            String surname = editTextSurname.getText().toString();
+        if (isFormValid()) {
+            Log.d(TAG, "onSubmitClick: " + accountManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE).length);
+
             String email = editTextEmail.getText().toString();
-            final Account account = new Account(name + " " + surname, ACCOUNT_TYPE);
-            accountManager.addAccountExplicitly(account, null, null);
-            accountManager.setUserData(account, AccountKeyConstants.KEY_ACCOUNT_EMAIL, email);
-            accountManager.setUserData(account, AccountKeyConstants.KEY_ACCOUNT_NAME, name);
-            accountManager.setUserData(account, AccountKeyConstants.KEY_ACCOUNT_SURNAME, surname);
-            finish();
+            String password = editTextPassword.getText().toString();
+            if (accountExists) {
+                Account[] account = accountManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE);
+                if (validatePassword(password, account[0])) {
+
+                    finish();
+                } else {
+                    btnLogin.setError(getString(R.string.invalidPassword));
+                }
+            } else {
+                final Account account = new Account(email, AccountKeyConstants.ACCOUNT_TYPE);
+                accountManager.setPassword(account, password);
+                accountManager.addAccountExplicitly(account, password, null);
+                accountManager.setAuthToken(account, AccountKeyConstants.AUTHTOKEN_TYPE_FULL_ACCESS, new Token().toString());
+                finish();
+            }
         }
     }
 
     private boolean isFormValid() {
-        FormValidator validator = FormValidator.getInstance();
-        return (isEmailValid(validator) & isSurnameValid(validator) & isNameValid(validator));
+        return isEmailValid(FormValidator.getInstance());
     }
 
-    private boolean isEmailValid(FormValidator validator){
+    private boolean validatePassword(String password, Account account) {
+        return accountManager.getPassword(account).equals(password);
+    }
+
+    private boolean isEmailValid(FormValidator validator) {
         Integer hasEmailError = validator.isValid(editTextEmail.getText().toString(),
                 FormValidator.FieldType.EMAIL);
-        if(hasEmailError != null){
+        if (hasEmailError != null) {
             editTextEmail.setError(getString(hasEmailError));
             return false;
-        }else{
+        } else {
             editTextEmail.setError(null);
             return true;
         }
     }
-
+/*
     private boolean isNameValid(FormValidator validator){
         Integer hasNameError = validator.isValid(editTextName.getText().toString(),
                 FormValidator.FieldType.NAME);
@@ -119,5 +146,5 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
                 }
             }
         });
-    }
+    }*/
 }
