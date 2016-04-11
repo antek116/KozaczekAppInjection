@@ -42,4 +42,8 @@
     <string name="account_type">example.kozaczek</string>
     <string name="delete_account_button">Delete Account</string>
     <string name="delete_account_button_key">DELETE_ACCOUNT_BUTTON_KEY</string>
+    <string name="timeZoneChoose">Response Type for TimeZone</string>
+    <string name="selectedTimeZooneRequestType">Selected</string>
+    <string name="timeZoneRequestTypeKey">timeZoneRequestTypeKey</string>
+    <string name="notification_token_expired">Token is expired. Click to log in</string>
 </resources>

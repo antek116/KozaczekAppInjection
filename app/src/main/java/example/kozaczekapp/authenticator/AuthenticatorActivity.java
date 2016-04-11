@@ -61,7 +61,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
             if (accountExists) {
                 Account[] account = accountManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE);
                 if (validatePassword(password, account[0])) {
-
+                    accountManager.setAuthToken(account[0], AccountKeyConstants.AUTHTOKEN_TYPE_FULL_ACCESS, new Token().toString());
                     finish();
                 } else {
                     btnLogin.setError(getString(R.string.invalidPassword));

@@ -13,7 +13,7 @@
         android:title="@string/option"
         app:showAsAction="never" />
 
-    <item android:id="@+id/createNewAccount"
-        android:title="@string/newAccount"
+    <item android:id="@+id/logIn"
+        android:title="@string/login"
         app:showAsAction="never" />
 </menu>
