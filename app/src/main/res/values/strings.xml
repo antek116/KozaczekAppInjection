@@ -40,4 +40,6 @@
     <string name="account_token_key">ACCOUNT_TOKEN</string>
     <string name="provider_content_authority">example.kozaczekapp.DatabaseConnection.RssContentProvider</string>
     <string name="account_type">example.kozaczek</string>
+    <string name="delete_account_button">Delete Account</string>
+    <string name="delete_account_button_key">DELETE_ACCOUNT_BUTTON_KEY</string>
 </resources>
