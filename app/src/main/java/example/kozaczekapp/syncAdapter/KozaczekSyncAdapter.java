@@ -143,7 +143,7 @@ public class KozaczekSyncAdapter extends AbstractThreadedSyncAdapter {
         }
 
         if (articlesToBeDeleted != 0) {
-            String selection = RssContract.Columns._ID + ">= ?" ;// I'll find mistake and fix it!
+            String selection = RssContract.Columns._ID + ">= ?" ;
             String[] params = new String[]{String.valueOf(articlesToBeDeleted)};
             operationList.add(ContentProviderOperation.newDelete(RssContract.CONTENT_URI)
                     .withSelection(selection, params)
