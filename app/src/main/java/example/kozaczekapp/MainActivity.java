@@ -1,7 +1,10 @@
 package example.kozaczekapp;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.animation.ObjectAnimator;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -29,6 +32,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 import java.util.List;
 
+import example.kozaczekapp.authenticator.AccountKeyConstants;
 import example.kozaczekapp.authenticator.AuthenticatorActivity;
 import example.kozaczekapp.databaseConnection.DatabaseHandler;
 import example.kozaczekapp.databaseConnection.RssContract;
@@ -134,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.createNewAccount:
                 i = new Intent(this, AuthenticatorActivity.class);
-                i.putExtra(AccountKeyStorage.ARG_CLICKED_FROM_SETTINGS,false);
+                i.putExtra(AccountKeyConstants.ARG_CLICKED_FROM_SETTINGS,false);
                 startActivity(i);
                 break;
             default:
@@ -374,7 +378,7 @@ public class MainActivity extends AppCompatActivity {
                 ContentResolver.SYNC_EXTRAS_MANUAL, true);
         settingsBundle.putBoolean(
                 ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-        Account[] account = AccManager.getAccountsByType(AuthenticatorActivity.ACCOUNT_TYPE);
+        Account[] account = AccManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE);
         /*
          * Request the sync for the default account, authority, and
          * manual sync settings

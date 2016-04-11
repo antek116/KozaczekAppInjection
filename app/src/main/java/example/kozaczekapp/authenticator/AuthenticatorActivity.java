@@ -31,8 +31,8 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
         editTextEmail = (EditText) findViewById(R.id.editTextEnterEmail);
         btnLogin = (Button) findViewById(R.id.buttonConfirmLogin);
-        accountExists = accountManager.getAccountsByType(AccountKeyStorage.ACCOUNT_TYPE).length > 0;
-        if (getIntent().getBooleanExtra(AccountKeyStorage.ARG_CLICKED_FROM_SETTINGS, false)) {
+        accountExists = accountManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE).length > 0;
+        if (getIntent().getBooleanExtra(AccountKeyConstants.ARG_CLICKED_FROM_SETTINGS, false)) {
             if (accountExists) {
                 //TODO move this to AccountAuthenticator
                 Toast.makeText(getApplicationContext(), getText(R.string.accountExists), Toast.LENGTH_SHORT).show();
@@ -40,7 +40,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
             }
         } else {
             if (accountExists) {
-                Account[] accounts = accountManager.getAccountsByType(AccountKeyStorage.ACCOUNT_TYPE);
+                Account[] accounts = accountManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE);
                 editTextEmail.setText(accounts[0].name);
                 editTextEmail.setEnabled(false);
                 btnLogin.setText(R.string.login);
@@ -54,12 +54,12 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
      */
     public void onSubmitClick(View view) {
         if (isFormValid()) {
-            Log.d(TAG, "onSubmitClick: " + accountManager.getAccountsByType(AccountKeyStorage.ACCOUNT_TYPE).length);
+            Log.d(TAG, "onSubmitClick: " + accountManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE).length);
 
             String email = editTextEmail.getText().toString();
             String password = editTextPassword.getText().toString();
             if (accountExists) {
-                Account[] account = accountManager.getAccountsByType(AccountKeyStorage.ACCOUNT_TYPE);
+                Account[] account = accountManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE);
                 if (validatePassword(password, account[0])) {
 
                     finish();
@@ -67,10 +67,10 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
                     btnLogin.setError(getString(R.string.invalidPassword));
                 }
             } else {
-                final Account account = new Account(email, AccountKeyStorage.ACCOUNT_TYPE);
+                final Account account = new Account(email, AccountKeyConstants.ACCOUNT_TYPE);
                 accountManager.setPassword(account, password);
                 accountManager.addAccountExplicitly(account, password, null);
-                accountManager.setAuthToken(account, AccountKeyStorage.AUTHTOKEN_TYPE_FULL_ACCESS, new Token().toString());
+                accountManager.setAuthToken(account, AccountKeyConstants.AUTHTOKEN_TYPE_FULL_ACCESS, new Token().toString());
                 finish();
             }
         }
@@ -95,7 +95,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
             return true;
         }
     }
-
+/*
     private boolean isNameValid(FormValidator validator){
         Integer hasNameError = validator.isValid(editTextName.getText().toString(),
                 FormValidator.FieldType.NAME);
@@ -146,5 +146,5 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
                 }
             }
         });
-    }
+    }*/
 }
