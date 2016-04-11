@@ -43,4 +43,5 @@
     <string name="timeZoneChoose">Response Type for TimeZone</string>
     <string name="selectedTimeZooneRequestType">Selected</string>
     <string name="timeZoneRequestTypeKey">timeZoneRequestTypeKey</string>
+    <string name="notification_token_expired">Token is expired. Click to log in</string>
 </resources>

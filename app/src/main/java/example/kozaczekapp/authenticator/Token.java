@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 
 public class Token {
 
-    private final static long HOUR_IN_MILLIS = 3600000;
+    private final static long HOUR_IN_MILLIS = 60000;
     private Timestamp timeStampEnd;
 
     public Token() {
@@ -39,16 +39,14 @@ public class Token {
      */
     @Override
     public String toString() {
-        String stringWithToken = timeStampEnd.toString();
-        return stringWithToken;
+        return timeStampEnd.toString();
     }
 
     /**
      * @return validity returns the end of 1 hour validity in millis
      */
     private long getValidity() {
-        long validity = System.currentTimeMillis() + HOUR_IN_MILLIS;
-        return validity;
+        return System.currentTimeMillis() + HOUR_IN_MILLIS;
     }
 
     /**
