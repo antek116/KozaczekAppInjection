@@ -73,7 +73,10 @@ public class MainActivity extends AppCompatActivity {
         imageManager.addImagesFromArticlesToLruCache(articles);
     }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> dbrepair
     /**
      * Methods where we initialize service.
      *
@@ -83,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+<<<<<<< HEAD
         AccountManager accountManager = AccountManager.get(this);
         if (accountManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE).length < 1) {
             Intent i = new Intent(this, AuthenticatorActivity.class);
@@ -115,6 +119,33 @@ public class MainActivity extends AppCompatActivity {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
             Log.d("MaunActivity", "onCreate: " + prefs.getBoolean("emailPref", false));
         }
+=======
+        initializationOfSaveInstanceState(savedInstanceState);
+        initializationOfRefreshItemInMenu();
+        getContentResolver().registerContentObserver(RssContract.CONTENT_URI, true,
+                new ContentObserver(new Handler()) {
+                    @Override
+                    public boolean deliverSelfNotifications() {
+                        return super.deliverSelfNotifications();
+                    }
+
+                    @Override
+                    public void onChange(boolean selfChange) {
+                        super.onChange(selfChange);
+                    }
+
+                    @Override
+                    public void onChange(boolean selfChange, Uri uri) {
+                        new GetArticlesFromDataBase().execute();
+                        super.onChange(selfChange, uri);
+
+                    }
+                });
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        Log.d("MainActivity", "onCreate: " + prefs.getBoolean("emailPref", false));
+>>>>>>> dbrepair
     }
 
     /**
@@ -331,22 +362,36 @@ public class MainActivity extends AppCompatActivity {
 
     private void syncAdapterRequest() {
         // Pass the settings flags by inserting them in a bundle
+<<<<<<< HEAD
+=======
+        AccountManager AccManager = AccountManager.get(this);
+>>>>>>> dbrepair
         Log.d("BUTTON", "getData: ButtonClicked");
         Bundle settingsBundle = new Bundle();
         settingsBundle.putBoolean(
                 ContentResolver.SYNC_EXTRAS_MANUAL, true);
         settingsBundle.putBoolean(
                 ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+<<<<<<< HEAD
+=======
+        Account[] account = AccManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE);
+>>>>>>> dbrepair
         /*
          * Request the sync for the default account, authority, and
          * manual sync settings
          */
+<<<<<<< HEAD
         if (accounts.length > 0) {
             ContentResolver.requestSync(accounts[0], "example.kozaczekapp.DatabaseConnection.RssContentProvider", settingsBundle);
+=======
+        if (account.length > 0) {
+            ContentResolver.requestSync(account[0], "example.kozaczekapp.DatabaseConnection.RssContentProvider", settingsBundle);
+>>>>>>> dbrepair
         }
     }
 
     /**
+<<<<<<< HEAD
      * Turn on periodic syncing
      */
     private void syncAdapterRefreshingSetup() {
@@ -364,6 +409,10 @@ public class MainActivity extends AppCompatActivity {
                 SYNC_INTERVAL);
     }
 
+=======
+     * @return list of all articles from db
+     */
+>>>>>>> dbrepair
     public List<Article> getAllArticles() {
         List<Article> articleList = new ArrayList<>();
         Cursor cursor = getContentResolver().query(RssContract.CONTENT_URI, null, null, null, null);
@@ -386,7 +435,10 @@ public class MainActivity extends AppCompatActivity {
          */
         @Override
         protected List<Article> doInBackground(String... params) {
+<<<<<<< HEAD
             // DatabaseHandler db = new DatabaseHandler(MainActivity.this);
+=======
+>>>>>>> dbrepair
             return getAllArticles();
         }
 
