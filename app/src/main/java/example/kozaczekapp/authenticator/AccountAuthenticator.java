@@ -82,7 +82,7 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
         // need to re-prompt them for their credentials. We do that by creating
         // an intent to display our AuthenticatorActivity.
         final Intent intent = new Intent(context, AuthenticatorActivity.class);
-        intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
+//        intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
         intent.putExtra(AccountKeyConstants.ARG_ACCOUNT_TYPE, account.type);
 //        intent.putExtra(AuthenticatorActivity.ARG_AUTH_TYPE, authTokenType);
         final Bundle bundle = new Bundle();

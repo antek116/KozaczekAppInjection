@@ -1,14 +1,19 @@
 package example.kozaczekapp.authenticator;
 
-
 import java.sql.Timestamp;
 
 public class Token {
+
     private final static long HOUR_IN_MILLIS = 3600000;
     private Timestamp timeStampEnd;
 
     public Token() {
         timeStampEnd = new Timestamp(getValidity());
+    }
+
+    public Token(String validity) {
+        long tokenValidity = Long.valueOf(validity);
+        timeStampEnd = new Timestamp(tokenValidity);
     }
 
     /**
