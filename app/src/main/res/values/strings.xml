@@ -40,4 +40,5 @@
     <string name="account_token_key">ACCOUNT_TOKEN</string>
     <string name="provider_content_authority">example.kozaczekapp.DatabaseConnection.RssContentProvider</string>
     <string name="account_type">example.kozaczek</string>
+    <string name="notification_token_expired">Token is expired. Click to log in</string>
 </resources>

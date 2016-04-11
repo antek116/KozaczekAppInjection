@@ -1,6 +1,9 @@
 package example.kozaczekapp.application;
 
 import android.app.Application;
+import android.database.ContentObserver;
+import android.os.Handler;
+import android.os.Looper;
 
 import example.kozaczekapp.component.DaggerIConnectionComponent;
 import example.kozaczekapp.component.IConnectionComponent;
@@ -26,4 +29,5 @@ public class MyApp extends Application {
             return componentInstance;
         }
     }
+
 }

@@ -37,7 +37,6 @@ import java.util.List;
 
 import example.kozaczekapp.authenticator.AccountKeyConstants;
 import example.kozaczekapp.authenticator.AuthenticatorActivity;
-import example.kozaczekapp.databaseConnection.DatabaseHandler;
 import example.kozaczekapp.databaseConnection.RssContract;
 import example.kozaczekapp.fragments.ArticleListFragment;
 import example.kozaczekapp.imageDownloader.ImageManager;
@@ -46,27 +45,24 @@ import example.kozaczekapp.preferences.PreferencesActivity;
 
 public class MainActivity extends AppCompatActivity {
     public static final String FRAGMENT_KEY = "ArticleListFragmentSaveState";
-    public static final String SERVICE_URL = "http://www.kozaczek.pl/rss/plotki.xml";
     private static final String SCREEN_WIDTH = "SCREEN_WIDTH";
     private static final int NO_INTERNET_CONNECTION_KIND = 2;
     private static final int START_ANIMATE_KIND = 1;
     private static final int STOP_ANIMATION_KIND = 0;
+    private static final long SECONDS_PER_MINUTE = 60L;
+    private static final long SYNC_INTERVAL_IN_MINUTES = 1L;
+    public static final long SYNC_INTERVAL = SECONDS_PER_MINUTE * SYNC_INTERVAL_IN_MINUTES;
     private static boolean showNoConnectionMsg = true;
     private static boolean isActivityVisible = false;
     public int startingServiceCounter = 0;
+    ArticleListFragment listArticle;
+    SwipeRefreshLayout pullToRefresh;
+    OnConnectivityChangeReceiver connectivityChangeReceiver;
     private int screenWidth;
     private ImageView image;
     private ObjectAnimator anim;
     private MenuItem refreshMenuItem;
     private Account[] accounts;
-    private static final long SECONDS_PER_MINUTE = 60L;
-    private static final long SYNC_INTERVAL_IN_MINUTES = 45L;
-    ArticleListFragment listArticle;
-    Intent kozaczekServiceIntent;
-    SwipeRefreshLayout pullToRefresh;
-    OnConnectivityChangeReceiver connectivityChangeReceiver;
-    public static final long SYNC_INTERVAL = SECONDS_PER_MINUTE * SYNC_INTERVAL_IN_MINUTES ;
-
 
     public static boolean getActivityVisibilityState() {
         return isActivityVisible;
@@ -77,9 +73,6 @@ public class MainActivity extends AppCompatActivity {
         imageManager.addImagesFromArticlesToLruCache(articles);
     }
 
-    public Intent getKozaczekServiceIntent() {
-        return kozaczekServiceIntent;
-    }
 
     /**
      * Methods where we initialize service.
@@ -90,31 +83,38 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        syncAdapterRefreshingSetup();
-        initializationOfSaveInstanceState(savedInstanceState);
-        initializationOfRefreshItemInMenu();
-        getContentResolver().registerContentObserver(RssContract.CONTENT_URI, true,
-                new ContentObserver(new Handler()) {
-                    @Override
-                    public boolean deliverSelfNotifications() {
-                        return super.deliverSelfNotifications();
-                    }
+        AccountManager accountManager = AccountManager.get(this);
+        if (accountManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE).length < 1) {
+            Intent i = new Intent(this, AuthenticatorActivity.class);
+            i.putExtra(AccountKeyConstants.ARG_CLICKED_FROM_SETTINGS, false);
+            this.startActivity(i);
+        } else {
+            syncAdapterRefreshingSetup();
+            initializationOfSaveInstanceState(savedInstanceState);
+            initializationOfRefreshItemInMenu();
+            getContentResolver().registerContentObserver(RssContract.CONTENT_URI, true,
+                    new ContentObserver(new Handler()) {
+                        @Override
+                        public boolean deliverSelfNotifications() {
+                            return super.deliverSelfNotifications();
+                        }
 
-                    @Override
-                    public void onChange(boolean selfChange) {
-                        super.onChange(selfChange);
-                    }
+                        @Override
+                        public void onChange(boolean selfChange) {
+                            super.onChange(selfChange);
+                        }
 
-                    @Override
-                    public void onChange(boolean selfChange, Uri uri) {
-                        new GetArticlesFromDataBase().execute();
-                        super.onChange(selfChange, uri);
+                        @Override
+                        public void onChange(boolean selfChange, Uri uri) {
+                            new GetArticlesFromDataBase().execute();
+                            super.onChange(selfChange, uri);
 
-                    }
-                });
+                        }
+                    });
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        Log.d("MaunActivity", "onCreate: " + prefs.getBoolean("emailPref", false));
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            Log.d("MaunActivity", "onCreate: " + prefs.getBoolean("emailPref", false));
+        }
     }
 
     /**
@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.createNewAccount:
                 i = new Intent(this, AuthenticatorActivity.class);
-                i.putExtra(AccountKeyConstants.ARG_CLICKED_FROM_SETTINGS,false);
+                i.putExtra(AccountKeyConstants.ARG_CLICKED_FROM_SETTINGS, false);
                 startActivity(i);
                 break;
             default:
@@ -228,12 +228,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     *
      * @return true if anim is running
      */
-    public boolean isRefreshAnimating(){
+    public boolean isRefreshAnimating() {
         return anim.isRunning();
     }
+
     /**
      * Method sets the listener for PullToRefresh event.
      * On PullToRefresh when the device is connected to internet the rss data are reloaded.
@@ -273,7 +273,7 @@ public class MainActivity extends AppCompatActivity {
     private void initializationOfRefreshItemInMenu() {
 
         LayoutInflater inflater = (LayoutInflater) getApplication().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        FrameLayout frameLayout = (FrameLayout) inflater.inflate( R.layout.iv_refresh,new LinearLayout(getApplicationContext()), false);
+        FrameLayout frameLayout = (FrameLayout) inflater.inflate(R.layout.iv_refresh, new LinearLayout(getApplicationContext()), false);
         image = (ImageView) frameLayout.findViewById(R.id.refresh);
         image.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -329,28 +329,7 @@ public class MainActivity extends AppCompatActivity {
         return displaymetrics.widthPixels;
     }
 
-    class GetArticlesFromDataBase extends AsyncTask<String, String, List<Article>> {
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        protected List<Article> doInBackground(String... params) {
-           // DatabaseHandler db = new DatabaseHandler(MainActivity.this);
-            return getAllArticles();
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        protected void onPostExecute(List<Article> articlesFromDB) {
-            listArticle.updateTasksInList(articlesFromDB);
-            updateImageToLabCache(listArticle.getImageManager(), articlesFromDB);
-            refreshingAnimationSetUp(false, STOP_ANIMATION_KIND);
-        }
-    }
-    private void syncAdapterRequest(){
+    private void syncAdapterRequest() {
         // Pass the settings flags by inserting them in a bundle
         Log.d("BUTTON", "getData: ButtonClicked");
         Bundle settingsBundle = new Bundle();
@@ -362,7 +341,7 @@ public class MainActivity extends AppCompatActivity {
          * Request the sync for the default account, authority, and
          * manual sync settings
          */
-        if(accounts.length > 0) {
+        if (accounts.length > 0) {
             ContentResolver.requestSync(accounts[0], "example.kozaczekapp.DatabaseConnection.RssContentProvider", settingsBundle);
         }
     }
@@ -370,7 +349,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Turn on periodic syncing
      */
-    private void syncAdapterRefreshingSetup(){
+    private void syncAdapterRefreshingSetup() {
         AccountManager AccManager = AccountManager.get(this);
         accounts = AccManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE);
         Bundle settingsBundle = new Bundle();
@@ -384,6 +363,44 @@ public class MainActivity extends AppCompatActivity {
                 settingsBundle,
                 SYNC_INTERVAL);
     }
+
+    public List<Article> getAllArticles() {
+        List<Article> articleList = new ArrayList<>();
+        Cursor cursor = getContentResolver().query(RssContract.CONTENT_URI, null, null, null, null);
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                Article article = new Article();
+                article.fromCursor(cursor);
+                // Adding article to list
+                articleList.add(article);
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+        return articleList;
+    }
+
+    class GetArticlesFromDataBase extends AsyncTask<String, String, List<Article>> {
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected List<Article> doInBackground(String... params) {
+            // DatabaseHandler db = new DatabaseHandler(MainActivity.this);
+            return getAllArticles();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void onPostExecute(List<Article> articlesFromDB) {
+            listArticle.updateTasksInList(articlesFromDB);
+            updateImageToLabCache(listArticle.getImageManager(), articlesFromDB);
+            refreshingAnimationSetUp(false, STOP_ANIMATION_KIND);
+        }
+    }
+
     /**
      * Receiver OnConnectivityChangeReceiver listens of the state of connection has changed.
      * If the device disconnects the suitable message is shown and PullToRefresh is disabled.
@@ -405,21 +422,6 @@ public class MainActivity extends AppCompatActivity {
                 showInternetNoConnectionMsg();
             }
         }
-    }
-
-    public List<Article> getAllArticles() {
-        List<Article> articleList = new ArrayList<>();
-        Cursor cursor = getContentResolver().query(RssContract.CONTENT_URI, null, null, null, null);
-        if (cursor != null && cursor.moveToFirst()) {
-            do {
-                Article article = new Article();
-                article.fromCursor(cursor);
-                // Adding article to list
-                articleList.add(article);
-            } while (cursor.moveToNext());
-            cursor.close();
-        }
-        return articleList;
     }
 }
 
