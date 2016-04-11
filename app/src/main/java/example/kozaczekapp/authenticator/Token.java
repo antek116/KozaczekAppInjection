@@ -12,8 +12,7 @@ public class Token {
     }
 
     public Token(String validity) {
-        long tokenValidity = Long.valueOf(validity);
-        timeStampEnd = new Timestamp(tokenValidity);
+        timeStampEnd = Timestamp.valueOf(validity);
     }
 
     /**
