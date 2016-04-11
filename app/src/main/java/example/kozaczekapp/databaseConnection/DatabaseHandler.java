@@ -70,11 +70,11 @@ public class DatabaseHandler extends SQLiteOpenHelper implements IDatabaseHelper
      */
     @Override
     public void addArticleList(List<Article> articleList) {
-        deleteAllArticle();
+        /*deleteAllArticle();
         for (Article article : articleList) {
             addArticle(article);
         }
-        resolver.notifyChange(RssContract.CONTENT_URI, null);
+        resolver.notifyChange(RssContract.CONTENT_URI, null);*/
     }
 
     /**
@@ -84,7 +84,7 @@ public class DatabaseHandler extends SQLiteOpenHelper implements IDatabaseHelper
      */
     @Override
     public void addArticle(Article article) {
-        ContentValues values = new ContentValues();
+       /* ContentValues values = new ContentValues();
         putArticlesFieldsToValuesMap(article, values);
         ArrayList<ContentProviderOperation> ops =
                 new ArrayList<>();
@@ -96,7 +96,7 @@ public class DatabaseHandler extends SQLiteOpenHelper implements IDatabaseHelper
             resolver.applyBatch(RssContract.AUTHORITY, ops);
         } catch (RemoteException | OperationApplicationException e) {
             e.printStackTrace();
-        }
+        }*/
 
     }
 

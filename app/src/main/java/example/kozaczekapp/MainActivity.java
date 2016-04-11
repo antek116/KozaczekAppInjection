@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.ContentObserver;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -30,6 +31,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import example.kozaczekapp.authenticator.AccountKeyConstants;
@@ -40,8 +43,6 @@ import example.kozaczekapp.fragments.ArticleListFragment;
 import example.kozaczekapp.imageDownloader.ImageManager;
 import example.kozaczekapp.kozaczekItems.Article;
 import example.kozaczekapp.preferences.PreferencesActivity;
-import example.kozaczekapp.service.KozaczekService;
-import example.kozaczekapp.webView.WebViewActivity;
 
 public class MainActivity extends AppCompatActivity {
     public static final String FRAGMENT_KEY = "ArticleListFragmentSaveState";
@@ -90,8 +91,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         syncAdapterRefreshingSetup();
-        kozaczekServiceIntent = new Intent(MainActivity.this, KozaczekService.class);
-        kozaczekServiceIntent.putExtra(KozaczekService.URL, SERVICE_URL);
         initializationOfSaveInstanceState(savedInstanceState);
         initializationOfRefreshItemInMenu();
         getContentResolver().registerContentObserver(RssContract.CONTENT_URI, true,
@@ -337,8 +336,8 @@ public class MainActivity extends AppCompatActivity {
          */
         @Override
         protected List<Article> doInBackground(String... params) {
-            DatabaseHandler db = new DatabaseHandler(MainActivity.this);
-            return db.getAllArticles();
+           // DatabaseHandler db = new DatabaseHandler(MainActivity.this);
+            return getAllArticles();
         }
 
         /**
@@ -408,5 +407,19 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public List<Article> getAllArticles() {
+        List<Article> articleList = new ArrayList<>();
+        Cursor cursor = getContentResolver().query(RssContract.CONTENT_URI, null, null, null, null);
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                Article article = new Article();
+                article.fromCursor(cursor);
+                // Adding article to list
+                articleList.add(article);
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+        return articleList;
+    }
 }
 
