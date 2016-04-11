@@ -5,6 +5,9 @@ import java.util.regex.Pattern;
 
 import example.kozaczekapp.R;
 
+/**
+ *  Used to validation email, name and surname format is correct
+ */
 public final class FormValidator {
 
     private static FormValidator instance = null;
@@ -13,15 +16,25 @@ public final class FormValidator {
 
     private FormValidator(){}
 
+    /**
+     *
+     * @return singleton instance of FormValidator
+     */
     public static FormValidator getInstance(){
         if(instance == null){
-            return new FormValidator();
+            return instance =  new FormValidator();
         }
         else{
             return instance;
         }
     }
 
+    /**
+     *
+     * @param text text in String that have to be checked.
+     * @param fieldType enum EMAIL,NAME OR SURNAME
+     * @return null if text isValid, id of Error in string.xml if text is invalid.
+     */
     public Integer isValid(String text, FieldType fieldType) {
         switch (fieldType) {
             case EMAIL:
