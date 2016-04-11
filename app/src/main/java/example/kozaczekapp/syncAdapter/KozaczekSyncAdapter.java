@@ -13,6 +13,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SyncResult;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
@@ -31,46 +32,48 @@ import example.kozaczekapp.authenticator.Token;
 import example.kozaczekapp.connectionProvider.IConnection;
 import example.kozaczekapp.databaseConnection.RssContract;
 import example.kozaczekapp.kozaczekItems.Article;
-import example.kozaczekapp.service.Parser;
+import example.kozaczekapp.parser.Parser;
 
 public class KozaczekSyncAdapter extends AbstractThreadedSyncAdapter {
     private static final String TAG = "KozaczekSyncAdapter";
     private final AccountManager mAccountManager;
     @Inject
     IConnection connection;
-    private Context context;
+    @SuppressWarnings("FieldCanBeLocal")
     private String url = "http://www.kozaczek.pl/rss/plotki.xml";
 
     public KozaczekSyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
         mAccountManager = AccountManager.get(context);
-        this.context = context;
     }
 
     @Override
-    public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
+    public void onPerformSync(Account account, Bundle extras, String authority,
+                              ContentProviderClient provider, SyncResult syncResult) {
         Log.d("AccountSyncAdapter", "onPerformSync for account[ " + account.name + " ]");
         try {
             if (checkTokenValidity(mAccountManager, account)) {
                 ((MyApp) getContext()).getComponentInstance().inject(this);
                 Log.d("SyncAdapter", "SyncAdapter: Synchronize Started");
                 if (connection.getResponse(url) != null) {
-                    Parser parser1 = new Parser(connection.getResponse(url));
-                    parser1.setEncoding(connection.getEncoding());
-                    ArrayList<Article> articles = parser1.parse();
+                    Parser parser = new Parser(connection.getResponse(url));
+                    parser.setEncoding(connection.getEncoding());
+                    ArrayList<Article> articles = parser.parse();
                     ArrayList<ContentProviderOperation> operationList = new ArrayList<>();
-                    createDeleteOperations(operationList);
-                    createInsertOperations(operationList, articles);
+                    createUpdateOperation(operationList, articles);
+                    createInsertOperation(operationList, articles);
+                    createDeleteOperation(operationList, articles);
                     getContext().getContentResolver().applyBatch(RssContract.AUTHORITY, operationList);
                     getContext().getContentResolver().notifyChange(RssContract.CONTENT_URI, null);
                 }
             } else { //if App is visible display activity othervise post notification
-                sendNotification(context, context.getString(R.string.notification_token_expired));
+                sendNotification(getContext(), getContext().getString(R.string.notification_token_expired));
                 Log.d(TAG, "onPerformSync: token is invalid");
-                Intent i = new Intent(context, AuthenticatorActivity.class);
+                Intent i = new Intent(getContext(), AuthenticatorActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 i.putExtra(AccountKeyConstants.ARG_CLICKED_FROM_SETTINGS, false);
-                context.startActivity(i);
+                getContext().startActivity(i);
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -79,17 +82,65 @@ public class KozaczekSyncAdapter extends AbstractThreadedSyncAdapter {
 
     }
 
-    private void createInsertOperations(ArrayList<ContentProviderOperation> operationList,
-                                        ArrayList<Article> articles) {
+    /**
+     * Create update operation only if specified article link is the same and at least one of
+     * the other fields are different
+     *
+     * @param operationList list of ContentProvider operations
+     * @param articles      all parsed articles
+     */
+    private void createUpdateOperation(ArrayList<ContentProviderOperation> operationList,
+                                       ArrayList<Article> articles) {
         for (Article article : articles) {
             ContentValues values = new ContentValues();
             putArticlesFieldsToValuesMap(article, values);
-            operationList.add(ContentProviderOperation.newInsert(RssContract.CONTENT_URI)
+            String where = RssContract.Columns.COLUMN_ARTICLE_LINK + " = ? "
+                    + "AND ( "
+                    + RssContract.Columns.COLUMN_DESCRIPTION + " != ?" + " OR "
+                    + RssContract.Columns.COLUMN_IMAGE_LINK + " != ?" + " OR "
+                    + RssContract.Columns.COLUMN_TITLE + " != ?" + " OR "
+                    + RssContract.Columns.COLUMN_PUB_DATE + " != ?"
+                    + " )";
+
+            String[] params = new String[]{article.getLinkToArticle(), article.getDescription(),
+                    article.getImage().getImageUrl(), article.getTitle(), article.getPubDate()};
+
+            operationList.add(ContentProviderOperation.newUpdate(RssContract.CONTENT_URI)
+                    .withSelection(where, params)
                     .withValues(values)
-                    .withYieldAllowed(true)
                     .build());
         }
+
     }
+
+    /**
+     * Create insert operation only if article does not exist
+     *
+     * @param operationList list of ContentProvider operations
+     * @param articles      all parsed articles
+     */
+    private void createInsertOperation(ArrayList<ContentProviderOperation> operationList,
+                                       ArrayList<Article> articles) {
+        for (Article article : articles) {
+            ContentValues values = new ContentValues();
+            putArticlesFieldsToValuesMap(article, values);
+
+            String selection = RssContract.Columns.COLUMN_ARTICLE_LINK + " = ?";
+            String[] params = new String[]{article.getLinkToArticle()};
+            Cursor cursor = getContext().getContentResolver().query(RssContract.CONTENT_URI, null,
+                    selection, params, null);
+            assert cursor != null;
+            if (cursor.getCount() == 0) {
+                operationList.add(ContentProviderOperation.newInsert(RssContract.CONTENT_URI)
+                        .withValues(values)
+                        .withYieldAllowed(true)
+                        .build());
+            }
+            cursor.close();
+
+        }
+    }
+
 
     private void putArticlesFieldsToValuesMap(Article article, @NonNull ContentValues values) {
         values.put(RssContract.Columns.COLUMN_TITLE, article.getTitle());
@@ -99,8 +150,27 @@ public class KozaczekSyncAdapter extends AbstractThreadedSyncAdapter {
         values.put(RssContract.Columns.COLUMN_IMAGE_LINK, article.getImage().getImageUrl());
     }
 
-    private void createDeleteOperations(ArrayList<ContentProviderOperation> operationList) {
-        operationList.add(ContentProviderOperation.newDelete(RssContract.CONTENT_URI).build());
+    private void createDeleteOperation(ArrayList<ContentProviderOperation> operationList, ArrayList<Article> articles) {
+
+        Cursor cursor = getContext().getContentResolver().query(RssContract.CONTENT_URI, null,
+                null, null, null);
+
+        assert cursor != null;
+        int articlesToBeDeleted;
+        if(cursor.getCount() < articles.size()){
+            articlesToBeDeleted = 0;
+        }else{
+            articlesToBeDeleted = cursor.getCount() - articles.size();
+        }
+
+        if (articlesToBeDeleted != 0) {
+            String selection = RssContract.Columns._ID + ">= ?" ;
+            String[] params = new String[]{String.valueOf(articlesToBeDeleted)};
+            operationList.add(ContentProviderOperation.newDelete(RssContract.CONTENT_URI)
+                    .withSelection(selection, params)
+                    .build());
+        }
+        cursor.close();
     }
 
     /**
@@ -131,7 +201,7 @@ public class KozaczekSyncAdapter extends AbstractThreadedSyncAdapter {
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_launcher)
-                .setContentTitle(this.context.getString(R.string.app_name))
+                .setContentTitle(getContext().getString(R.string.app_name))
                 .setContentText(message)
                 .setAutoCancel(true)
                 .setDefaults(Notification.DEFAULT_SOUND | Notification.FLAG_SHOW_LIGHTS)
