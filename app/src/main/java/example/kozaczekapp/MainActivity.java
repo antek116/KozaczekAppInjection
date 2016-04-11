@@ -381,7 +381,7 @@ public class MainActivity extends AppCompatActivity {
         ContentResolver.addPeriodicSync(
                 accounts[0],
                 "example.kozaczekapp.DatabaseConnection.RssContentProvider",
-                Bundle.EMPTY,
+                settingsBundle,
                 SYNC_INTERVAL);
     }
     /**
