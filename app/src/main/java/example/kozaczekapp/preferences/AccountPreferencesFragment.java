@@ -15,10 +15,14 @@ public class AccountPreferencesFragment extends android.preference.PreferenceFra
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.account_preferences);
         Preference loginPreference = findPreference(getResources().getString(R.string.account_login_key));
+        Preference tokenPreference = findPreference(getResources().getString(R.string.account_token_key));
         AccountManager accountManager = AccountManager.get(getActivity().getBaseContext());
         Account[] accounts = accountManager.getAccountsByType(getResources().getString(R.string.account_type));
         if (accounts.length > 0) {
             loginPreference.setTitle("Email: " + accounts[0].name);
+//            tokenPreference.setTitle("Token: " + );
         }
+
+
     }
 }
