@@ -363,7 +363,7 @@ public class MainActivity extends AppCompatActivity {
          * manual sync settings
          */
         if(accounts.length > 0) {
-            ContentResolver.requestSync(accounts[0], "example.kozaczekapp.DatabaseConnection.RssContentProvider", settingsBundle);
+            ContentResolver.requestSync(accounts[0], RssContract.AUTHORITY, settingsBundle);
         }
     }
 
@@ -380,7 +380,7 @@ public class MainActivity extends AppCompatActivity {
         ContentResolver.setMasterSyncAutomatically(true);
         ContentResolver.addPeriodicSync(
                 accounts[0],
-                "example.kozaczekapp.DatabaseConnection.RssContentProvider",
+                RssContract.AUTHORITY,
                 settingsBundle,
                 SYNC_INTERVAL);
     }

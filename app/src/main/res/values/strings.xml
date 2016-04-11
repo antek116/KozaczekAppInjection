@@ -40,4 +40,7 @@
     <string name="account_token_key">ACCOUNT_TOKEN</string>
     <string name="provider_content_authority">example.kozaczekapp.DatabaseConnection.RssContentProvider</string>
     <string name="account_type">example.kozaczek</string>
+    <string name="timeZoneChoose">Response Type for TimeZone</string>
+    <string name="selectedTimeZooneRequestType">Selected</string>
+    <string name="timeZoneRequestTypeKey">timeZoneRequestTypeKey</string>
 </resources>

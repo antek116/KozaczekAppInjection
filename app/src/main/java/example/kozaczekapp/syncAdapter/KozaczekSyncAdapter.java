@@ -44,9 +44,10 @@ public class KozaczekSyncAdapter extends AbstractThreadedSyncAdapter {
 //            String authToken = mAccountManager.blockingGetAuthToken(account, "", true);
 
             ((MyApp) getContext()).getComponentInstance().inject(this);
+            String response = connection.getResponse(url);
             Log.d("SyncAdapter", "SyncAdapter: Synchronize Started");
-            if (connection.getResponse(url) != null) {
-                Parser parser1 = new Parser(connection.getResponse(url));
+            if (response != null) {
+                Parser parser1 = new Parser(response);
                 parser1.setEncoding(connection.getEncoding());
                 ArrayList<Article> articles = parser1.parse();
                 ArrayList<ContentProviderOperation> operationList = new ArrayList<>();

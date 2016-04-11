@@ -7,5 +7,12 @@
         android:defaultValue="HttpConnection"
         android:entries="@array/listArray"
         android:entryValues="@array/listValues" />
+    <ListPreference
+        android:title="@string/timeZoneChoose"
+        android:summary="@string/selectedTimeZooneRequestType"
+        android:key="@string/timeZoneRequestTypeKey"
+        android:defaultValue="XML"
+        android:entries="@array/requestTypeTimeZOneListArray"
+        android:entryValues="@array/requestTypeTimeZOneListValue" />
 </PreferenceScreen>
 

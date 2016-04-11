@@ -107,7 +107,6 @@ public class Parser {
         String imageSize = node.getAttributes().item(2).getNodeValue();
         return new Image(linkToImage, imageSize);
     }
-
     public void setEncoding(String encoding){
         this.encoding=encoding;
     }
