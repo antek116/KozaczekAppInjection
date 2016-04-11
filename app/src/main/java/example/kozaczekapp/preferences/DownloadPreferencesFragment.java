@@ -7,7 +7,7 @@ import android.preference.Preference;
 
 import example.kozaczekapp.R;
 
-public class PreferenceFragment extends android.preference.PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class DownloadPreferencesFragment extends android.preference.PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
     @Override
     /**
      * Method can be called while the fragment's activity is still in the process of being created.

@@ -96,5 +96,55 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         }
     }
 
-
+    private boolean isNameValid(FormValidator validator){
+        Integer hasNameError = validator.isValid(editTextName.getText().toString(),
+                FormValidator.FieldType.NAME);
+        if(hasNameError != null){
+            editTextName.setError(getString(hasNameError));
+            return false;
+        } else{
+            editTextName.setError(null);
+            return true;
+        }
+    }
+    private boolean isSurnameValid(FormValidator validator){
+        Integer hasSurnameError = validator.isValid(editTextSurname.getText().toString(),
+                FormValidator.FieldType.NAME);
+        if(hasSurnameError != null){
+            editTextSurname.setError(getString(hasSurnameError));
+            return false;
+        } else{
+            editTextSurname.setError(null);
+            return true;
+        }
+    }
+    private void fieldsListenersSetUp(){
+        editTextName.addTextChangedListener(new ClearErrorWatcher(editTextName));
+        editTextSurname.addTextChangedListener(new ClearErrorWatcher(editTextSurname));
+        editTextEmail.addTextChangedListener(new ClearErrorWatcher(editTextEmail));
+        editTextEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!editTextEmail.isFocused()) {
+                    isEmailValid(validator);
+                }
+            }
+        });
+        editTextName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!editTextName.isFocused()) {
+                    isNameValid(validator);
+                }
+            }
+        });
+        editTextSurname.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!editTextSurname.isFocused()) {
+                    isSurnameValid(validator);
+                }
+            }
+        });
+    }
 }
