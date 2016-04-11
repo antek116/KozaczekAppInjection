@@ -1,4 +1,4 @@
-package example.kozaczekapp.service;
+package example.kozaczekapp.parser;
 
 import android.support.test.runner.AndroidJUnit4;
 

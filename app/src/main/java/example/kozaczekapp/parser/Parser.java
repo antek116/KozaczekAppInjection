@@ -1,4 +1,4 @@
-package example.kozaczekapp.service;
+package example.kozaczekapp.parser;
 
 import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;

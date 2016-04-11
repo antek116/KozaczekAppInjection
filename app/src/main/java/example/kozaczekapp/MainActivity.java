@@ -365,6 +365,10 @@ public class MainActivity extends AppCompatActivity {
                 SYNC_INTERVAL);
     }
 
+    /**
+     * @return list of all articles from db
+     */
+
     public List<Article> getAllArticles() {
         List<Article> articleList = new ArrayList<>();
         Cursor cursor = getContentResolver().query(RssContract.CONTENT_URI, null, null, null, null);
@@ -387,7 +391,6 @@ public class MainActivity extends AppCompatActivity {
          */
         @Override
         protected List<Article> doInBackground(String... params) {
-            // DatabaseHandler db = new DatabaseHandler(MainActivity.this);
             return getAllArticles();
         }
 
