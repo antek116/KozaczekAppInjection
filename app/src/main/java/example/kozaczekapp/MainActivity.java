@@ -374,11 +374,15 @@ public class MainActivity extends AppCompatActivity {
     private void syncAdapterRefreshingSetup(){
         AccountManager AccManager = AccountManager.get(this);
         accounts = AccManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE);
+        Bundle settingsBundle = new Bundle();
+        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, false);
+        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_DO_NOT_RETRY, false);
+        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, false);
         ContentResolver.setMasterSyncAutomatically(true);
         ContentResolver.addPeriodicSync(
                 accounts[0],
                 "example.kozaczekapp.DatabaseConnection.RssContentProvider",
-                null,
+                Bundle.EMPTY,
                 SYNC_INTERVAL);
     }
     /**
