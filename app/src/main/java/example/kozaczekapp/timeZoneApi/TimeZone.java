@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import org.json.JSONException;
+
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -22,27 +24,30 @@ import example.kozaczekapp.connectors.MyHttpConnection;
 
 public class TimeZone implements Runnable {
 
-    public static final String API_KEY = "JBQLYQTBU57B";
-    public static final String API_URL = "http://api.timezonedb.com/?zone=Europe/Warsaw&key=" + API_KEY + "&format=";
     private static final String TAG = TimeZone.class.getSimpleName();
 
-    private Context context;
-    private AuthenticatorActivity activity;
-
-    public TimeZone(Context context, AuthenticatorActivity activity) {
-        this.context = context;
-        this.activity = activity;
-    }
+    public static final String API_KEY = "JBQLYQTBU57B";
+    public static final String API_URL = "http://api.timezonedb.com/?zone=Europe/Warsaw&key=" + API_KEY + "&format=";
 
     @Inject
     ITimeZoneParser parser;
+    private Context context;
+
+    public TimeZone(Context context) {
+        this.context = context;
+    }
 
 
     @Override
     public void run() {
         MyHttpConnection connection = new MyHttpConnection();
         ((MyApp) context).getRequestTypeComponentInstance().inject(this);
-        String timeStamp = parser.parseResponse(connection.getResponse(API_URL + parser.getType()));
+        String timeStamp = null;
+        try {
+            timeStamp = parser.parseResponse(connection.getResponse(API_URL + parser.getType()));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         AccountManager accountManager = AccountManager.get(context);
         Account[] account = accountManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE);
         Calendar cal= new GregorianCalendar(java.util.TimeZone.getTimeZone("GMT"));

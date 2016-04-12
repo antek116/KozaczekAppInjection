@@ -16,9 +16,10 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
     private EditText editTextPassword;
     private EditText editTextEmail;
     private Button btnLogin;
-    private boolean accountExists;
     private AccountManager accountManager;
     private Toast toast;
+    private Account[] accounts;
+
     /**
      * {@inheritDoc}
      */
@@ -26,14 +27,12 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.login_form_layout);
-        toast = new Toast(getBaseContext());
         accountManager = AccountManager.get(getBaseContext());
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
         editTextEmail = (EditText) findViewById(R.id.editTextEnterEmail);
         btnLogin = (Button) findViewById(R.id.buttonConfirmLogin);
-        accountExists = accountManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE).length > 0;
-        if (accountExists) {
-            Account[] accounts = accountManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE);
+        accounts = accountManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE);
+        if (accounts.length > 0) {
             editTextEmail.setText(accounts[0].name);
             editTextEmail.setEnabled(false);
             btnLogin.setText(R.string.login);
@@ -48,6 +47,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
     @Override
     public void onBackPressed() {
         showToast(R.string.loginBeforeUse);
+        //FIXME: why u not let me out?
     }
 
     /**
@@ -58,7 +58,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         if (isFormValid()) {
             String email = editTextEmail.getText().toString();
             String password = editTextPassword.getText().toString();
-            if (accountExists) {
+            if (accounts.length >= 1) {
                 setNewToken(password);
             } else {
                 addNewAccount(email, password);
@@ -66,27 +66,39 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         }
     }
 
-    private void showToast(int msg){
-        try{ toast.getView().isShown();     // true if visible
-            toast.setText( msg);
-        } catch (Exception e) {         // invisible if exception
+    private void showToast(int msg) {
+
+        //todo: improve
+        if (toast == null) {
             toast = Toast.makeText(getBaseContext(), msg, Toast.LENGTH_SHORT);
+            toast.show();
+        } else {
+            toast.setText("");
+
         }
-        toast.show();  //finally display it
+
     }
+
     private void addNewAccount(String email, String password) {
         final Account account = new Account(email, AccountKeyConstants.ACCOUNT_TYPE);
         accountManager.setPassword(account, password);
         accountManager.addAccountExplicitly(account, password, null);
+        //todo: get token from server
         accountManager.setAuthToken(account, AccountKeyConstants.AUTHTOKEN_TYPE_FULL_ACCESS, new Token().toString());
         finish();
     }
 
     private void setNewToken(String password) {
-        AuthenticatorActivity activity = this;
         Account[] account = accountManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE);
         if (validatePassword(password, account[0])) {
-            new Thread(new TimeZone(getApplicationContext(),activity)).start();
+
+            //FIXME: download token in different manner
+            //FIXME: do not go back to app until token refreshed
+
+            new Thread(new TimeZone(getApplicationContext())).start();
+
+
+
             finish();
         } else {
             editTextPassword.setError(getString(R.string.invalidPassword));

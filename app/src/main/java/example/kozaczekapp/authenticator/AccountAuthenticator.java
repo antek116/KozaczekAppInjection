@@ -53,7 +53,7 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
             bundle.putParcelable(AccountManager.KEY_INTENT, intent);
             return bundle;
         } else {
-            Toast.makeText(context, context.getText(R.string.accountExists), Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, context.getResources().getString(R.string.accountExists, context.getText(R.string.app_name)), Toast.LENGTH_SHORT).show();
         }
         return null;
     }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Kozaczek</string>
+    <string name="app_name">Mój biały Kozaczek</string>
     <string name="action_settings">Settings</string>
     <string name="service_name">KozaczekService</string>
     <string name="option">Options</string>
@@ -29,7 +29,7 @@
     <string name="empty_field_error">Field can not be empty</string>
     <string name="login">Login</string>
     <string name="register">Register</string>
-    <string name="accountExists">There is only one Kozaczek account supported</string>
+    <string name="accountExists">There is only one %1$s account supported</string>
     <string name="enter_password">Enter password</string>
     <string name="invalidPassword">Invalid password</string>
     <string name="account_preferences_title">Account Preferences</string>

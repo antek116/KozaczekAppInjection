@@ -34,13 +34,9 @@ public class JsonTimeZoneParser implements ITimeZoneParser {
      * @return timestamp from parsed response
      */
     @Override
-    public String parseResponse(String response) {
-        try {
+    public String parseResponse(String response) throws JSONException {
             JSONObject reader = new JSONObject(response);
             timestamp = String.valueOf(reader.get(TIMESTAMP_KEY));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
         return timestamp;
     }
 
@@ -49,7 +45,12 @@ public class JsonTimeZoneParser implements ITimeZoneParser {
         return TYPE_JSON;
     }
 
+//    public TZResponse parse(String s) {
+//
+//    }
 
-
+    class TZResponse {
+        String timestamp, key, status; //...
+    }
 
 }

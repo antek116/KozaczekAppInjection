@@ -1,9 +1,11 @@
 package example.kozaczekapp;
 
+import android.accounts.AccountManager;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +26,13 @@ public class UiTests {
     @Rule
     public ActivityTestRule<MainActivity> activityRule = new ActivityTestRule<>(
             MainActivity.class);
+
+    @Before
+    public void setUp() {
+//        add account
+
+//        AccountManager.get()
+    }
 
 
     @Test

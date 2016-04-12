@@ -95,9 +95,7 @@ public class JsonTimeZoneParserTest {
     @Test(expected = JSONException.class)
     public void throwJSONExceptionIfWrongResponse() throws Exception {
         //given
-        response = WRONG_RESPONSE_FORMAT;
         //when
-        new JSONObject(response);
-        //then JSONException
+        parser.parseResponse(WRONG_RESPONSE_FORMAT);
     }
 }
