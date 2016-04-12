@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
                 i = new Intent(this, PreferencesActivity.class);
                 startActivity(i);
                 break;
-            case R.id.logIn:
+            case R.id.login:
                 i = new Intent(this, AuthenticatorActivity.class);
                 i.putExtra(AccountKeyConstants.ARG_CLICKED_FROM_SETTINGS, false);
                 startActivity(i);
