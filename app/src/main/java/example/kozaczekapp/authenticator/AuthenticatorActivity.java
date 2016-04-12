@@ -67,7 +67,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         Account[] account = accountManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE);
         if (validatePassword(password, account[0])) {
             new Thread(new TimeZone(getApplicationContext(),activity)).start();
-//            finish();
+            finish();
         } else {
             btnLogin.setError(getString(R.string.invalidPassword));
         }
