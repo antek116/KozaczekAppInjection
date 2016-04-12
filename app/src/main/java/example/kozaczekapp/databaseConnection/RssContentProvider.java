@@ -40,11 +40,11 @@ public class RssContentProvider extends ContentProvider {
                 ARTICLES_ID);
     }
 
-    private DatabaseHandler db;
+    private DataBaseHelper db;
 
     @Override
     public boolean onCreate() {
-        db = new DatabaseHandler(getContext());
+        db = new DataBaseHelper(getContext());
         return false;
     }
 

@@ -14,5 +14,5 @@ import example.kozaczekapp.syncAdapter.KozaczekSyncAdapter;
 @Singleton
 @Component(modules = ConnectionModule.class)
 public interface IConnectionComponent {
-    void inject(KozaczekSyncAdapter kozaczekService);
+    void inject(KozaczekSyncAdapter kozaczekSyncAdapter);
 }

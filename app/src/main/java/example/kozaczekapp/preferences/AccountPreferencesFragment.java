@@ -5,23 +5,41 @@ import android.accounts.AccountManager;
 import android.accounts.AccountManagerFuture;
 import android.os.Bundle;
 import android.preference.Preference;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import example.kozaczekapp.R;
 import example.kozaczekapp.authenticator.AccountKeyConstants;
 
 public class AccountPreferencesFragment extends android.preference.PreferenceFragment {
 
+    Preference deleteAccountPreference;
+    Account account;
+    AccountManager accountManager;
+    private View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Toast.makeText(getActivity().getApplicationContext(), "deleteAccountButton.setOnClickListener", Toast.LENGTH_SHORT).show();
+            accountManager.removeAccount(account, null, null);
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.account_preferences);
-        AccountManager accountManager = AccountManager.get(getActivity().getBaseContext());
+
+        accountManager = AccountManager.get(getActivity().getBaseContext());
         String accountType = getResources().getString(R.string.account_type);
         Account[] accounts = accountManager.getAccountsByType(accountType);
+        deleteAccountPreference = findPreference("DELETE_BUTTON_KEY");
+        View v = deleteAccountPreference.getView(null, null);
+        Button deleteAccountButton = (Button) v.findViewById(R.id.idDeleteAccountButton);
+        deleteAccountButton.setOnClickListener(onClickListener);
 
         if (accounts.length > 0) {
-            Account account = accounts[0];
+            account = accounts[0];
             final AccountManagerFuture<Bundle> future = accountManager.getAuthToken(account, AccountKeyConstants.AUTHTOKEN_TYPE_FULL_ACCESS, null, getActivity(), null, null);
             new Thread(new Runnable() {
                 @Override

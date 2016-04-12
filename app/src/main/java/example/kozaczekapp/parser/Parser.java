@@ -1,4 +1,4 @@
-package example.kozaczekapp.service;
+package example.kozaczekapp.parser;
 
 import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
@@ -107,7 +107,6 @@ public class Parser {
         String imageSize = node.getAttributes().item(2).getNodeValue();
         return new Image(linkToImage, imageSize);
     }
-
     public void setEncoding(String encoding){
         this.encoding=encoding;
     }

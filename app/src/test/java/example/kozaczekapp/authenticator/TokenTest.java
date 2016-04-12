@@ -17,7 +17,6 @@ public class TokenTest {
         assertTrue(isValid);
     }
 
-
     @Test
     public void checkIfValidWhenInvalid() throws Exception {
         // given
@@ -62,5 +61,4 @@ public class TokenTest {
         // then
         assertTrue(isValid);
     }
-
 }

@@ -341,8 +341,9 @@ public class MainActivity extends AppCompatActivity {
          * Request the sync for the default account, authority, and
          * manual sync settings
          */
+
         if (accounts.length > 0) {
-            ContentResolver.requestSync(accounts[0], "example.kozaczekapp.DatabaseConnection.RssContentProvider", settingsBundle);
+            ContentResolver.requestSync(accounts[0], RssContract.AUTHORITY, settingsBundle);
         }
     }
 
@@ -359,10 +360,14 @@ public class MainActivity extends AppCompatActivity {
         ContentResolver.setMasterSyncAutomatically(true);
         ContentResolver.addPeriodicSync(
                 accounts[0],
-                "example.kozaczekapp.DatabaseConnection.RssContentProvider",
+                RssContract.AUTHORITY,
                 settingsBundle,
                 SYNC_INTERVAL);
     }
+
+    /**
+     * @return list of all articles from db
+     */
 
     public List<Article> getAllArticles() {
         List<Article> articleList = new ArrayList<>();
@@ -386,7 +391,6 @@ public class MainActivity extends AppCompatActivity {
          */
         @Override
         protected List<Article> doInBackground(String... params) {
-            // DatabaseHandler db = new DatabaseHandler(MainActivity.this);
             return getAllArticles();
         }
 
