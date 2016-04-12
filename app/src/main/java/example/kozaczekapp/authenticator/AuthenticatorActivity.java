@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import example.kozaczekapp.R;
+import example.kozaczekapp.timeZoneApi.TimeZone;
 
 public class AuthenticatorActivity extends AccountAuthenticatorActivity {
     private EditText editTextPassword;
@@ -64,7 +65,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
     private void setNewToken(String password) {
         Account[] account = accountManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE);
         if (validatePassword(password, account[0])) {
-            accountManager.setAuthToken(account[0], AccountKeyConstants.AUTHTOKEN_TYPE_FULL_ACCESS, new Token().toString());
+            new TimeZone(getBaseContext()).run();
             finish();
         } else {
             btnLogin.setError(getString(R.string.invalidPassword));

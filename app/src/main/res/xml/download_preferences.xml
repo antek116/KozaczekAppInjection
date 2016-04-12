@@ -8,8 +8,8 @@
         android:entries="@array/listArray"
         android:entryValues="@array/listValues" />
     <CheckBoxPreference
-        android:title="TimeZone Response as JSON"
-        android:defaultValue="true"
+        android:title="TimeZone Response"
+        android:defaultValue="false"
         android:summary="JSON if checked"
         android:key="checkboxPref" />
 </PreferenceScreen>

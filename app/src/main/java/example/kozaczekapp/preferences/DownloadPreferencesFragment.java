@@ -2,12 +2,16 @@ package example.kozaczekapp.preferences;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 
 import example.kozaczekapp.R;
 
 public class DownloadPreferencesFragment extends android.preference.PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+
+
+
     @Override
     /**
      * Method can be called while the fragment's activity is still in the process of being created.
@@ -18,6 +22,8 @@ public class DownloadPreferencesFragment extends android.preference.PreferenceFr
         addPreferencesFromResource(R.xml.download_preferences);
         ListPreference listPreference = (ListPreference) findPreference(getString(R.string.downloadType));
         listPreference.setSummary(getString(R.string.selected_download_preference) + listPreference.getValue());
+        final CheckBoxPreference checkBoxPreference = (CheckBoxPreference) getPreferenceManager().findPreference(getString(R.string.checkBoxPreferences));
+
     }
 
     /**
@@ -33,6 +39,8 @@ public class DownloadPreferencesFragment extends android.preference.PreferenceFr
         if (pref instanceof ListPreference) {
             ListPreference listPreference = (ListPreference) pref;
             pref.setSummary(getString(R.string.selected_download_preference) + listPreference.getValue());
+        } else {
+
         }
     }
 

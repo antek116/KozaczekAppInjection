@@ -23,10 +23,8 @@ public class ConnectionProvider {
     }
 
     /**
-     * Method used to get Response from specific URL.
      *
-     * @param mBaseUrl Url to service as String
-     * @return Response as a String
+     * @return instnce of ConnectionProvider
      */
     @Inject
     public static ConnectionProvider getInstance(IConnection provider){
