@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initializationOfRefreshItemInMenu();
         AccountManager accountManager = AccountManager.get(this);
         if (accountManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE).length < 1) {
             Intent i = new Intent(this, AuthenticatorActivity.class);
@@ -91,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             syncAdapterRefreshingSetup();
             initializationOfSaveInstanceState(savedInstanceState);
-            initializationOfRefreshItemInMenu();
+
             getContentResolver().registerContentObserver(RssContract.CONTENT_URI, true,
                     new ContentObserver(new Handler()) {
                         @Override
