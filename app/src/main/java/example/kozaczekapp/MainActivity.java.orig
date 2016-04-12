@@ -85,19 +85,37 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+<<<<<<< HEAD
+        initializationOfRefreshItemInMenu();
+        AccountManager accountManager = AccountManager.get(this);
+        if (accountManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE).length < 1) {
+=======
         AccountManager AccManager = AccountManager.get(this);
         accounts = AccManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE);
         IntentFilter filter = new IntentFilter(AccountKeyConstants.ACTION_DISPLAY_LOGIN);
-        setupReceiver();
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.d(TAG, "onReceive: Received");
+                Intent i = new Intent(context, AuthenticatorActivity.class);
+                i.putExtra(AccountKeyConstants.ARG_CLICKED_FROM_SETTINGS, false);
+                context.startActivity(i);
+            }
+        };
         registerReceiver(receiver, filter);
         if (accounts.length < 1) {
+>>>>>>> ActivityPolishing
             Intent i = new Intent(this, AuthenticatorActivity.class);
             i.putExtra(AccountKeyConstants.ARG_CLICKED_FROM_SETTINGS, false);
             this.startActivity(i);
         }
             syncAdapterRefreshingSetup();
             initializationOfRefreshItemInMenu();
+<<<<<<< HEAD
+            //TODO: Unregister obsrver!
+=======
             initializationOfSaveInstanceState(savedInstanceState);
+>>>>>>> ActivityPolishing
             getContentResolver().registerContentObserver(RssContract.CONTENT_URI, true,
                     new ContentObserver(new Handler()) {
                         @Override
@@ -117,30 +135,20 @@ public class MainActivity extends AppCompatActivity {
 
                         }
                     });
+<<<<<<< HEAD
+        }
+=======
 
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
             Log.d("MaunActivity", "onCreate: " + prefs.getBoolean("emailPref", false));
 
     }
 
-    private void setupReceiver() {
-        receiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Log.d(TAG, "onReceive: Received");
-                if(isActivityVisible) {
-                    Intent i = new Intent(context, AuthenticatorActivity.class);
-                    i.putExtra(AccountKeyConstants.ARG_CLICKED_FROM_SETTINGS, false);
-                    context.startActivity(i);
-                }
-            }
-        };
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(receiver);
+>>>>>>> ActivityPolishing
     }
 
     /**
