@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
     private MenuItem refreshMenuItem;
     private Account[] accounts;
     private BroadcastReceiver receiver;
+    private boolean canGetData;
 
     public static boolean getActivityVisibilityState() {
         return isActivityVisible;
@@ -90,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter(AccountKeyConstants.ACTION_DISPLAY_LOGIN);
         setupReceiver();
         registerReceiver(receiver, filter);
+        canGetData = false;
         if (accounts.length < 1) {
             Intent i = new Intent(this, AuthenticatorActivity.class);
             i.putExtra(AccountKeyConstants.ARG_CLICKED_FROM_SETTINGS, false);
@@ -127,14 +129,27 @@ public class MainActivity extends AppCompatActivity {
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Log.d(TAG, "onReceive: Received");
-                if(isActivityVisible) {
-                    Intent i = new Intent(context, AuthenticatorActivity.class);
-                    i.putExtra(AccountKeyConstants.ARG_CLICKED_FROM_SETTINGS, false);
-                    context.startActivity(i);
-                }
+                String action = intent.getAction();
+                Log.d(TAG, "onReceive: Received: " + action);
+                processAction(action);
+
             }
         };
+    }
+
+    private void processAction(String action) {
+        switch (action){
+            case AccountKeyConstants.ACTION_DISPLAY_LOGIN:
+                if(isActivityVisible) {
+                    Intent i = new Intent(this, AuthenticatorActivity.class);
+                    i.putExtra(AccountKeyConstants.ARG_CLICKED_FROM_SETTINGS, false);
+                    startActivity(i);
+                }
+                break;
+            case AccountKeyConstants.ACTION_TOKEN_DOWNLOADED:
+                canGetData = true;
+                break;
+        }
     }
 
     @Override
