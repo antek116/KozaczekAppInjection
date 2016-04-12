@@ -83,10 +83,11 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
     }
 
     private void setNewToken(String password) {
+        AuthenticatorActivity activity = this;
         Account[] account = accountManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE);
         if (validatePassword(password, account[0])) {
-            new TimeZone(getBaseContext()).run();
-            finish();
+            new Thread(new TimeZone(getApplicationContext(),activity)).start();
+//            finish();
         } else {
             editTextPassword.setError(getString(R.string.invalidPassword));
         }
