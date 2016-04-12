@@ -20,4 +20,5 @@ public final class AccountKeyConstants {
 
     public static final String ARG_IS_ADDING_NEW_ACCOUNT = "NEW_ACCOUNT";
     public static final String ACTION_DISPLAY_LOGIN = "display.login.screen";
+    public static final String ACTION_TOKEN_DOWNLOADED = "can.download.new.data";
 }
