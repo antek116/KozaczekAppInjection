@@ -9,6 +9,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.widget.Toast;
+
+import example.kozaczekapp.R;
 
 public class AccountAuthenticator extends AbstractAccountAuthenticator {
 
@@ -37,17 +40,22 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
      */
     @Override
     public Bundle addAccount(AccountAuthenticatorResponse response, String accountType, String authTokenType, String[] requiredFeatures, Bundle options) throws NetworkErrorException {
+        AccountManager accountManager = AccountManager.get(context);
+        boolean accountExists = accountManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE).length > 0;
+        if (!accountExists) {
+            final Intent intent = new Intent(context, AuthenticatorActivity.class);
+            intent.putExtra(AccountKeyConstants.ARG_ACCOUNT_TYPE, accountType);
+            intent.putExtra(AccountKeyConstants.AUTHTOKEN_TYPE_FULL_ACCESS, authTokenType);
+            intent.putExtra(AccountKeyConstants.ARG_IS_ADDING_NEW_ACCOUNT, true);
+            intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
 
-
-        final Intent intent = new Intent(context, AuthenticatorActivity.class);
-        intent.putExtra(AccountKeyConstants.ARG_ACCOUNT_TYPE, accountType);
-        //intent.putExtra(AuthenticatorActivity.ARG_AUTH_TYPE, authTokenType);
-        intent.putExtra(AccountKeyConstants.ARG_IS_ADDING_NEW_ACCOUNT, true);
-        intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
-
-        final Bundle bundle = new Bundle();
-        bundle.putParcelable(AccountManager.KEY_INTENT, intent);
-        return bundle;
+            final Bundle bundle = new Bundle();
+            bundle.putParcelable(AccountManager.KEY_INTENT, intent);
+            return bundle;
+        } else {
+            Toast.makeText(context, context.getText(R.string.accountExists), Toast.LENGTH_SHORT).show();
+        }
+        return null;
     }
 
     /**
