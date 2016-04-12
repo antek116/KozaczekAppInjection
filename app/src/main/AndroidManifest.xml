@@ -56,7 +56,6 @@
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/sync_adapter" />
         </service>
-
         <provider
             android:name=".databaseConnection.RssContentProvider"
             android:authorities="example.kozaczekapp.DatabaseConnection.RssContentProvider"
