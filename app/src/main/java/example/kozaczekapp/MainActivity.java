@@ -8,7 +8,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
@@ -17,7 +16,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
@@ -66,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
     private Account[] accounts;
     private BroadcastReceiver receiver;
     private boolean canGetData;
+    private ContentObserver contentObserver;
 
     public static boolean getActivityVisibilityState() {
         return isActivityVisible;
@@ -97,34 +96,29 @@ public class MainActivity extends AppCompatActivity {
             i.putExtra(AccountKeyConstants.ARG_CLICKED_FROM_SETTINGS, false);
             this.startActivity(i);
         }
-            syncAdapterRefreshingSetup();
-            initializationOfRefreshItemInMenu();
-            initializationOfSaveInstanceState(savedInstanceState);
-            initializationOfRefreshItemInMenu();
-            //TODO: Unregister obsrver!
-            getContentResolver().registerContentObserver(RssContract.CONTENT_URI, true,
-                    new ContentObserver(new Handler()) {
-                        @Override
-                        public boolean deliverSelfNotifications() {
-                            return super.deliverSelfNotifications();
-                        }
+        syncAdapterRefreshingSetup();
+        initializationOfRefreshItemInMenu();
+        initializationOfSaveInstanceState(savedInstanceState);
+        initializationOfRefreshItemInMenu();
+        contentObserver = new ContentObserver(new Handler()) {
+            @Override
+            public boolean deliverSelfNotifications() {
+                return super.deliverSelfNotifications();
+            }
 
-                        @Override
-                        public void onChange(boolean selfChange) {
-                            super.onChange(selfChange);
-                        }
+            @Override
+            public void onChange(boolean selfChange) {
+                super.onChange(selfChange);
+            }
 
-                        @Override
-                        public void onChange(boolean selfChange, Uri uri) {
-                            new GetArticlesFromDataBase().execute();
-                            super.onChange(selfChange, uri);
+            @Override
+            public void onChange(boolean selfChange, Uri uri) {
+                new GetArticlesFromDataBase().execute();
+                super.onChange(selfChange, uri);
 
-                        }
-                    });
-
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-            Log.d("MaunActivity", "onCreate: " + prefs.getBoolean("emailPref", false));
-
+            }
+        };
+        getContentResolver().registerContentObserver(RssContract.CONTENT_URI, true, contentObserver);
     }
 
     private void setupReceiver() {
@@ -140,9 +134,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void processAction(String action) {
-        switch (action){
+        switch (action) {
             case AccountKeyConstants.ACTION_DISPLAY_LOGIN:
-                if(isActivityVisible) {
+                if (isActivityVisible) {
                     Intent i = new Intent(this, AuthenticatorActivity.class);
                     i.putExtra(AccountKeyConstants.ARG_CLICKED_FROM_SETTINGS, false);
                     startActivity(i);
@@ -231,6 +225,7 @@ public class MainActivity extends AppCompatActivity {
         unregisterReceiver(connectivityChangeReceiver);
         super.onPause();
         isActivityVisible = false;
+        getContentResolver().unregisterContentObserver(contentObserver);
     }
 
     /**
@@ -461,7 +456,7 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             boolean isConnected = checkNetworkConnection();
             if (isConnected && canGetData) {
-                if (!isInvertedScreen() ) {
+                if (!isInvertedScreen()) {
                     getData();
                     showNoConnectionMsg = true;
                 }
