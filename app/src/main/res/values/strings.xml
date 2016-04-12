@@ -46,4 +46,5 @@
     <string name="selectedTimeZooneRequestType">Selected</string>
     <string name="timeZoneRequestTypeKey">timeZoneRequestTypeKey</string>
     <string name="notification_token_expired">Token is expired. Click to log in</string>
+    <string name="loginBeforeUse">Tou have to log in before using this app</string>
 </resources>

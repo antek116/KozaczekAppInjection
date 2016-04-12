@@ -52,10 +52,11 @@ public class MainActivity extends AppCompatActivity {
     private static final long SECONDS_PER_MINUTE = 60L;
     private static final long SYNC_INTERVAL_IN_MINUTES = 1L;
     public static final long SYNC_INTERVAL = SECONDS_PER_MINUTE * SYNC_INTERVAL_IN_MINUTES;
+    private static final String TAG = MainActivity.class.getSimpleName();
     private static boolean showNoConnectionMsg = true;
     private static boolean isActivityVisible = false;
     public int startingServiceCounter = 0;
-    ArticleListFragment listArticle;
+    ArticleListFragment articleListFragment;
     SwipeRefreshLayout pullToRefresh;
     OnConnectivityChangeReceiver connectivityChangeReceiver;
     private int screenWidth;
@@ -63,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
     private ObjectAnimator anim;
     private MenuItem refreshMenuItem;
     private Account[] accounts;
+    private BroadcastReceiver receiver;
 
     public static boolean getActivityVisibilityState() {
         return isActivityVisible;
@@ -83,15 +85,27 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        AccountManager accountManager = AccountManager.get(this);
-        if (accountManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE).length < 1) {
+        AccountManager AccManager = AccountManager.get(this);
+        accounts = AccManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE);
+        IntentFilter filter = new IntentFilter(AccountKeyConstants.ACTION_DISPLAY_LOGIN);
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.d(TAG, "onReceive: Received");
+                Intent i = new Intent(context, AuthenticatorActivity.class);
+                i.putExtra(AccountKeyConstants.ARG_CLICKED_FROM_SETTINGS, false);
+                context.startActivity(i);
+            }
+        };
+        registerReceiver(receiver, filter);
+        if (accounts.length < 1) {
             Intent i = new Intent(this, AuthenticatorActivity.class);
             i.putExtra(AccountKeyConstants.ARG_CLICKED_FROM_SETTINGS, false);
             this.startActivity(i);
-        } else {
+        }
             syncAdapterRefreshingSetup();
-            initializationOfSaveInstanceState(savedInstanceState);
             initializationOfRefreshItemInMenu();
+            initializationOfSaveInstanceState(savedInstanceState);
             getContentResolver().registerContentObserver(RssContract.CONTENT_URI, true,
                     new ContentObserver(new Handler()) {
                         @Override
@@ -114,7 +128,13 @@ public class MainActivity extends AppCompatActivity {
 
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
             Log.d("MaunActivity", "onCreate: " + prefs.getBoolean("emailPref", false));
-        }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(receiver);
     }
 
     /**
@@ -159,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        getSupportFragmentManager().putFragment(outState, FRAGMENT_KEY, listArticle);
+        getSupportFragmentManager().putFragment(outState, FRAGMENT_KEY, articleListFragment);
         outState.putInt(SCREEN_WIDTH, screenWidth);
     }
 
@@ -169,7 +189,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        setupPullToRefreshListener();
+        if (accounts.length > 0) {
+            setupPullToRefreshListener();
+        }
         IntentFilter connectivityChangefilter =
                 new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
 
@@ -261,17 +283,16 @@ public class MainActivity extends AppCompatActivity {
 
     private void initializationOfSaveInstanceState(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
-            listArticle = new ArticleListFragment();
-            getSupportFragmentManager().beginTransaction().add(R.id.container, listArticle).commit();
+            articleListFragment = new ArticleListFragment();
+            getSupportFragmentManager().beginTransaction().add(R.id.container, articleListFragment).commit();
             screenWidth = getScreenWidth();
         } else {
-            listArticle = (ArticleListFragment) getSupportFragmentManager().getFragment(savedInstanceState, FRAGMENT_KEY);
+            articleListFragment = (ArticleListFragment) getSupportFragmentManager().getFragment(savedInstanceState, FRAGMENT_KEY);
             screenWidth = savedInstanceState.getInt(SCREEN_WIDTH);
         }
     }
 
     private void initializationOfRefreshItemInMenu() {
-
         LayoutInflater inflater = (LayoutInflater) getApplication().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         FrameLayout frameLayout = (FrameLayout) inflater.inflate(R.layout.iv_refresh, new LinearLayout(getApplicationContext()), false);
         image = (ImageView) frameLayout.findViewById(R.id.refresh);
@@ -287,9 +308,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
         anim = ObjectAnimator.ofFloat(image, "rotation", 0f, 360f).setDuration(1000);
-
     }
 
     /**
@@ -351,8 +370,6 @@ public class MainActivity extends AppCompatActivity {
      * Turn on periodic syncing
      */
     private void syncAdapterRefreshingSetup() {
-        AccountManager AccManager = AccountManager.get(this);
-        accounts = AccManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE);
         Bundle settingsBundle = new Bundle();
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, false);
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_DO_NOT_RETRY, false);
@@ -399,8 +416,8 @@ public class MainActivity extends AppCompatActivity {
          */
         @Override
         protected void onPostExecute(List<Article> articlesFromDB) {
-            listArticle.updateTasksInList(articlesFromDB);
-            updateImageToLabCache(listArticle.getImageManager(), articlesFromDB);
+            articleListFragment.updateTasksInList(articlesFromDB);
+            updateImageToLabCache(articleListFragment.getImageManager(), articlesFromDB);
             refreshingAnimationSetUp(false, STOP_ANIMATION_KIND);
         }
     }
