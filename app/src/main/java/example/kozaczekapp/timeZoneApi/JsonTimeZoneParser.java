@@ -1,4 +1,5 @@
 package example.kozaczekapp.timeZoneApi;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -7,7 +8,7 @@ import org.json.JSONObject;
  */
 public class JsonTimeZoneParser implements ITimeZoneParser {
 
-    private static final String TYPE_JSON ="json";
+    private static final String TYPE_JSON = "json";
     private static final String TIMESTAMP_KEY = "timestamp";
     private static final String STATUS_KEY = "status";
     private static String status;
@@ -15,6 +16,7 @@ public class JsonTimeZoneParser implements ITimeZoneParser {
 
     /**
      * Gets status of response
+     *
      * @param response - string formatted as Json Object
      * @return response status: OK - correct, FAIL - wrong
      */
@@ -30,17 +32,15 @@ public class JsonTimeZoneParser implements ITimeZoneParser {
 
     /**
      * Parses Json response
+     *
      * @param response to be parsed
      * @return timestamp from parsed response
      */
     @Override
-    public String parseResponse(String response) {
-        try {
-            JSONObject reader = new JSONObject(response);
-            timestamp = String.valueOf(reader.get(TIMESTAMP_KEY));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    public String parseResponse(String response) throws JSONException{
+        JSONObject reader = new JSONObject(response);
+        timestamp = String.valueOf(reader.get(TIMESTAMP_KEY));
+
         return timestamp;
     }
 
@@ -48,8 +48,6 @@ public class JsonTimeZoneParser implements ITimeZoneParser {
     public String getType() {
         return TYPE_JSON;
     }
-
-
 
 
 }

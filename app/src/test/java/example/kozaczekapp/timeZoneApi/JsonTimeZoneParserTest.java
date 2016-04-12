@@ -1,7 +1,6 @@
 package example.kozaczekapp.timeZoneApi;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -97,7 +96,7 @@ public class JsonTimeZoneParserTest {
         //given
         response = WRONG_RESPONSE_FORMAT;
         //when
-        new JSONObject(response);
+        parser.parseResponse(response);
         //then JSONException
     }
 }

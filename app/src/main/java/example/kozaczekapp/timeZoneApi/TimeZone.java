@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import org.json.JSONException;
+
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -42,7 +44,12 @@ public class TimeZone implements Runnable {
     public void run() {
         MyHttpConnection connection = new MyHttpConnection();
         ((MyApp) context).getRequestTypeComponentInstance().inject(this);
-        String timeStamp = parser.parseResponse(connection.getResponse(API_URL + parser.getType()));
+        String timeStamp = null;
+        try {
+            timeStamp = parser.parseResponse(connection.getResponse(API_URL + parser.getType()));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         AccountManager accountManager = AccountManager.get(context);
         Account[] account = accountManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE);
         Calendar cal= new GregorianCalendar(java.util.TimeZone.getTimeZone("GMT"));
