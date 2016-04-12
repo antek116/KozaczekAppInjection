@@ -29,9 +29,12 @@ import example.kozaczekapp.application.MyApp;
 import example.kozaczekapp.authenticator.AccountKeyConstants;
 import example.kozaczekapp.authenticator.AuthenticatorActivity;
 import example.kozaczekapp.authenticator.Token;
+import example.kozaczekapp.component.IConnectionComponent;
+import example.kozaczekapp.component.IRequestTypeComponent;
 import example.kozaczekapp.connectionProvider.IConnection;
 import example.kozaczekapp.databaseConnection.RssContract;
 import example.kozaczekapp.kozaczekItems.Article;
+import example.kozaczekapp.module.TokenProvider;
 import example.kozaczekapp.parser.Parser;
 
 public class KozaczekSyncAdapter extends AbstractThreadedSyncAdapter {
@@ -39,6 +42,10 @@ public class KozaczekSyncAdapter extends AbstractThreadedSyncAdapter {
     private final AccountManager mAccountManager;
     @Inject
     IConnection connection;
+
+    @Inject
+    TokenProvider tokenProvider;
+
     @SuppressWarnings("FieldCanBeLocal")
     private String url = "http://www.kozaczek.pl/rss/plotki.xml";
 
@@ -53,7 +60,12 @@ public class KozaczekSyncAdapter extends AbstractThreadedSyncAdapter {
         Log.d("AccountSyncAdapter", "onPerformSync for account[ " + account.name + " ]");
         try {
             if (checkTokenValidity(mAccountManager, account)) {
-                ((MyApp) getContext()).getComponentInstance().inject(this);
+                MyApp app = (MyApp) getContext();
+                IConnectionComponent componentInstance = app.getComponentInstance();
+                IRequestTypeComponent requestTypeComponent = app.getRequestTypeComponent();
+                componentInstance.inject(this);
+                requestTypeComponent.inject(this);
+
                 Log.d("SyncAdapter", "SyncAdapter: Synchronize Started");
                 if (connection.getResponse(url) != null) {
                     Parser parser = new Parser(connection.getResponse(url));

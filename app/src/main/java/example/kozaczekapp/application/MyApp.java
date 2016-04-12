@@ -7,6 +7,7 @@ import android.os.Looper;
 
 import example.kozaczekapp.component.DaggerIConnectionComponent;
 import example.kozaczekapp.component.IConnectionComponent;
+import example.kozaczekapp.component.IRequestTypeComponent;
 import example.kozaczekapp.module.ConnectionModule;
 
 /**
@@ -15,6 +16,7 @@ import example.kozaczekapp.module.ConnectionModule;
 public class MyApp extends Application {
 
     private static IConnectionComponent componentInstance = null;
+    private static IRequestTypeComponent requestTypeComponent = null;
     /**
      *
      * @return Singleton istance of IconnectionnCommponent.
@@ -30,4 +32,11 @@ public class MyApp extends Application {
         }
     }
 
+    public IRequestTypeComponent getRequestTypeComponent() {
+        if (requestTypeComponent == null) {
+            return null;
+        } else {
+            return requestTypeComponent;
+        }
+    }
 }

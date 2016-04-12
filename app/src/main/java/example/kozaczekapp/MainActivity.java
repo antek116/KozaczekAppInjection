@@ -88,11 +88,13 @@ public class MainActivity extends AppCompatActivity {
             Intent i = new Intent(this, AuthenticatorActivity.class);
             i.putExtra(AccountKeyConstants.ARG_CLICKED_FROM_SETTINGS, false);
             this.startActivity(i);
+            finish();
         } else {
             syncAdapterRefreshingSetup();
             initializationOfSaveInstanceState(savedInstanceState);
             initializationOfRefreshItemInMenu();
             getContentResolver().registerContentObserver(RssContract.CONTENT_URI, true,
+                    //FIXME: unregister me
                     new ContentObserver(new Handler()) {
                         @Override
                         public boolean deliverSelfNotifications() {
@@ -112,8 +114,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
 
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-            Log.d("MaunActivity", "onCreate: " + prefs.getBoolean("emailPref", false));
         }
     }
 
@@ -139,7 +139,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.ulrConnectionOptions:
                 i = new Intent(this, PreferencesActivity.class);
                 startActivity(i);
+                //FIXME: apply previous review here ;)
                 break;
+            //TODO: is this neccessary if we have to have account to see articles
             case R.id.logIn:
                 i = new Intent(this, AuthenticatorActivity.class);
                 i.putExtra(AccountKeyConstants.ARG_CLICKED_FROM_SETTINGS, false);
@@ -239,6 +241,7 @@ public class MainActivity extends AppCompatActivity {
      * On PullToRefresh when the device is connected to internet the rss data are reloaded.
      */
     private void setupPullToRefreshListener() {
+        //FIXME: move to proper fragment
         pullToRefresh = (SwipeRefreshLayout) findViewById(R.id.pullToRefresh);
         if (pullToRefresh != null) {
             pullToRefresh.setRefreshing(false);
@@ -374,6 +377,7 @@ public class MainActivity extends AppCompatActivity {
         Cursor cursor = getContentResolver().query(RssContract.CONTENT_URI, null, null, null, null);
         if (cursor != null && cursor.moveToFirst()) {
             do {
+                //TODO: Article.fromCursor(cursor);
                 Article article = new Article();
                 article.fromCursor(cursor);
                 // Adding article to list
