@@ -31,7 +31,7 @@ public class TokenTest {
     @Test
     public void checkIfValidWhenValidAfterGetToken() throws Exception {
         // given
-        String validity = "2016-04-12 00:18:38.508";
+        String validity = "2016-05-12 00:18:38.508";
         Token token = new Token(validity);
         //when
         boolean isValid = token.checkIfValid();
