@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
         AccountManager accManager = AccountManager.get(this);
         accounts = accManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE);
         IntentFilter filter = new IntentFilter(AccountKeyConstants.ACTION_DISPLAY_LOGIN);
+        filter.addDataScheme(AccountKeyConstants.ACTION_TOKEN_DOWNLOADED);
         setupReceiver();
         registerReceiver(receiver, filter);
 
@@ -123,8 +124,6 @@ public class MainActivity extends AppCompatActivity {
                     });
 
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-            Log.d("MaunActivity", "onCreate: " + prefs.getBoolean("emailPref", false));
-
     }
 
     private void setupReceiver() {

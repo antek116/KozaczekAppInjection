@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 
 public class Token {
 
-    private final static long HOUR_IN_MILLIS = 1000;
+    private final static long HOUR_IN_MILLIS = 60000;
     private Timestamp timeStampEnd;
 
     public Token() {
@@ -12,7 +12,11 @@ public class Token {
     }
 
     public Token(String validity) {
+
         timeStampEnd = Timestamp.valueOf(validity);
+        long time = timeStampEnd.getTime();
+        time += HOUR_IN_MILLIS;
+        timeStampEnd.setTime(time);
     }
 
     /**
