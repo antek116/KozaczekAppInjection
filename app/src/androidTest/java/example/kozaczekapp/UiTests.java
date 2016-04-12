@@ -1,6 +1,5 @@
 package example.kozaczekapp;
 
-import android.support.test.espresso.ViewInteraction;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -8,21 +7,13 @@ import android.support.test.runner.AndroidJUnit4;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import java.util.List;
-
-import example.kozaczekapp.databaseConnection.DataBaseHelper;
-import example.kozaczekapp.kozaczekItems.Article;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.swipeDown;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.contrib.RecyclerViewActions.scrollToPosition;
-import static android.support.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static example.kozaczekapp.TestUtils.atPosition;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -101,9 +92,9 @@ public class UiTests {
     @Test
     public void testCheckIfFragmentIsSameAfterRotation() {
         //given
-        String fragmentString = activityRule.getActivity().listArticle.toString();
+        String fragmentString = activityRule.getActivity().articleListFragment.toString();
         onView(isRoot()).perform(OrientationChangeAction.orientationLandscape());
-        String fragmentStringAfterRotation = activityRule.getActivity().listArticle.toString();
+        String fragmentStringAfterRotation = activityRule.getActivity().articleListFragment.toString();
         //when
         boolean isSame = fragmentString.equals(fragmentStringAfterRotation);
         //then

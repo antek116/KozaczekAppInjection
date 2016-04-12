@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import example.kozaczekapp.R;
 
@@ -16,7 +17,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
     private Button btnLogin;
     private boolean accountExists;
     private AccountManager accountManager;
-
+    private Toast toast;
     /**
      * {@inheritDoc}
      */
@@ -24,6 +25,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.login_form_layout);
+        toast = new Toast(getBaseContext());
         accountManager = AccountManager.get(getBaseContext());
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
         editTextEmail = (EditText) findViewById(R.id.editTextEnterEmail);
@@ -35,6 +37,16 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
             editTextEmail.setEnabled(false);
             btnLogin.setText(R.string.login);
         }
+    }
+
+    /**
+     * Called when the activity has detected the user's press of the back
+     * key.  The default implementation simply finishes the current activity,
+     * but you can override this to do whatever you want.
+     */
+    @Override
+    public void onBackPressed() {
+        showToast(R.string.loginBeforeUse);
     }
 
     /**
@@ -53,6 +65,14 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
         }
     }
 
+    private void showToast(int msg){
+        try{ toast.getView().isShown();     // true if visible
+            toast.setText( msg);
+        } catch (Exception e) {         // invisible if exception
+            toast = Toast.makeText(getBaseContext(), msg, Toast.LENGTH_SHORT);
+        }
+        toast.show();  //finally display it
+    }
     private void addNewAccount(String email, String password) {
         final Account account = new Account(email, AccountKeyConstants.ACCOUNT_TYPE);
         accountManager.setPassword(account, password);
@@ -67,7 +87,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
             accountManager.setAuthToken(account[0], AccountKeyConstants.AUTHTOKEN_TYPE_FULL_ACCESS, new Token().toString());
             finish();
         } else {
-            btnLogin.setError(getString(R.string.invalidPassword));
+            editTextPassword.setError(getString(R.string.invalidPassword));
         }
     }
 

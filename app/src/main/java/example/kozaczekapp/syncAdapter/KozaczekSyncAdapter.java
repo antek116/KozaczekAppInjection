@@ -17,6 +17,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -50,13 +51,13 @@ public class KozaczekSyncAdapter extends AbstractThreadedSyncAdapter {
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority,
                               ContentProviderClient provider, SyncResult syncResult) {
-        Log.d("AccountSyncAdapter", "onPerformSync for account[ " + account.name + " ]");
         try {
             if (checkTokenValidity(mAccountManager, account)) {
                 ((MyApp) getContext()).getComponentInstance().inject(this);
                 Log.d("SyncAdapter", "SyncAdapter: Synchronize Started");
-                if (connection.getResponse(url) != null) {
-                    Parser parser = new Parser(connection.getResponse(url));
+                String responste = connection.getResponse(url);
+                if (responste != null) {
+                    Parser parser = new Parser(responste);
                     parser.setEncoding(connection.getEncoding());
                     ArrayList<Article> articles = parser.parse();
                     ArrayList<ContentProviderOperation> operationList = new ArrayList<>();
@@ -66,20 +67,16 @@ public class KozaczekSyncAdapter extends AbstractThreadedSyncAdapter {
                     getContext().getContentResolver().applyBatch(RssContract.AUTHORITY, operationList);
                     getContext().getContentResolver().notifyChange(RssContract.CONTENT_URI, null);
                 }
-            } else { //if App is visible display activity othervise post notification
-                sendNotification(getContext(), getContext().getString(R.string.notification_token_expired));
+            } else { //send broadcast, if App is visible dont display notification.
                 Log.d(TAG, "onPerformSync: token is invalid");
-                Intent i = new Intent(getContext(), AuthenticatorActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                i.putExtra(AccountKeyConstants.ARG_CLICKED_FROM_SETTINGS, false);
-                getContext().startActivity(i);
-
+                sendNotification(getContext(), getContext().getString(R.string.notification_token_expired));
+                Intent intent = new Intent();
+                intent.setAction(AccountKeyConstants.ACTION_DISPLAY_LOGIN);
+                getContext().sendBroadcast(intent);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
     /**
