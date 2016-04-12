@@ -10,10 +10,8 @@ import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.swipeDown;
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -89,6 +87,7 @@ public class UiTests {
         // then
         assertTrue(isStartedRightNumberOfServices);
     }
+
     @Test
     public void testCheckIfFragmentIsSameAfterRotation() {
         //given
@@ -98,26 +97,27 @@ public class UiTests {
         //when
         boolean isSame = fragmentString.equals(fragmentStringAfterRotation);
         //then
-        assertTrue("After rotation Fragment should be the same as before",isSame);
+        assertTrue("After rotation Fragment should be the same as before", isSame);
     }
 
-    @Test
-    public void testButtonIsClickableAfterPullToRefresh(){
-        //given
-        onView(withId(R.id.allTasks)).perform(swipeDown());
-        //when
-        boolean isClickable = activityRule.getActivity().image.isClickable();
-        //then
-        assertFalse("Button should't be clickable after pull to refresh", isClickable);
-    }
 
+    /* @Test
+     public void testButtonIsClickableAfterPullToRefresh() {
+         //given
+         onView(withId(R.id.allTasks)).perform(swipeDown());
+         //when
+         boolean isClickable = activityRule.getActivity().image.isClickable();
+         //then
+         assertFalse("Button should't be clickable after pull to refresh", isClickable);
+     }
+ */
     @Test
-    public void testIfButtonIsAnimatingAfterClick(){
+    public void testIfButtonIsAnimatingAfterClick() {
         //given
         onView(withId(R.id.refresh)).perform(click());
         //when
         boolean isAnimating = activityRule.getActivity().isRefreshAnimating();
         //then
-        assertTrue("Button animation should be running",isAnimating);
+        assertTrue("Button animation should be running", isAnimating);
     }
 }
