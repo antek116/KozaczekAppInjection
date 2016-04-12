@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     private Account[] accounts;
     private BroadcastReceiver receiver;
     private boolean canGetData;
+    private ContentObserver contentObserver;
 
     public static boolean getActivityVisibilityState() {
         return isActivityVisible;
