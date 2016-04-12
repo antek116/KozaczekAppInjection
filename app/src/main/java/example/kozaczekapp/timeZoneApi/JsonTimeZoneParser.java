@@ -3,14 +3,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- *
+ * Manages parser things
  */
 public class JsonTimeZoneParser implements ITimeZoneParser {
 
     private static final String TYPE_JSON ="json";
-
-
-
     private static final String TIMESTAMP_KEY = "timestamp";
     private static final String STATUS_KEY = "status";
     private static String status;
@@ -32,9 +29,9 @@ public class JsonTimeZoneParser implements ITimeZoneParser {
     }
 
     /**
-     * 
-     * @param response
-     * @return
+     * Parses Json response
+     * @param response to be parsed
+     * @return timestamp from parsed response
      */
     @Override
     public String parseResponse(String response) {

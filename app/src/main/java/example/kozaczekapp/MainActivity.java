@@ -89,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
         AccountManager accManager = AccountManager.get(this);
         accounts = accManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE);
         IntentFilter filter = new IntentFilter(AccountKeyConstants.ACTION_DISPLAY_LOGIN);
-        filter.addDataScheme(AccountKeyConstants.ACTION_TOKEN_DOWNLOADED);
         setupReceiver();
         registerReceiver(receiver, filter);
 
@@ -98,32 +97,29 @@ public class MainActivity extends AppCompatActivity {
             i.putExtra(AccountKeyConstants.ARG_CLICKED_FROM_SETTINGS, false);
             this.startActivity(i);
         }
-            syncAdapterRefreshingSetup();
-            initializationOfRefreshItemInMenu();
-            initializationOfSaveInstanceState(savedInstanceState);
-            initializationOfRefreshItemInMenu();
-            //TODO: Unregister obsrver!
-            getContentResolver().registerContentObserver(RssContract.CONTENT_URI, true,
-                    new ContentObserver(new Handler()) {
-                        @Override
-                        public boolean deliverSelfNotifications() {
-                            return super.deliverSelfNotifications();
-                        }
+        syncAdapterRefreshingSetup();
+        initializationOfRefreshItemInMenu();
+        initializationOfSaveInstanceState(savedInstanceState);
+        initializationOfRefreshItemInMenu();
+        contentObserver = new ContentObserver(new Handler()) {
+            @Override
+            public boolean deliverSelfNotifications() {
+                return super.deliverSelfNotifications();
+            }
 
-                        @Override
-                        public void onChange(boolean selfChange) {
-                            super.onChange(selfChange);
-                        }
+            @Override
+            public void onChange(boolean selfChange) {
+                super.onChange(selfChange);
+            }
 
-                        @Override
-                        public void onChange(boolean selfChange, Uri uri) {
-                            new GetArticlesFromDataBase().execute();
-                            super.onChange(selfChange, uri);
+            @Override
+            public void onChange(boolean selfChange, Uri uri) {
+                new GetArticlesFromDataBase().execute();
+                super.onChange(selfChange, uri);
 
-                        }
-                    });
-
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            }
+        };
+        getContentResolver().registerContentObserver(RssContract.CONTENT_URI, true, contentObserver);
     }
 
     private void setupReceiver() {
@@ -139,9 +135,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void processAction(String action) {
-        switch (action){
+        switch (action) {
             case AccountKeyConstants.ACTION_DISPLAY_LOGIN:
-                if(isActivityVisible) {
+                if (isActivityVisible) {
                     Intent i = new Intent(this, AuthenticatorActivity.class);
                     i.putExtra(AccountKeyConstants.ARG_CLICKED_FROM_SETTINGS, false);
                     startActivity(i);
@@ -230,6 +226,7 @@ public class MainActivity extends AppCompatActivity {
         unregisterReceiver(connectivityChangeReceiver);
         super.onPause();
         isActivityVisible = false;
+        getContentResolver().unregisterContentObserver(contentObserver);
     }
 
     /**
