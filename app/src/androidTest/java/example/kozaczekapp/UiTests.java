@@ -1,28 +1,19 @@
 package example.kozaczekapp;
 
-import android.support.test.espresso.ViewInteraction;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import java.util.List;
-
-import example.kozaczekapp.databaseConnection.DataBaseHelper;
-import example.kozaczekapp.kozaczekItems.Article;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.swipeDown;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.contrib.RecyclerViewActions.scrollToPosition;
-import static android.support.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static example.kozaczekapp.TestUtils.atPosition;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -98,6 +89,7 @@ public class UiTests {
         // then
         assertTrue(isStartedRightNumberOfServices);
     }
+
     @Test
     public void testCheckIfFragmentIsSameAfterRotation() {
         //given
@@ -107,11 +99,12 @@ public class UiTests {
         //when
         boolean isSame = fragmentString.equals(fragmentStringAfterRotation);
         //then
-        assertTrue("After rotation Fragment should be the same as before",isSame);
+        assertTrue("After rotation Fragment should be the same as before", isSame);
     }
 
-    @Test
-    public void testButtonIsClickableAfterPullToRefresh(){
+
+   /* @Test
+    public void testButtonIsClickableAfterPullToRefresh() {
         //given
         onView(withId(R.id.allTasks)).perform(swipeDown());
         //when
@@ -119,14 +112,14 @@ public class UiTests {
         //then
         assertFalse("Button should't be clickable after pull to refresh", isClickable);
     }
-
+*/
     @Test
-    public void testIfButtonIsAnimatingAfterClick(){
+    public void testIfButtonIsAnimatingAfterClick() {
         //given
         onView(withId(R.id.refresh)).perform(click());
         //when
         boolean isAnimating = activityRule.getActivity().isRefreshAnimating();
         //then
-        assertTrue("Button animation should be running",isAnimating);
+        assertTrue("Button animation should be running", isAnimating);
     }
 }
