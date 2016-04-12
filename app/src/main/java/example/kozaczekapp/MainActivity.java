@@ -92,7 +92,8 @@ public class MainActivity extends AppCompatActivity {
         } else {
             syncAdapterRefreshingSetup();
             initializationOfSaveInstanceState(savedInstanceState);
-
+            initializationOfRefreshItemInMenu();
+            //TODO: Unregister obsrver!
             getContentResolver().registerContentObserver(RssContract.CONTENT_URI, true,
                     new ContentObserver(new Handler()) {
                         @Override
@@ -112,9 +113,6 @@ public class MainActivity extends AppCompatActivity {
 
                         }
                     });
-
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-            Log.d("MaunActivity", "onCreate: " + prefs.getBoolean("emailPref", false));
         }
     }
 
@@ -272,7 +270,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initializationOfRefreshItemInMenu() {
-
         LayoutInflater inflater = (LayoutInflater) getApplication().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         FrameLayout frameLayout = (FrameLayout) inflater.inflate(R.layout.iv_refresh, new LinearLayout(getApplicationContext()), false);
         image = (ImageView) frameLayout.findViewById(R.id.refresh);
