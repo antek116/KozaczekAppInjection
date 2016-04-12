@@ -17,7 +17,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -28,7 +27,6 @@ import example.kozaczekapp.MainActivity;
 import example.kozaczekapp.R;
 import example.kozaczekapp.application.MyApp;
 import example.kozaczekapp.authenticator.AccountKeyConstants;
-import example.kozaczekapp.authenticator.AuthenticatorActivity;
 import example.kozaczekapp.authenticator.Token;
 import example.kozaczekapp.connectionProvider.IConnection;
 import example.kozaczekapp.databaseConnection.RssContract;
@@ -36,6 +34,8 @@ import example.kozaczekapp.kozaczekItems.Article;
 import example.kozaczekapp.parser.Parser;
 
 public class KozaczekSyncAdapter extends AbstractThreadedSyncAdapter {
+    public static final int LIGHT_DURATION = 200;
+    public static final int LIGHT_INTERVAL = 500;
     private static final String TAG = "KozaczekSyncAdapter";
     private final AccountManager mAccountManager;
     @Inject
@@ -154,14 +154,14 @@ public class KozaczekSyncAdapter extends AbstractThreadedSyncAdapter {
 
         assert cursor != null;
         int articlesToBeDeleted;
-        if(cursor.getCount() < articles.size()){
+        if (cursor.getCount() < articles.size()) {
             articlesToBeDeleted = 0;
-        }else{
+        } else {
             articlesToBeDeleted = cursor.getCount() - articles.size();
         }
 
         if (articlesToBeDeleted != 0) {
-            String selection = RssContract.Columns._ID + ">= ?" ;
+            String selection = RssContract.Columns._ID + ">= ?";
             String[] params = new String[]{String.valueOf(articlesToBeDeleted)};
             operationList.add(ContentProviderOperation.newDelete(RssContract.CONTENT_URI)
                     .withSelection(selection, params)
@@ -172,8 +172,9 @@ public class KozaczekSyncAdapter extends AbstractThreadedSyncAdapter {
 
     /**
      * Check token validity
+     *
      * @param accountManager account manager instance
-     * @param account for which token is being validated
+     * @param account        for which token is being validated
      * @return true if token is valid
      * @throws Exception
      */
@@ -189,24 +190,26 @@ public class KozaczekSyncAdapter extends AbstractThreadedSyncAdapter {
 
     /**
      * Sends System notification with given message
+     *
      * @param context app context
      * @param message to be set in notification
      */
     private void sendNotification(Context context, String message) {
         Intent notificationIntent = new Intent(context, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
-
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context)
+        NotificationCompat.Builder notificationBuilder;
+        notificationBuilder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setContentTitle(getContext().getString(R.string.app_name))
                 .setContentText(message)
                 .setAutoCancel(true)
-                .setDefaults(Notification.DEFAULT_SOUND | Notification.FLAG_SHOW_LIGHTS)
-                .setLights(0xff00ff00, 300, 100)
-                .setContentIntent(pendingIntent);
-
+                .setDefaults(Notification.DEFAULT_SOUND | Notification.FLAG_SHOW_LIGHTS);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            notificationBuilder.setLights(context.getResources().getColor(R.color.colorPrimaryDark, null),
+                    LIGHT_INTERVAL, LIGHT_DURATION);
+        }
+        notificationBuilder.setContentIntent(pendingIntent);
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
         notificationManager.notify(0, notificationBuilder.build());
     }
 }
