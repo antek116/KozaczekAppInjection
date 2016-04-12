@@ -199,7 +199,7 @@ public class KozaczekSyncAdapter extends AbstractThreadedSyncAdapter {
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
         NotificationCompat.Builder notificationBuilder;
         notificationBuilder = new NotificationCompat.Builder(context)
-                .setSmallIcon(R.drawable.ic_launcher)
+                .setSmallIcon(R.drawable.kozaczekicon)
                 .setContentTitle(getContext().getString(R.string.app_name))
                 .setContentText(message)
                 .setAutoCancel(true)
