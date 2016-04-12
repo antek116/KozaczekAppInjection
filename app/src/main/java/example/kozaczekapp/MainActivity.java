@@ -86,12 +86,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        AccountManager AccManager = AccountManager.get(this);
-        accounts = AccManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE);
+        AccountManager accManager = AccountManager.get(this);
+        accounts = accManager.getAccountsByType(AccountKeyConstants.ACCOUNT_TYPE);
         IntentFilter filter = new IntentFilter(AccountKeyConstants.ACTION_DISPLAY_LOGIN);
         setupReceiver();
         registerReceiver(receiver, filter);
-        canGetData = false;
+
         if (accounts.length < 1) {
             Intent i = new Intent(this, AuthenticatorActivity.class);
             i.putExtra(AccountKeyConstants.ARG_CLICKED_FROM_SETTINGS, false);
@@ -460,8 +460,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             boolean isConnected = checkNetworkConnection();
-            if (isConnected) {
-                if (!isInvertedScreen()) {
+            if (isConnected && canGetData) {
+                if (!isInvertedScreen() ) {
                     getData();
                     showNoConnectionMsg = true;
                 }

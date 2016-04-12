@@ -3,6 +3,8 @@ package example.kozaczekapp.timeZoneApi;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -22,6 +24,7 @@ public class TimeZone implements Runnable {
 
     public static final String API_KEY = "JBQLYQTBU57B";
     public static final String API_URL = "http://api.timezonedb.com/?zone=Europe/Warsaw&key=" + API_KEY + "&format=";
+    private static final String TAG = TimeZone.class.getSimpleName();
 
     private Context context;
     private AuthenticatorActivity activity;
@@ -48,5 +51,9 @@ public class TimeZone implements Runnable {
         fmt.setCalendar(cal);
         String dateFormatted = fmt.format(cal.getTime());
         accountManager.setAuthToken(account[0], AccountKeyConstants.AUTHTOKEN_TYPE_FULL_ACCESS, new Token(dateFormatted).toString());
+        Intent intent = new Intent();
+        intent.setAction(AccountKeyConstants.ACTION_TOKEN_DOWNLOADED);
+        context.sendBroadcast(intent);
+        Log.d(TAG, "run: downloaded and sent broadcast");
     }
 }
