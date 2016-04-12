@@ -8,6 +8,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
@@ -16,6 +17,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
@@ -64,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
     private Account[] accounts;
     private BroadcastReceiver receiver;
     private boolean canGetData;
-    private ContentObserver contentObserver;
 
     public static boolean getActivityVisibilityState() {
         return isActivityVisible;
@@ -456,7 +457,7 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             boolean isConnected = checkNetworkConnection();
             if (isConnected && canGetData) {
-                if (!isInvertedScreen()) {
+                if (!isInvertedScreen() ) {
                     getData();
                     showNoConnectionMsg = true;
                 }
