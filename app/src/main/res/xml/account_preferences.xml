@@ -3,14 +3,21 @@
     >
     <Preference
         android:key="@string/account_login_key"
-        android:title="@string/account_login_title" />
+        android:title="@string/account_login_title"
+        android:selectable="false"
+        android:enabled="false"/>
     <Preference
         android:key="@string/account_token_key"
-        android:title="@string/account_token_title"/>
+        android:title="@string/account_token_title"
+        android:selectable="false"
+        android:enabled="false"/>
 
     <Preference
         android:key="DELETE_BUTTON_KEY"
         android:title="@string/delete_account_button"
-        android:layout="@layout/account_preference_fragment" />
+        android:enabled="false"
+        android:selectable="false"
+         />
 
 </PreferenceScreen>
+    <!--android:layout="@layout/account_preference_fragment"-->
